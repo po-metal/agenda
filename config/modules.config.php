@@ -38,6 +38,7 @@ return [
     //'SkinAdminlte',
     //'SkinCentaurus',
     //'SkinMaterialDesignB4',
-    'SkinMaterialDashboard'
-    // 'SkinTaurus'
+    'SkinMaterialDashboard',
+    // 'SkinTaurus',
+    'ZfMetal\Agenda'
 ];
