@@ -16,7 +16,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @author
  * @license
  * @link
- * @ORM\Table(name="zfma_calendar")
+ * @ORM\Table(name="cal_calendar")
  * @ORM\Entity(repositoryClass="ZfMetal\Calendar\Repository\CalendarRepository")
  */
 class Calendar

@@ -16,7 +16,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @author
  * @license
  * @link
- * @ORM\Table(name="zfma_predefined_events")
+ * @ORM\Table(name="cal_predefined_events")
  * @ORM\Entity(repositoryClass="ZfMetal\Calendar\Repository\PredefinedEventsRepository")
  */
 class PredefinedEvents
@@ -100,7 +100,7 @@ class PredefinedEvents
 
     public function __toString()
     {
-        return (string);
+        return (string)$this->id;
     }
 
 

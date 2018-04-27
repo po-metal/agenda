@@ -16,7 +16,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @author
  * @license
  * @link
- * @ORM\Table(name="zfma_")
+ * @ORM\Table(name="cal_events")
  * @ORM\Entity(repositoryClass="ZfMetal\Calendar\Repository\EventRepository")
  */
 class Event

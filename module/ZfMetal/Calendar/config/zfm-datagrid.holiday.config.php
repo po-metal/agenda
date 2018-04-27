@@ -2,12 +2,12 @@
 
 return [
     'zf-metal-datagrid.custom' => [
-        'zfmetal-calendar-entity-calendar' => [
-            'gridId' => 'zfmdg_Calendar',
+        'zfmetal-calendar-entity-holiday' => [
+            'gridId' => 'zfmdg_Holiday',
             'sourceConfig' => [
                 'type' => 'doctrine',
                 'doctrineOptions' => [
-                    'entityName' => \ZfMetal\Calendar\Entity\Calendar::class,
+                    'entityName' => \ZfMetal\Calendar\Entity\Holiday::class,
                     'entityManager' => 'doctrine.entitymanager.orm_default',
                 ],
             ],
@@ -21,6 +21,10 @@ return [
             'columnsConfig' => [
                 'id' => [
                     'displayName' => 'ID',
+                ],
+                'date' => [
+                    'type' => 'date',
+                    'format' => 'Y-m-d',
                 ],
             ],
             'crudConfig' => [

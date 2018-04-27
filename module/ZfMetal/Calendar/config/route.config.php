@@ -3,17 +3,41 @@
 return [
     'router' => [
         'routes' => [
-            'ZfMetalCalendar' => [
+            'ZfMetal\\Calendar' => [
                 'type' => 'Literal',
                 'mayTerminate' => false,
                 'options' => [
-                    'route' => '/calendar',
+                    'route' => '/metal/calendar',
                     'defaults' => [
                         'controller' => \ZfMetal\Calendar\Controller\CalendarController::CLASS,
                         'action' => 'grid',
                     ],
                 ],
                 'child_routes' => [
+                    'Holiday' => [
+                        'type' => 'Literal',
+                        'mayTerminate' => false,
+                        'options' => [
+                            'route' => '/holiday',
+                            'defaults' => [
+                                'controller' => \ZfMetal\Calendar\Controller\HolidayController::CLASS,
+                                'action' => 'grid',
+                            ],
+                        ],
+                        'child_routes' => [
+                            'Grid' => [
+                                'type' => 'Segment',
+                                'mayTerminate' => true,
+                                'options' => [
+                                    'route' => '/grid',
+                                    'defaults' => [
+                                        'controller' => \ZfMetal\Calendar\Controller\HolidayController::CLASS,
+                                        'action' => 'grid',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
                     'Calendar' => [
                         'type' => 'Literal',
                         'mayTerminate' => false,

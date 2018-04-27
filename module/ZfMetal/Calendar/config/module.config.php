@@ -9,7 +9,8 @@ include "route.config.php",
 include "services.config.php",
 include "view-helper.config.php",
 include "view.config.php",
-include "zfm-datagrid.calendar.config.php"
+include "zfm-datagrid.calendar.config.php",
+include "zfm-datagrid.holiday.config.php"
 );
 
 return $setting;
