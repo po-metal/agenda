@@ -2,7 +2,6 @@
 
 namespace ZfMetal\Calendar\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection as ArrayCollection;
 use Zend\Form\Annotation as Annotation;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint as UniqueConstraint;
@@ -41,11 +40,9 @@ class Calendar
     public $name = null;
 
     /**
-     * @Annotation\Type("DoctrineModule\Form\Element\ObjectMultiCheckbox")
-     * @Annotation\Options({"label":"schedules","target_class":"\ZfMetal\Calendar\Entity\Schedule",
-     * "description":""})
+     * @Annotation\ComposedObject({"name":"schedules", "target_object":"\ZfMetal\Calendar\Entity\Schedule", "is_collection":"true", "options":{"count":1, "should_create_template":"true", "allow_add":"true", "allow_remove":"true"}})
      * @ORM\OneToMany(targetEntity="\ZfMetal\Calendar\Entity\Schedule",
-     * mappedBy="calendar")
+     * mappedBy="calendar", cascade={"persist", "remove"}, fetch="EAGER")
      */
     public $schedules = null;
 
@@ -75,6 +72,16 @@ class Calendar
      * nullable=true)
      */
     public $predefinedEvents = null;
+
+    /**
+     * Calendar constructor.
+     * @param null $id
+     */
+    public function __construct()
+    {
+        $this->schedules = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
 
     public function getId()
     {
@@ -141,6 +148,34 @@ class Calendar
         return (string) $this->name;
     }
 
+
+
+
+    public function addSchedules(\Doctrine\Common\Collections\ArrayCollection $schedules) {
+        foreach ($schedules as $schedule) {
+            $this->addSchedule($schedule);
+        }
+    }
+
+    public function removeSchedules(\Doctrine\Common\Collections\ArrayCollection $schedules) {
+        foreach ($schedules as $schedule) {
+            $this->removeSchedule($schedule);
+        }
+    }
+
+    public function addSchedule(\ZfMetal\Calendar\Entity\Schedule $schedule) {
+        if ($this->schedules->contains($schedule)) {
+            return;
+        }
+        $this->schedules[] = $schedule;
+    }
+
+    public function removeSchedule(\ZfMetal\Calendar\Entity\Schedule $schedule) {
+        if (!$this->schedules->contains($schedule)) {
+            return;
+        }
+        $this->schedules->removeElement($schedule);
+    }
 
 }
 

@@ -33,18 +33,18 @@ class Schedule
     public $id = null;
 
     /**
-     * @Annotation\Type("DoctrineModule\Form\Element\ObjectSelect")
-     * @Annotation\Options({"label":"calendar","empty_option": "",
-     * "target_class":"\ZfMetal\Calendar\Entity\Calendar", "description":""})
+     * @Annotation\Type("Zend\Form\Element\Hidden")
+     * @Annotation\Attributes({"type":"hidden"})
+     * @Annotation\Type("Zend\Form\Element\Hidden")
      * @ORM\ManyToOne(targetEntity="\ZfMetal\Calendar\Entity\Calendar")
      * @ORM\JoinColumn(name="calendar_id", referencedColumnName="id", nullable=true)
      */
     public $calendar = null;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Attributes({"type":"text"})
-     * @Annotation\Options({"label":"day", "description":"", "addon":""})
+     * @Annotation\Type("Zend\Form\Element\Hidden")
+     * @Annotation\Attributes({"type":"hidden"})
+     * @Annotation\Type("Zend\Form\Element\Hidden")
      * @ORM\Column(type="integer", length=1, unique=false, nullable=false, name="day")
      */
     public $day = null;

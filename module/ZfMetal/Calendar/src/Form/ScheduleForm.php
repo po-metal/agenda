@@ -2,15 +2,17 @@
 
 namespace ZfMetal\Calendar\Form;
 
-use Zend\Form\Form;
+use Doctrine\Common\Persistence\ObjectManager;
 
-class ScheduleForm extends \Zend\Form\Form
+
+class ScheduleForm extends \Zend\Form\Fieldset
 {
 
 
-    public function __construct($day)
+    public function __construct(ObjectManager $em)
     {
-        parent::__construct('schedule');
+        parent::__construct("schedule");
+        $this->setHydrator(new \DoctrineModule\Stdlib\Hydrator\DoctrineObject($em));
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', "form");
         $this->setAttribute('role', "form");
@@ -26,8 +28,7 @@ class ScheduleForm extends \Zend\Form\Form
         $this->add(array(
             'name' => 'day',
             'attributes' => array(
-                'type' => 'hidden',
-                'value' => $day
+                'type' => 'hidden'
             )
         ));
 
