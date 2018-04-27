@@ -1,0 +1,21 @@
+<?php
+$form = $this->form;
+$form->prepare();
+$elementsReady = array();
+?>
+
+<?php echo $this->form()->openTag($form); ?>
+
+
+<?php echo $this->renderFormElement($form->get('id')); ?>
+<?php echo $this->renderFormElement($form->get('name')); ?>
+
+
+
+
+
+
+
+<?php echo $this->renderFormElement($form->get('submit')); ?>
+
+<?php echo $this->form()->closeTag($form); ?>
