@@ -38,6 +38,41 @@ return [
                             ],
                         ],
                     ],
+                    'ManagerCalendar' => [
+                        'type' => 'Literal',
+                        'mayTerminate' => false,
+                        'options' => [
+                            'route' => '/manager-calendar',
+                            'defaults' => [
+                                'controller' => \ZfMetal\Agenda\Controller\ManagerCalendarController::CLASS,
+                                'action' => 'list',
+                            ],
+                        ],
+                        'child_routes' => [
+                            'List' => [
+                                'type' => 'Segment',
+                                'mayTerminate' => true,
+                                'options' => [
+                                    'route' => '/list',
+                                    'defaults' => [
+                                        'controller' => \ZfMetal\Agenda\Controller\ManagerCalendarController::CLASS,
+                                        'action' => 'list',
+                                    ],
+                                ],
+                            ],
+                            'Manage' => [
+                                'type' => 'Segment',
+                                'mayTerminate' => true,
+                                'options' => [
+                                    'route' => '/manage',
+                                    'defaults' => [
+                                        'controller' => \ZfMetal\Agenda\Controller\ManagerCalendarController::CLASS,
+                                        'action' => 'manage',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ],

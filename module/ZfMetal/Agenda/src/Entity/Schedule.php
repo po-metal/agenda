@@ -9,17 +9,17 @@ use Doctrine\ORM\Mapping\UniqueConstraint as UniqueConstraint;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * ActivityRange
+ * Schedule
  *
  *
  *
  * @author
  * @license
  * @link
- * @ORM\Table(name="zfma_activity_range")
- * @ORM\Entity(repositoryClass="ZfMetal\Agenda\Repository\ActivityRangeRepository")
+ * @ORM\Table(name="zfma_schedule")
+ * @ORM\Entity(repositoryClass="ZfMetal\Agenda\Repository\ScheduleRepository")
  */
-class ActivityRange
+class Schedule
 {
 
     /**
@@ -153,7 +153,7 @@ class ActivityRange
 
     public function __toString()
     {
-        return (string);
+        return (string) $this->day;
     }
 
 

@@ -40,6 +40,42 @@ class Calendar
      */
     public $name = null;
 
+    /**
+     * @Annotation\Type("DoctrineModule\Form\Element\ObjectMultiCheckbox")
+     * @Annotation\Options({"label":"schedules","target_class":"\ZfMetal\Agenda\Entity\Schedule",
+     * "description":""})
+     * @ORM\OneToMany(targetEntity="\ZfMetal\Agenda\Entity\Schedule",
+     * mappedBy="calendar")
+     */
+    public $schedules = null;
+
+    /**
+     * @Annotation\Type("DoctrineModule\Form\Element\ObjectMultiCheckbox")
+     * @Annotation\Options({"label":"specificSchedules","target_class":"\ZfMetal\Agenda\Entity\SpecificSchedule",
+     * "description":""})
+     * @ORM\OneToMany(targetEntity="\ZfMetal\Agenda\Entity\SpecificSchedule",
+     * mappedBy="calendar")
+     */
+    public $specificSchedules = null;
+
+    /**
+     * @Annotation\Type("DoctrineModule\Form\Element\ObjectMultiCheckbox")
+     * @Annotation\Options({"label":"events","target_class":"\ZfMetal\Agenda\Entity\Event",
+     * "description":""})
+     * @ORM\OneToMany(targetEntity="\ZfMetal\Agenda\Entity\Event", mappedBy="calendar")
+     */
+    public $events = null;
+
+    /**
+     * @Annotation\Type("DoctrineModule\Form\Element\ObjectSelect")
+     * @Annotation\Options({"label":"predefinedEvents","empty_option": "",
+     * "target_class":"\ZfMetal\Agenda\Entity\PredefinedEvents", "description":""})
+     * @ORM\OneToOne(targetEntity="\ZfMetal\Agenda\Entity\PredefinedEvents")
+     * @ORM\JoinColumn(name="predefined_events_id", referencedColumnName="id",
+     * nullable=true)
+     */
+    public $predefinedEvents = null;
+
     public function getId()
     {
         return $this->id;
@@ -58,6 +94,46 @@ class Calendar
     public function setName($name)
     {
         $this->name = $name;
+    }
+
+    public function getSchedules()
+    {
+        return $this->schedules;
+    }
+
+    public function setSchedules($schedules)
+    {
+        $this->schedules = $schedules;
+    }
+
+    public function getSpecificSchedules()
+    {
+        return $this->specificSchedules;
+    }
+
+    public function setSpecificSchedules($specificSchedules)
+    {
+        $this->specificSchedules = $specificSchedules;
+    }
+
+    public function getEvents()
+    {
+        return $this->events;
+    }
+
+    public function setEvents($events)
+    {
+        $this->events = $events;
+    }
+
+    public function getPredefinedEvents()
+    {
+        return $this->predefinedEvents;
+    }
+
+    public function setPredefinedEvents($predefinedEvents)
+    {
+        $this->predefinedEvents = $predefinedEvents;
     }
 
     public function __toString()

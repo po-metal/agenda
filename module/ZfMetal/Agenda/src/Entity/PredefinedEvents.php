@@ -9,17 +9,17 @@ use Doctrine\ORM\Mapping\UniqueConstraint as UniqueConstraint;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Turn
+ * PredefinedEvents
  *
  *
  *
  * @author
  * @license
  * @link
- * @ORM\Table(name="zfma_")
- * @ORM\Entity(repositoryClass="ZfMetal\Agenda\Repository\TurnRepository")
+ * @ORM\Table(name="zfma_predefined_events")
+ * @ORM\Entity(repositoryClass="ZfMetal\Agenda\Repository\PredefinedEventsRepository")
  */
-class Turn
+class PredefinedEvents
 {
 
     /**
