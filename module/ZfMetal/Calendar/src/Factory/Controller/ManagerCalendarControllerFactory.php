@@ -4,6 +4,7 @@ namespace ZfMetal\Calendar\Factory\Controller;
 
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
+use ZfMetal\Calendar\Form\CalendarForm;
 
 /**
  * ManagerCalendarControllerFactory
@@ -21,7 +22,9 @@ class ManagerCalendarControllerFactory implements FactoryInterface
     {
         /* @var $em \Doctrine\ORM\EntityManager */
         $em = $container->get("doctrine.entitymanager.orm_default");
-        return new \ZfMetal\Calendar\Controller\ManagerCalendarController($em);
+        //$form = $container->get(CalendarForm::class);
+        $form = new CalendarForm($em);
+        return new \ZfMetal\Calendar\Controller\ManagerCalendarController($em,$form);
     }
 
 

@@ -5,8 +5,9 @@ namespace ZfMetal\Calendar\Form;
 use Zend\Form\Element\Collection;
 use Zend\Form\Form;
 
-class CalendarForm extends \Zend\Form\Form
+class CalendarForm extends \Zend\Form\Form implements \Zend\Stdlib\InitializableInterface
 {
+
 
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -18,15 +19,19 @@ class CalendarForm extends \Zend\Form\Form
         return $this->em;
     }
 
-    public function __construct($em)
+
+    public function __construct(\Doctrine\ORM\EntityManager $em)
     {
+        $this->em = $em;
         parent::__construct('calendar');
-        $this->setHydrator(new \DoctrineModule\Stdlib\Hydrator\DoctrineObject($em));
+        $this->setHydrator(new \DoctrineModule\Stdlib\Hydrator\DoctrineObject($this->getEm()));
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', "form");
         $this->setAttribute('role', "form");
         $this->setAttribute('autocomplete', "off");
+    }
 
+    public  function init(){
 
         $this->add(array(
             'name' => 'id',
@@ -50,29 +55,29 @@ class CalendarForm extends \Zend\Form\Form
         ));
 
 
-        $schedules = new \Zend\Form\Element\Collection();
-        $schedules->setAllowAdd(true)
-            ->setAllowRemove(true)
-            ->setCount(1)
-            ->setShouldCreateTemplate(true)
-            ->setTargetElement(new ScheduleForm($em))
-            ->setLabel('Configurar Schedule')
-            ->setName('schedules');
-        $this->add($schedules);
+//        $schedules = new \Zend\Form\Element\Collection();
+//        $schedules->setAllowAdd(true)
+//            ->setAllowRemove(true)
+//            ->setCount(3)
+//            ->setShouldCreateTemplate(true)
+//            ->setTargetElement(new ScheduleForm($this->getEm()))
+//            ->setLabel('Configurar Schedule')
+//            ->setName('schedules');
+//        $this->add($schedules);
 
-//        $this->add([
-//            'type' => Collection::class,
-//            'name' => 'schedules',
-//            'options' => [
-//                'label' => 'Configurar Schedule',
-//                'count' => 1,
-//                'should_create_template' => true,
-//                'allow_add' => true,
-//                'target_element' => [
-//                    'type' => new ScheduleForm($em),
-//                ],
-//            ],
-//        ]);
+        $this->add([
+            'type' => Collection::class,
+            'name' => 'schedules',
+            'options' => [
+                'label' => 'Configurar Schedule',
+              //  'count' => 1,
+                'should_create_template' => true,
+                'allow_add' => true,
+                'target_element' => [
+                    'type' => ScheduleForm::class,
+                ],
+            ],
+        ]);
 
 
         $this->add(array(

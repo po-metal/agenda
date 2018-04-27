@@ -26,6 +26,11 @@ class ManagerCalendarController extends AbstractActionController
      */
     public $em = null;
 
+    /**
+     * @var CalendarForm
+     */
+    public $calendarForm = null;
+
     public function getEm()
     {
         return $this->em;
@@ -41,9 +46,10 @@ class ManagerCalendarController extends AbstractActionController
         return $this->getEm()->getRepository(Calendar::class);
     }
 
-    public function __construct(\Doctrine\ORM\EntityManager $em)
+    public function __construct(\Doctrine\ORM\EntityManager $em, CalendarForm $form)
     {
         $this->em = $em;
+        $this->calendarForm = $form;
     }
 
     public function listAction()
@@ -58,15 +64,20 @@ class ManagerCalendarController extends AbstractActionController
 
         $calendar = $this->buildCalendar();
 
-        $form = new CalendarForm($this->getEm());
+//        $form = new CalendarForm($this->getEm());
 
         //@ToReview
         //$form->setHydrator(new \DoctrineModule\Stdlib\Hydrator\DoctrineObject($this->getEm()));
-        $form->bind($calendar);
+
 
         //Annotation way
 //        $form = $this->formBuilder($this->getEm(),Calendar::class,true,true);
 //        $form->bind($calendar);
+
+        $this->calendarForm->init();
+       // $this->calendarForm->setObject($calendar);
+        $this->calendarForm->bind($calendar);
+      //  $this->calendarForm->get('schedules')->setObject($calendar->getSchedules());
 
         if ($this->getRequest()->isPost()) {
             $postData = $this->getRequest()->getPost();
@@ -74,23 +85,17 @@ class ManagerCalendarController extends AbstractActionController
             echo "<pre>";
             // var_dump($postData);
             echo "</pre>";
-            $form->setData($postData);
+            $this->calendarForm->setData($postData);
 
-            if ($form->isValid()) {
+            if ($this->calendarForm->isValid()) {
 
-                echo $calendar->getName();
-
-                /** @var Schedule $schedule */
-                foreach ($calendar->getSchedules() as $schedule) {
-                    echo $schedule->getCalendar() . PHP_EOL;
-                    echo "Day: " . $schedule->getDay() . PHP_EOL;
-                }
-                die;
+                $this->getEm()->persist($calendar);
+                $this->getEm()->flush();
             }
         }
 
 
-        return ["form" => $form];
+        return ["form" => $this->calendarForm];
     }
 
     protected function buildCalendar()

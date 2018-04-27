@@ -5,19 +5,35 @@ namespace ZfMetal\Calendar\Form;
 use Doctrine\Common\Persistence\ObjectManager;
 
 
-class ScheduleForm extends \Zend\Form\Fieldset
+class ScheduleForm extends \Zend\Form\Fieldset implements \Zend\Stdlib\InitializableInterface
 {
 
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    public $em = null;
 
-    public function __construct(ObjectManager $em)
+    public function getEm()
     {
+        return $this->em;
+    }
+
+
+    public function __construct()
+    {
+
+//        $this->em = $em;
+//        $this->setHydrator(new \DoctrineModule\Stdlib\Hydrator\DoctrineObject($em));
+
         parent::__construct("schedule");
-        $this->setHydrator(new \DoctrineModule\Stdlib\Hydrator\DoctrineObject($em));
+
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', "form");
         $this->setAttribute('role', "form");
         $this->setAttribute('autocomplete', "off");
+    }
 
+    public function init(){
         $this->add(array(
             'name' => 'id',
             'attributes' => array(
@@ -35,7 +51,7 @@ class ScheduleForm extends \Zend\Form\Fieldset
         $this->add(array(
             'name' => 'start',
             'attributes' => array(
-                'type' => 'text',
+                'type' => 'time',
                 'class' => 'form-control ',
                 'required' => 'required',
                 'autocomplete' => "off",
@@ -49,7 +65,7 @@ class ScheduleForm extends \Zend\Form\Fieldset
         $this->add(array(
             'name' => 'end',
             'attributes' => array(
-                'type' => 'text',
+                'type' => 'time',
                 'class' => 'form-control ',
                 'required' => 'required',
                 'autocomplete' => "off",
@@ -64,7 +80,7 @@ class ScheduleForm extends \Zend\Form\Fieldset
         $this->add(array(
             'name' => 'startBreak',
             'attributes' => array(
-                'type' => 'text',
+                'type' => 'time',
                 'class' => 'form-control ',
                 'autocomplete' => "off",
                 'value' => "00:00"
@@ -77,7 +93,7 @@ class ScheduleForm extends \Zend\Form\Fieldset
         $this->add(array(
             'name' => 'endBreak',
             'attributes' => array(
-                'type' => 'text',
+                'type' => 'time',
                 'class' => 'form-control ',
                 'autocomplete' => "off",
                 'value' => "00:00"

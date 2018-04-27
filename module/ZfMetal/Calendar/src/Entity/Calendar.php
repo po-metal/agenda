@@ -42,7 +42,7 @@ class Calendar
     /**
      * @Annotation\ComposedObject({"name":"schedules", "target_object":"\ZfMetal\Calendar\Entity\Schedule", "is_collection":"true", "options":{"count":1, "should_create_template":"true", "allow_add":"true", "allow_remove":"true"}})
      * @ORM\OneToMany(targetEntity="\ZfMetal\Calendar\Entity\Schedule",
-     * mappedBy="calendar", cascade={"persist", "remove"}, fetch="EAGER")
+     * mappedBy="calendar", cascade={"persist", "remove"})
      */
     public $schedules = null;
 
