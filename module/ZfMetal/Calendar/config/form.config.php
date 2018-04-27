@@ -3,14 +3,16 @@
 return [
     'form_elements' => [
         'factories' => [
-            \ZfMetal\Calendar\Form\ScheduleForm::class => \ZfMetal\Calendar\Factory\Form\ScheduleFormFactory::class,
-            \ZfMetal\Calendar\Form\CalendarForm::class => \ZfMetal\Calendar\Factory\Form\CalendarFormFactory::class,
+            \ZfMetal\Calendar\Form\ScheduleForm::class => \Zend\ServiceManager\Factory\InvokableFactory::class,
+            \ZfMetal\Calendar\Form\CalendarForm::class => \Zend\ServiceManager\Factory\InvokableFactory::class,
         ],
-    ],
-    'form' => [
-        'factories' => [
-            \ZfMetal\Calendar\Form\ScheduleForm::class => \ZfMetal\Calendar\Factory\Form\ScheduleFormFactory::class,
-            \ZfMetal\Calendar\Form\CalendarForm::class => \ZfMetal\Calendar\Factory\Form\CalendarFormFactory::class,
-        ],
+        'initializers' => [
+            'ObjectManagerInitializer' => function ($container,  $formElement) {
+                if ($formElement instanceOf \DoctrineModule\Persistence\ObjectManagerAwareInterface) {
+                    $em = $container->get("doctrine.entitymanager.orm_default");
+                    $formElement->setObjectManager($em);
+                }
+            }
+        ]
     ],
 ];

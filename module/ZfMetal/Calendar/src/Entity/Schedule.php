@@ -113,7 +113,7 @@ class Schedule
 
     public function getStart()
     {
-        return $this->start;
+        return $this->start->format("H:i");
     }
 
     public function setStart($start)
@@ -123,7 +123,7 @@ class Schedule
 
     public function getEnd()
     {
-        return $this->end;
+        return $this->end->format("H:i");
     }
 
     public function setEnd($end)
@@ -133,7 +133,10 @@ class Schedule
 
     public function getStartBreak()
     {
-        return $this->startBreak;
+        if(is_a($this->startBreak,"DateTime")){
+            return $this->startBreak->format("H:i");
+        }
+        return null;
     }
 
     public function setStartBreak($startBreak)
@@ -141,9 +144,12 @@ class Schedule
         $this->startBreak = $startBreak;
     }
 
-    public function getEndBreak()
-    {
-        return $this->endBreak;
+    public function getEndBreak(){
+
+        if(is_a($this->endBreak,"DateTime")){
+         return $this->endBreak->format("H:i");
+        }
+        return null;
     }
 
     public function setEndBreak($endBreak)

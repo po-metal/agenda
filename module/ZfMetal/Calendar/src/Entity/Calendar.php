@@ -41,7 +41,7 @@ class Calendar
 
     /**
      * @Annotation\ComposedObject({"name":"schedules", "target_object":"\ZfMetal\Calendar\Entity\Schedule", "is_collection":"true", "options":{"count":1, "should_create_template":"true", "allow_add":"true", "allow_remove":"true"}})
-     * @ORM\OneToMany(targetEntity="\ZfMetal\Calendar\Entity\Schedule",
+     * @ORM\OneToMany(targetEntity="\ZfMetal\Calendar\Entity\Schedule", fetch="EAGER",
      * mappedBy="calendar", cascade={"persist", "remove"})
      */
     public $schedules = null;
@@ -167,6 +167,7 @@ class Calendar
         if ($this->schedules->contains($schedule)) {
             return;
         }
+        $schedule->setCalendar($this);
         $this->schedules[] = $schedule;
     }
 
@@ -174,6 +175,7 @@ class Calendar
         if (!$this->schedules->contains($schedule)) {
             return;
         }
+        $schedule->setCalendar(null);
         $this->schedules->removeElement($schedule);
     }
 

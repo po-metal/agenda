@@ -62,28 +62,25 @@ class ManagerCalendarController extends AbstractActionController
     public function manageAction()
     {
 
+         $this->calendarForm = $this->formBuilder($this->getEm(),Calendar::class,true,true);
+
+
         $calendar = $this->buildCalendar();
 
-//        $form = new CalendarForm($this->getEm());
+//       $hydrator = new  \DoctrineModule\Stdlib\Hydrator\DoctrineObject($this->getEm());
+//        $data = $hydrator->extract($calendar);
+//        var_dump($data);
 
-        //@ToReview
-        //$form->setHydrator(new \DoctrineModule\Stdlib\Hydrator\DoctrineObject($this->getEm()));
-
-
-        //Annotation way
-//        $form = $this->formBuilder($this->getEm(),Calendar::class,true,true);
-//        $form->bind($calendar);
-
-        $this->calendarForm->init();
-       // $this->calendarForm->setObject($calendar);
         $this->calendarForm->bind($calendar);
-      //  $this->calendarForm->get('schedules')->setObject($calendar->getSchedules());
+
+
+       // $this->calendarForm->get('schedules')->setObject($calendar->getSchedules());
 
         if ($this->getRequest()->isPost()) {
             $postData = $this->getRequest()->getPost();
 
             echo "<pre>";
-            // var_dump($postData);
+             var_dump($postData);
             echo "</pre>";
             $this->calendarForm->setData($postData);
 
@@ -110,7 +107,6 @@ class ManagerCalendarController extends AbstractActionController
 
         } else {
             $calendar = new Calendar();
-            $calendar->setName("ASD");
             $calendar->addSchedule($this->buildSchedule($calendar,1));
             $calendar->addSchedule($this->buildSchedule($calendar,2));
             $calendar->addSchedule($this->buildSchedule($calendar,3));
@@ -121,15 +117,13 @@ class ManagerCalendarController extends AbstractActionController
             $calendar->addSchedule($this->buildSchedule($calendar,8));
 
         }
-        $this->getEm()->persist($calendar);
-        $this->getEm()->flush();
+
         return $calendar;
     }
 
     protected function buildSchedule($calendar, $day )
     {
         $schedule = new Schedule();
-        $schedule->setCalendar($calendar);
         $schedule->setDay($day);
         $schedule->setStart(new \DateTime("11:00"));
         $schedule->setEnd(new \DateTime("18:00"));

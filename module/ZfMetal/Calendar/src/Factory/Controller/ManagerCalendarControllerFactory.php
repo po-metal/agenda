@@ -22,8 +22,8 @@ class ManagerCalendarControllerFactory implements FactoryInterface
     {
         /* @var $em \Doctrine\ORM\EntityManager */
         $em = $container->get("doctrine.entitymanager.orm_default");
-        //$form = $container->get(CalendarForm::class);
-        $form = new CalendarForm($em);
+
+        $form = $container->get('FormElementManager')->get(CalendarForm::class);
         return new \ZfMetal\Calendar\Controller\ManagerCalendarController($em,$form);
     }
 

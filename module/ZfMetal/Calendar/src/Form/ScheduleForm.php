@@ -3,30 +3,37 @@
 namespace ZfMetal\Calendar\Form;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use ZfMetal\Calendar\Entity\Schedule;
 
 
-class ScheduleForm extends \Zend\Form\Fieldset implements \Zend\Stdlib\InitializableInterface
+class ScheduleForm extends \Zend\Form\Fieldset implements \DoctrineModule\Persistence\ObjectManagerAwareInterface
 {
 
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var ObjectManager
      */
-    public $em = null;
+    public $objectManager = null;
 
-    public function getEm()
+    /**
+     * @return ObjectManager
+     */
+    public function getObjectManager()
     {
-        return $this->em;
+        return $this->objectManager;
+    }
+
+    /**
+     * @param ObjectManager $objectManager
+     */
+    public function setObjectManager(ObjectManager $objectManager)
+    {
+        $this->objectManager = $objectManager;
     }
 
 
     public function __construct()
     {
-
-//        $this->em = $em;
-//        $this->setHydrator(new \DoctrineModule\Stdlib\Hydrator\DoctrineObject($em));
-
         parent::__construct("schedule");
-
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', "form");
         $this->setAttribute('role', "form");
@@ -34,6 +41,8 @@ class ScheduleForm extends \Zend\Form\Fieldset implements \Zend\Stdlib\Initializ
     }
 
     public function init(){
+        $this->setHydrator(new \DoctrineModule\Stdlib\Hydrator\DoctrineObject($this->getObjectManager()))->setObject(new Schedule());
+
         $this->add(array(
             'name' => 'id',
             'attributes' => array(

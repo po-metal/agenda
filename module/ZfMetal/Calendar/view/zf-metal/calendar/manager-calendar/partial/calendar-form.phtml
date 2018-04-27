@@ -24,3 +24,18 @@ $elementsReady = array();
 <?php echo $this->renderFormElement($form->get('submit')); ?>
 
 <?php echo $this->form()->closeTag($form); ?>
+
+
+<button onclick="return add_category()">Add a new category</button>
+
+<script>
+    function add_category() {
+        var currentCount = $('form > fieldset > fieldset').length;
+        var template = $('form > fieldset > span').data('template');
+        template = template.replace(/__index__/g, currentCount);
+
+        $('form > fieldset').append(template);
+
+        return false;
+    }
+</script>
