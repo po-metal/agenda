@@ -58,13 +58,26 @@ class CalendarForm extends \Zend\Form\Form implements \DoctrineModule\Persistenc
             'name' => 'name',
             'attributes' => array(
                 'type' => 'text',
-                'placeholder' => 'Name',
+                'placeholder' => 'Nombre',
                 'class' => 'form-control ',
                 'required' => 'required',
                 'autocomplete' => "off"
             ),
             'options' => array(
                 'label' => 'Nombre del Calendario',
+            )
+        ));
+
+        $this->add(array(
+            'name' => 'description',
+            'attributes' => array(
+                'type' => 'text',
+                'placeholder' => 'Descripción',
+                'class' => 'form-control ',
+                'autocomplete' => "off"
+            ),
+            'options' => array(
+                'label' => 'Descripción',
             )
         ));
 
@@ -86,9 +99,6 @@ class CalendarForm extends \Zend\Form\Form implements \DoctrineModule\Persistenc
         $this->add([
             'type' => PredefinedEventsForm::class,
             'name' => 'predefinedEvents',
-            'options' => [
-                'label' => 'Configuración de eventos predefinidos',
-            ],
         ]);
 
 

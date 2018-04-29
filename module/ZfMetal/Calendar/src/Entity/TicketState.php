@@ -9,17 +9,17 @@ use Doctrine\ORM\Mapping\UniqueConstraint as UniqueConstraint;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Holiday
+ * TicketState
  *
  *
  *
  * @author
  * @license
  * @link
- * @ORM\Table(name="cal_holiday")
- * @ORM\Entity(repositoryClass="ZfMetal\Calendar\Repository\HolidayRepository")
+ * @ORM\Table(name="cal_ticket_state")
+ * @ORM\Entity(repositoryClass="ZfMetal\Calendar\Repository\TicketStateRepository")
  */
-class Holiday
+class TicketState
 {
 
     /**
@@ -33,20 +33,12 @@ class Holiday
     public $id = null;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Date")
-     * @Annotation\Attributes({"type":"date"})
-     * @Annotation\Options({"label":"Fecha", "description":"", "addon":""})
-     * @ORM\Column(type="date", unique=false, nullable=false, name="date")
-     */
-    public $date = null;
-
-    /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Attributes({"type":"text"})
-     * @Annotation\Options({"label":"Titulo", "description":"", "addon":""})
-     * @ORM\Column(type="string", length=30, unique=false, nullable=true, name="title")
+     * @Annotation\Options({"label":"Estado", "description":"", "addon":""})
+     * @ORM\Column(type="string", length=30, unique=false, nullable=true, name="name")
      */
-    public $title = null;
+    public $name = null;
 
     public function getId()
     {
@@ -58,29 +50,19 @@ class Holiday
         $this->id = $id;
     }
 
-    public function getDate()
+    public function getName()
     {
-        return $this->date;
+        return $this->name;
     }
 
-    public function setDate($date)
+    public function setName($name)
     {
-        $this->date = $date;
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    public function setTitle($title)
-    {
-        $this->title = $title;
+        $this->name = $name;
     }
 
     public function __toString()
     {
-        return (string) $this->date." ".  $this->title;
+        return (string) $this->name;
     }
 
 

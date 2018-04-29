@@ -55,6 +55,7 @@ class ManagerCalendarController extends AbstractActionController
 
     public function listAction()
     {
+        $this->layoutHelper()->setPageTitle("Gestion de Calendarios");
         $calendars = $this->getCalendarRepository()->findAll();
 
         return ["calendars" => $calendars];

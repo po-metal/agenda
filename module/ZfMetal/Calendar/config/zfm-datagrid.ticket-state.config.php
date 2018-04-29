@@ -2,12 +2,12 @@
 
 return [
     'zf-metal-datagrid.custom' => [
-        'zfmetal-calendar-entity-holiday' => [
-            'gridId' => 'zfmdg_Holiday',
+        'zfmetal-calendar-entity-ticketstate' => [
+            'gridId' => 'zfmdg_TicketState',
             'sourceConfig' => [
                 'type' => 'doctrine',
                 'doctrineOptions' => [
-                    'entityName' => \ZfMetal\Calendar\Entity\Holiday::class,
+                    'entityName' => \ZfMetal\Calendar\Entity\TicketState::class,
                     'entityManager' => 'doctrine.entitymanager.orm_default',
                 ],
             ],
@@ -22,13 +22,8 @@ return [
                 'id' => [
                     'displayName' => 'ID',
                 ],
-                'date' => [
-                    'type' => 'date',
-                    'format' => 'Y-m-d',
-                    'displayName' => 'Fecha',
-                ],
-                'title' => [
-                    'displayName' => 'Titulo',
+                'name' => [
+                    'displayName' => 'Estado',
                 ],
             ],
             'crudConfig' => [

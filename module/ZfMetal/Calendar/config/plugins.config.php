@@ -7,6 +7,7 @@ return array(
         ),
         'aliases' => array(
             'ZfMetalCalendarOptions' => \ZfMetal\Calendar\Controller\Plugin\Options::class,
+            'zfMetal\\CalendarOptions' => \ZfMetal\Calendar\Controller\Plugin\Options::class,
         ),
     ),
 );

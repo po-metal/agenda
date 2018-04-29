@@ -73,6 +73,16 @@ class Calendar
      */
     public $predefinedEvents = null;
 
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Textarea")
+     * @Annotation\Attributes({"type":"text"})
+     * @Annotation\Options({"label":"name", "description":"", "addon":""})
+     * @ORM\Column(type="string", length=300, unique=false, nullable=true, name="description")
+     */
+    public $description = null;
+
+
     /**
      * Calendar constructor.
      * @param null $id
@@ -179,6 +189,23 @@ class Calendar
         $schedule->setCalendar(null);
         $this->schedules->removeElement($schedule);
     }
+
+    /**
+     * @return mixed
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param mixed $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
 
 }
 

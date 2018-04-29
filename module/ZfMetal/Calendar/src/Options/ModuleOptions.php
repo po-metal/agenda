@@ -14,7 +14,9 @@ namespace ZfMetal\Calendar\Options;
 class ModuleOptions extends \Zend\Stdlib\AbstractOptions
 {
 
-    private $ticketEntity = '';
+    private $routeTicketList = '';
+
+    private $ticketEntity = '\\ZfMetal\\Calendar\\Entity\\Ticket';
 
     public function getTicketEntity()
     {
@@ -24,6 +26,16 @@ class ModuleOptions extends \Zend\Stdlib\AbstractOptions
     public function setTicketEntity($ticketEntity)
     {
         $this->ticketEntity= $ticketEntity;
+    }
+
+    public function getRouteTicketList()
+    {
+        return $this->routeTicketList;
+    }
+
+    public function setRouteTicketList($routeTicketList)
+    {
+        $this->routeTicketList= $routeTicketList;
     }
 
 

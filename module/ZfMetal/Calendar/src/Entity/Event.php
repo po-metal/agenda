@@ -22,6 +22,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Event
 {
 
+
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Attributes({"type":"text"})
@@ -44,11 +45,11 @@ class Event
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Attributes({"type":"text"})
-     * @Annotation\Options({"label":"ticketId", "description":"", "addon":""})
+     * @Annotation\Options({"label":"Ticket", "description":"", "addon":""})
      * @ORM\Column(type="integer", length=11, unique=false, nullable=true,
-     * name="ticket_id")
+     * name="ticket")
      */
-    public $ticketId = null;
+    public $ticket = null;
 
     /**
      * @Annotation\Type("Zend\Form\Element\DateTime")
@@ -104,16 +105,6 @@ class Event
         $this->calendar = $calendar;
     }
 
-    public function getTicketId()
-    {
-        return $this->ticketId;
-    }
-
-    public function setTicketId($ticketId)
-    {
-        $this->ticketId = $ticketId;
-    }
-
     public function getStart()
     {
         return $this->start;
@@ -152,6 +143,16 @@ class Event
     public function setDescription($description)
     {
         $this->description = $description;
+    }
+
+    public function getTicket()
+    {
+        return $this->ticket;
+    }
+
+    public function setTicket($ticket)
+    {
+        $this->ticket = $ticket;
     }
 
     public function __toString()
