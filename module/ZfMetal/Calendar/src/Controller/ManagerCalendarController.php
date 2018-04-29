@@ -62,26 +62,15 @@ class ManagerCalendarController extends AbstractActionController
     public function manageAction()
     {
 
-         $this->calendarForm = $this->formBuilder($this->getEm(),Calendar::class,true,true);
-
-
+        $this->layoutHelper()->setPageTitle("Configuración de Calendario");
         $calendar = $this->buildCalendar();
-
-//       $hydrator = new  \DoctrineModule\Stdlib\Hydrator\DoctrineObject($this->getEm());
-//        $data = $hydrator->extract($calendar);
-//        var_dump($data);
 
         $this->calendarForm->bind($calendar);
 
 
-       // $this->calendarForm->get('schedules')->setObject($calendar->getSchedules());
-
         if ($this->getRequest()->isPost()) {
             $postData = $this->getRequest()->getPost();
 
-            echo "<pre>";
-             var_dump($postData);
-            echo "</pre>";
             $this->calendarForm->setData($postData);
 
             if ($this->calendarForm->isValid()) {
@@ -107,21 +96,21 @@ class ManagerCalendarController extends AbstractActionController
 
         } else {
             $calendar = new Calendar();
-            $calendar->addSchedule($this->buildSchedule($calendar,1));
-            $calendar->addSchedule($this->buildSchedule($calendar,2));
-            $calendar->addSchedule($this->buildSchedule($calendar,3));
-            $calendar->addSchedule($this->buildSchedule($calendar,4));
-            $calendar->addSchedule($this->buildSchedule($calendar,5));
-            $calendar->addSchedule($this->buildSchedule($calendar,6));
-            $calendar->addSchedule($this->buildSchedule($calendar,7));
-            $calendar->addSchedule($this->buildSchedule($calendar,8));
+            $calendar->addSchedule($this->buildSchedule($calendar, 1));
+            $calendar->addSchedule($this->buildSchedule($calendar, 2));
+            $calendar->addSchedule($this->buildSchedule($calendar, 3));
+            $calendar->addSchedule($this->buildSchedule($calendar, 4));
+            $calendar->addSchedule($this->buildSchedule($calendar, 5));
+            $calendar->addSchedule($this->buildSchedule($calendar, 6));
+            $calendar->addSchedule($this->buildSchedule($calendar, 7));
+            $calendar->addSchedule($this->buildSchedule($calendar, 8));
 
         }
 
         return $calendar;
     }
 
-    protected function buildSchedule($calendar, $day )
+    protected function buildSchedule($calendar, $day)
     {
         $schedule = new Schedule();
         $schedule->setDay($day);
@@ -129,7 +118,6 @@ class ManagerCalendarController extends AbstractActionController
         $schedule->setEnd(new \DateTime("18:00"));
         return $schedule;
     }
-
 
 
 }

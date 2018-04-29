@@ -18,6 +18,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @link
  * @ORM\Table(name="cal_schedule")
  * @ORM\Entity(repositoryClass="ZfMetal\Calendar\Repository\ScheduleRepository")
+ * @Annotation\Instance("\ZfMetal\Calendar\Entity\Schedule")
  */
 class Schedule
 {
@@ -53,7 +54,7 @@ class Schedule
      * @Annotation\Type("Zend\Form\Element\Time")
      * @Annotation\Attributes({"type":"time"})
      * @Annotation\Options({"label":"start", "description":"", "addon":""})
-     * @ORM\Column(type="time", unique=false, nullable=false, name="start")
+     * @ORM\Column(type="time", unique=false, nullable=true, name="start")
      */
     public $start = null;
 
@@ -61,7 +62,7 @@ class Schedule
      * @Annotation\Type("Zend\Form\Element\Time")
      * @Annotation\Attributes({"type":"time"})
      * @Annotation\Options({"label":"end", "description":"", "addon":""})
-     * @ORM\Column(type="time", unique=false, nullable=false, name="end")
+     * @ORM\Column(type="time", unique=false, nullable=true, name="end")
      */
     public $end = null;
 
@@ -113,7 +114,10 @@ class Schedule
 
     public function getStart()
     {
-        return $this->start->format("H:i");
+        if(is_a($this->start,"DateTime")){
+            return $this->start->format("H:i");
+        }
+        return null;
     }
 
     public function setStart($start)
@@ -123,7 +127,10 @@ class Schedule
 
     public function getEnd()
     {
-        return $this->end->format("H:i");
+        if(is_a($this->end,"DateTime")){
+            return $this->end->format("H:i");
+        }
+        return null;
     }
 
     public function setEnd($end)
@@ -161,6 +168,8 @@ class Schedule
     {
         return (string) $this->day;
     }
+
+
 
 
 }

@@ -44,7 +44,6 @@ class CalendarForm extends \Zend\Form\Form implements \DoctrineModule\Persistenc
     {
 
         $hydrator = new \DoctrineModule\Stdlib\Hydrator\DoctrineObject($this->getObjectManager(),false);
-        //$hydrator->addStrategy();
         $this->setHydrator($hydrator);
 
         $this->add(array(
@@ -64,7 +63,7 @@ class CalendarForm extends \Zend\Form\Form implements \DoctrineModule\Persistenc
                 'autocomplete' => "off"
             ),
             'options' => array(
-                'label' => 'Nombre',
+                'label' => 'Nombre del Calendario',
             )
         ));
 

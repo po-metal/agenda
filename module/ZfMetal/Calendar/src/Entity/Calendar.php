@@ -40,7 +40,9 @@ class Calendar
     public $name = null;
 
     /**
-     * @Annotation\ComposedObject({"name":"schedules", "target_object":"\ZfMetal\Calendar\Entity\Schedule", "is_collection":"true", "options":{"count":1, "should_create_template":"true", "allow_add":"true", "allow_remove":"true"}})
+     * @Annotation\ComposedObject({"name":"schedules", "target_object":"\ZfMetal\Calendar\Entity\Schedule", "is_collection":"true",
+     * "options":{ "target_element": {"type": {"schedule": "\ZfMetal\Calendar\Entity\Schedule"}}, "count":1, "should_create_template":"true", "allow_add":"true", "allow_remove":"true"}})
+     * @Annotation\Type("Zend\Form\Element\Collection")
      * @ORM\OneToMany(targetEntity="\ZfMetal\Calendar\Entity\Schedule", fetch="EAGER",
      * mappedBy="calendar", cascade={"persist", "remove"})
      */

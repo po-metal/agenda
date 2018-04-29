@@ -62,12 +62,7 @@ class ScheduleForm extends \Zend\Form\Fieldset implements \DoctrineModule\Persis
             'attributes' => array(
                 'type' => 'time',
                 'class' => 'form-control ',
-                'required' => 'required',
                 'autocomplete' => "off",
-                'value' => "00:00"
-            ),
-            'options' => array(
-                'label' => 'Inicio',
             )
         ));
 
@@ -76,12 +71,7 @@ class ScheduleForm extends \Zend\Form\Fieldset implements \DoctrineModule\Persis
             'attributes' => array(
                 'type' => 'time',
                 'class' => 'form-control ',
-                'required' => 'required',
                 'autocomplete' => "off",
-                'value' => "00:00"
-            ),
-            'options' => array(
-                'label' => 'Fin',
             )
         ));
 
@@ -92,10 +82,6 @@ class ScheduleForm extends \Zend\Form\Fieldset implements \DoctrineModule\Persis
                 'type' => 'time',
                 'class' => 'form-control ',
                 'autocomplete' => "off",
-                'value' => "00:00"
-            ),
-            'options' => array(
-                'label' => 'Inicio Break',
             )
         ));
 
@@ -105,10 +91,6 @@ class ScheduleForm extends \Zend\Form\Fieldset implements \DoctrineModule\Persis
                 'type' => 'time',
                 'class' => 'form-control ',
                 'autocomplete' => "off",
-                'value' => "00:00"
-            ),
-            'options' => array(
-                'label' => 'Fin Break',
             )
         ));
 
