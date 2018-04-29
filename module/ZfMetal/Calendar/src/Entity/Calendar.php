@@ -53,7 +53,7 @@ class Calendar
      * @Annotation\Options({"label":"specificSchedules","target_class":"\ZfMetal\Calendar\Entity\SpecificSchedule",
      * "description":""})
      * @ORM\OneToMany(targetEntity="\ZfMetal\Calendar\Entity\SpecificSchedule",
-     * mappedBy="calendar")
+     * mappedBy="calendar", cascade={"persist", "remove"})
      */
     public $specificSchedules = null;
 
@@ -61,7 +61,7 @@ class Calendar
      * @Annotation\Type("DoctrineModule\Form\Element\ObjectMultiCheckbox")
      * @Annotation\Options({"label":"events","target_class":"\ZfMetal\Calendar\Entity\Event",
      * "description":""})
-     * @ORM\OneToMany(targetEntity="\ZfMetal\Calendar\Entity\Event", mappedBy="calendar")
+     * @ORM\OneToMany(targetEntity="\ZfMetal\Calendar\Entity\Event", mappedBy="calendar", cascade={"persist", "remove"})
      */
     public $events = null;
 
@@ -69,9 +69,7 @@ class Calendar
      * @Annotation\Type("DoctrineModule\Form\Element\ObjectSelect")
      * @Annotation\Options({"label":"predefinedEvents","empty_option": "",
      * "target_class":"\ZfMetal\Calendar\Entity\PredefinedEvents", "description":""})
-     * @ORM\OneToOne(targetEntity="\ZfMetal\Calendar\Entity\PredefinedEvents")
-     * @ORM\JoinColumn(name="predefined_events_id", referencedColumnName="id",
-     * nullable=true)
+     * @ORM\OneToOne(targetEntity="\ZfMetal\Calendar\Entity\PredefinedEvents", fetch="EAGER", mappedBy="calendar", cascade={"persist", "remove"})
      */
     public $predefinedEvents = null;
 
@@ -142,6 +140,7 @@ class Calendar
 
     public function setPredefinedEvents($predefinedEvents)
     {
+        $predefinedEvents->setCalendar($this);
         $this->predefinedEvents = $predefinedEvents;
     }
 

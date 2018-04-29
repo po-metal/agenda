@@ -4,6 +4,7 @@ namespace ZfMetal\Calendar\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use ZfMetal\Calendar\Entity\Calendar;
+use ZfMetal\Calendar\Entity\PredefinedEvents;
 use ZfMetal\Calendar\Entity\Schedule;
 use ZfMetal\Calendar\Form\CalendarForm;
 
@@ -63,6 +64,7 @@ class ManagerCalendarController extends AbstractActionController
     {
 
         $this->layoutHelper()->setPageTitle("Configuración de Calendario");
+
         $calendar = $this->buildCalendar();
 
         $this->calendarForm->bind($calendar);
@@ -104,7 +106,7 @@ class ManagerCalendarController extends AbstractActionController
             $calendar->addSchedule($this->buildSchedule($calendar, 6));
             $calendar->addSchedule($this->buildSchedule($calendar, 7));
             $calendar->addSchedule($this->buildSchedule($calendar, 8));
-
+            $calendar->setPredefinedEvents(new PredefinedEvents());
         }
 
         return $calendar;
@@ -114,8 +116,6 @@ class ManagerCalendarController extends AbstractActionController
     {
         $schedule = new Schedule();
         $schedule->setDay($day);
-        $schedule->setStart(new \DateTime("11:00"));
-        $schedule->setEnd(new \DateTime("18:00"));
         return $schedule;
     }
 

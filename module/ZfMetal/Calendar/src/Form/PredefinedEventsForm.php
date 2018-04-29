@@ -2,11 +2,10 @@
 
 namespace ZfMetal\Calendar\Form;
 
-use Zend\Form\Element\Collection;
 use Doctrine\Common\Persistence\ObjectManager;
-use Zend\Form\Fieldset;
+use ZfMetal\Calendar\Entity\PredefinedEvents;
 
-class CalendarForm extends \Zend\Form\Form implements \DoctrineModule\Persistence\ObjectManagerAwareInterface
+class PredefinedEventsForm extends \Zend\Form\Fieldset implements \DoctrineModule\Persistence\ObjectManagerAwareInterface
 {
 
 
@@ -34,7 +33,7 @@ class CalendarForm extends \Zend\Form\Form implements \DoctrineModule\Persistenc
 
     public function __construct()
     {
-        parent::__construct('calendar');
+        parent::__construct('predefinedevents');
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', "form");
         $this->setAttribute('role', "form");
@@ -45,7 +44,7 @@ class CalendarForm extends \Zend\Form\Form implements \DoctrineModule\Persistenc
     {
 
         $hydrator = new \DoctrineModule\Stdlib\Hydrator\DoctrineObject($this->getObjectManager(),false);
-        $this->setHydrator($hydrator);
+        $this->setHydrator($hydrator)->setObject(new PredefinedEvents());
 
         $this->add(array(
             'name' => 'id',
@@ -55,52 +54,33 @@ class CalendarForm extends \Zend\Form\Form implements \DoctrineModule\Persistenc
         ));
 
         $this->add(array(
-            'name' => 'name',
+            'name' => 'duration',
             'attributes' => array(
                 'type' => 'text',
-                'placeholder' => 'Name',
+                'placeholder' => 'Intervalo',
                 'class' => 'form-control ',
                 'required' => 'required',
                 'autocomplete' => "off"
             ),
             'options' => array(
-                'label' => 'Nombre del Calendario',
+                'label' => 'Tiempo de evento',
+                'description' => 'Configuración, en minutos, de la duración por defecto de cada evento.'
             )
         ));
 
 
-        $this->add([
-            'type' => Collection::class,
-            'name' => 'schedules',
-            'options' => [
-                'label' => 'Configurar Schedule',
-                'count' => 1,
-                'should_create_template' => true,
-                'allow_add' => true,
-                'target_element' => [
-                    'type' => ScheduleForm::class,
-                ],
-            ],
-        ]);
-
-        $this->add([
-            'type' => PredefinedEventsForm::class,
-            'name' => 'predefinedEvents',
-            'options' => [
-                'label' => 'Configuración de eventos predefinidos',
-            ],
-        ]);
-
-
         $this->add(array(
-            'name' => 'submit',
-            'type' => 'Zend\Form\Element\Submit',
+            'name' => 'break',
             'attributes' => array(
-                'value' => "Guardar",
-                'class' => 'btn btn-primary',
+                'type' => 'text',
+                'placeholder' => 'Intervalo',
+                'class' => 'form-control ',
+                'required' => 'required',
+                'autocomplete' => "off"
             ),
             'options' => array(
-                'label' => 'Guardar',
+                'label' => 'Tiempo entre eventos',
+                'description' => 'Configuración, en minutos, del espacio de tiempo entre evento y evento'
             )
         ));
 

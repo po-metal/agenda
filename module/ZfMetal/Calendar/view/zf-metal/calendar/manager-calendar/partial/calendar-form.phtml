@@ -13,6 +13,7 @@ $elementsReady = array();
         <?php echo $this->renderFormElement($form->get('name')); ?>
     </div>
 </div>
+
 <div class="card">
     <div class="card-content">
         <h4>Programación horaria</h4>
@@ -20,6 +21,21 @@ $elementsReady = array();
         <?php echo $this->partial('zf-metal/calendar/manager-calendar/partial/schedules-collection', ["schedules" => $form->get("schedules")]); ?>
     </div>
 </div>
+
+<div class="card">
+    <div class="card-content">
+        <h4>Eventos predefinidos</h4>
+        <p>Configuración de eventos pre-establecidos, con una duracion por defecto.</p>
+<!--        --><?php //$predefinedEvents = $form->get("predefinedEvents"); ?>
+<!--        --><?php //echo $this->renderFormElement($predefinedEvents->get('id')); ?>
+<!--        --><?php //echo $this->renderFormElement($predefinedEvents->get('interval')); ?>
+<!--        --><?php //echo $this->renderFormElement($predefinedEvents->get('break')); ?>
+
+        <?php echo $this->formCollection($form->get('predefinedEvents')); ?>
+    </div>
+</div>
+
+
 <div class="card">
     <div class="card-content">
         <?php echo $this->renderFormElement($form->get('submit')); ?>

@@ -22,6 +22,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class PredefinedEvents
 {
 
+
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Attributes({"type":"text"})
@@ -36,19 +37,19 @@ class PredefinedEvents
      * @Annotation\Type("DoctrineModule\Form\Element\ObjectSelect")
      * @Annotation\Options({"label":"calendar","empty_option": "",
      * "target_class":"\ZfMetal\Calendar\Entity\Calendar", "description":""})
-     * @ORM\ManyToOne(targetEntity="\ZfMetal\Calendar\Entity\Calendar")
-     * @ORM\JoinColumn(name="calendar_id", referencedColumnName="id", nullable=true)
+     * @ORM\OneToOne(targetEntity="\ZfMetal\Calendar\Entity\Calendar", inversedBy="predefinedEvents")
      */
     public $calendar = null;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Attributes({"type":"text"})
-     * @Annotation\Options({"label":"interval", "description":"", "addon":""})
+     * @Annotation\Options({"label":"Duracion", "description":"Duración del evento en
+     * minutos.", "addon":""})
      * @ORM\Column(type="integer", length=6, unique=false, nullable=true,
-     * name="interval")
+     * name="duration")
      */
-    public $interval = null;
+    public $duration = null;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
@@ -78,16 +79,6 @@ class PredefinedEvents
         $this->calendar = $calendar;
     }
 
-    public function getInterval()
-    {
-        return $this->interval;
-    }
-
-    public function setInterval($interval)
-    {
-        $this->interval = $interval;
-    }
-
     public function getBreak()
     {
         return $this->break;
@@ -98,9 +89,19 @@ class PredefinedEvents
         $this->break = $break;
     }
 
+    public function getDuration()
+    {
+        return $this->duration;
+    }
+
+    public function setDuration($duration)
+    {
+        $this->duration = $duration;
+    }
+
     public function __toString()
     {
-        return (string)$this->id;
+        return (string) $this->duration;
     }
 
 
