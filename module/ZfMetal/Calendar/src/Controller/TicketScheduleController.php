@@ -56,8 +56,10 @@ class TicketScheduleController extends AbstractActionController
         //@TODO change method findall
         $tickets = $this->getTicketRepository()->findAll();
 
+        $calendars = $this->getEntityRepository()->findAll();
+
         $this->layoutHelper()->setPageTitle("Programación de tickets");
-        return ["tickets" => $tickets];
+        return ["tickets" => $tickets,"calendars" => $calendars];
     }
 
 

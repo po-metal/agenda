@@ -156,25 +156,26 @@ class Calendar
 
     public function __toString()
     {
-        return (string) $this->name;
+        return (string)$this->name;
     }
 
 
-
-
-    public function addSchedules(\Doctrine\Common\Collections\ArrayCollection $schedules) {
+    public function addSchedules(\Doctrine\Common\Collections\ArrayCollection $schedules)
+    {
         foreach ($schedules as $schedule) {
             $this->addSchedule($schedule);
         }
     }
 
-    public function removeSchedules(\Doctrine\Common\Collections\ArrayCollection $schedules) {
+    public function removeSchedules(\Doctrine\Common\Collections\ArrayCollection $schedules)
+    {
         foreach ($schedules as $schedule) {
             $this->removeSchedule($schedule);
         }
     }
 
-    public function addSchedule(\ZfMetal\Calendar\Entity\Schedule $schedule) {
+    public function addSchedule(\ZfMetal\Calendar\Entity\Schedule $schedule)
+    {
         if ($this->schedules->contains($schedule)) {
             return;
         }
@@ -182,12 +183,23 @@ class Calendar
         $this->schedules[] = $schedule;
     }
 
-    public function removeSchedule(\ZfMetal\Calendar\Entity\Schedule $schedule) {
+    public function removeSchedule(\ZfMetal\Calendar\Entity\Schedule $schedule)
+    {
         if (!$this->schedules->contains($schedule)) {
             return;
         }
         $schedule->setCalendar(null);
         $this->schedules->removeElement($schedule);
+    }
+
+    public function getScheduleByDay($day)
+    {
+        foreach ($this->getSchedules() as $schedule) {
+            if ($schedule->getDay() == $day) {
+                return $schedule;
+            }
+        }
+        return null;
     }
 
     /**

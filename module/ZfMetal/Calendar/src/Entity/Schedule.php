@@ -112,9 +112,12 @@ class Schedule
         $this->day = $day;
     }
 
-    public function getStart()
+    public function getStart($formatDate = false)
     {
         if(is_a($this->start,"DateTime")){
+            if($formatDate){
+             return $this->start;
+            }
             return $this->start->format("H:i");
         }
         return null;
@@ -125,9 +128,12 @@ class Schedule
         $this->start = $start;
     }
 
-    public function getEnd()
+    public function getEnd($formatDate = false)
     {
         if(is_a($this->end,"DateTime")){
+            if($formatDate){
+                return $this->end;
+            }
             return $this->end->format("H:i");
         }
         return null;
@@ -138,9 +144,12 @@ class Schedule
         $this->end = $end;
     }
 
-    public function getStartBreak()
+    public function getStartBreak($formatDate = false)
     {
         if(is_a($this->startBreak,"DateTime")){
+            if($formatDate){
+                return $this->startBreak;
+            }
             return $this->startBreak->format("H:i");
         }
         return null;
@@ -151,9 +160,12 @@ class Schedule
         $this->startBreak = $startBreak;
     }
 
-    public function getEndBreak(){
+    public function getEndBreak($formatDate = false){
 
         if(is_a($this->endBreak,"DateTime")){
+            if($formatDate){
+                return $this->endBreak;
+            }
          return $this->endBreak->format("H:i");
         }
         return null;
