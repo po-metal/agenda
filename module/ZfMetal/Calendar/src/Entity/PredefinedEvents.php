@@ -42,22 +42,22 @@ class PredefinedEvents
     public $calendar = null;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Attributes({"type":"text"})
      * @Annotation\Options({"label":"Duracion", "description":"Duración del evento en
      * minutos.", "addon":""})
      * @ORM\Column(type="integer", length=6, unique=false, nullable=true,
      * name="duration")
      */
-    public $duration = null;
+    public $duration = 0;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Attributes({"type":"text"})
      * @Annotation\Options({"label":"break", "description":"", "addon":""})
      * @ORM\Column(type="integer", length=6, unique=false, nullable=true, name="break")
      */
-    public $break = null;
+    public $break = 0;
 
     public function getId()
     {
@@ -86,7 +86,12 @@ class PredefinedEvents
 
     public function setBreak($break)
     {
-        $this->break = $break;
+        if(!$break || $break == '')
+        {
+            $this->break = 0;
+        }else {
+            $this->break = $break;
+        }
     }
 
     public function getDuration()
@@ -96,7 +101,12 @@ class PredefinedEvents
 
     public function setDuration($duration)
     {
-        $this->duration = $duration;
+        if(!$duration || $duration == '')
+        {
+            $this->duration = 0;
+        }else {
+            $this->duration = $duration;
+        }
     }
 
     public function __toString()

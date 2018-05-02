@@ -56,10 +56,9 @@ class PredefinedEventsForm extends \Zend\Form\Fieldset implements \DoctrineModul
         $this->add(array(
             'name' => 'duration',
             'attributes' => array(
-                'type' => 'text',
+                'type' => 'number',
                 'placeholder' => 'Intervalo',
                 'class' => 'form-control ',
-                'required' => 'required',
                 'autocomplete' => "off"
             ),
             'options' => array(
@@ -72,10 +71,9 @@ class PredefinedEventsForm extends \Zend\Form\Fieldset implements \DoctrineModul
         $this->add(array(
             'name' => 'break',
             'attributes' => array(
-                'type' => 'text',
+                'type' => 'number',
                 'placeholder' => 'Intervalo',
                 'class' => 'form-control ',
-                'required' => 'required',
                 'autocomplete' => "off"
             ),
             'options' => array(

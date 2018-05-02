@@ -3,41 +3,17 @@
 return [
     'router' => [
         'routes' => [
-            'ZfMetal\\Calendar' => [
+            'ZfMetalCalendar' => [
                 'type' => 'Literal',
                 'mayTerminate' => false,
                 'options' => [
-                    'route' => '/metal/calendar',
+                    'route' => '/calendar',
                     'defaults' => [
                         'controller' => \ZfMetal\Calendar\Controller\CalendarController::CLASS,
                         'action' => 'grid',
                     ],
                 ],
                 'child_routes' => [
-                    'Holiday' => [
-                        'type' => 'Literal',
-                        'mayTerminate' => false,
-                        'options' => [
-                            'route' => '/holiday',
-                            'defaults' => [
-                                'controller' => \ZfMetal\Calendar\Controller\HolidayController::CLASS,
-                                'action' => 'grid',
-                            ],
-                        ],
-                        'child_routes' => [
-                            'Grid' => [
-                                'type' => 'Segment',
-                                'mayTerminate' => true,
-                                'options' => [
-                                    'route' => '/grid',
-                                    'defaults' => [
-                                        'controller' => \ZfMetal\Calendar\Controller\HolidayController::CLASS,
-                                        'action' => 'grid',
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ],
                     'Calendar' => [
                         'type' => 'Literal',
                         'mayTerminate' => false,
@@ -97,25 +73,25 @@ return [
                             ],
                         ],
                     ],
-                    'Day' => [
+                    'Holiday' => [
                         'type' => 'Literal',
                         'mayTerminate' => false,
                         'options' => [
-                            'route' => '/day',
+                            'route' => '/holiday',
                             'defaults' => [
-                                'controller' => 'ZfMetal\\Calendar\\Controller\\DayController',
-                                'action' => 'g',
+                                'controller' => \ZfMetal\Calendar\Controller\HolidayController::CLASS,
+                                'action' => 'grid',
                             ],
                         ],
                         'child_routes' => [
-                            'G' => [
+                            'Grid' => [
                                 'type' => 'Segment',
                                 'mayTerminate' => true,
                                 'options' => [
-                                    'route' => '/g',
+                                    'route' => '/grid',
                                     'defaults' => [
-                                        'controller' => 'ZfMetal\\Calendar\\Controller\\DayController',
-                                        'action' => 'g',
+                                        'controller' => \ZfMetal\Calendar\Controller\HolidayController::CLASS,
+                                        'action' => 'grid',
                                     ],
                                 ],
                             ],
@@ -171,7 +147,7 @@ return [
                                 'type' => 'Segment',
                                 'mayTerminate' => true,
                                 'options' => [
-                                    'route' => '/schedule',
+                                    'route' => '/schedule[/:date]',
                                     'defaults' => [
                                         'controller' => \ZfMetal\Calendar\Controller\TicketScheduleController::CLASS,
                                         'action' => 'schedule',

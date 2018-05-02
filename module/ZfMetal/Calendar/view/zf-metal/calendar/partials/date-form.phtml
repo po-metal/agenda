@@ -1,0 +1,15 @@
+<? $form = new \ZfMetal\Calendar\Form\DateForm(); ?>
+
+<div>
+    <a class="btn btn-default"
+       href="<?php echo $this->url('ZfMetalCalendar/TicketSchedule/Schedule', array('date' => $date->modify("-1 day"))); ?>">
+        <
+    </a>
+
+    <?php echo $this->renderForm($form); ?>
+
+    <a class="btn btn-default"
+       href="<?php echo $this->url('ZfMetalCalendar/TicketSchedule/Schedule', array('date' => $date->modify("+1 day"))); ?>">
+        >
+    </a>
+</div>
