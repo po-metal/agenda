@@ -9,7 +9,7 @@ export default {
   name: 'app',
   data () {
     return {
-      msg: 'Welcome to rrrrr'
+      msg: 'Welcome to Jungle'
     }
   }
 }

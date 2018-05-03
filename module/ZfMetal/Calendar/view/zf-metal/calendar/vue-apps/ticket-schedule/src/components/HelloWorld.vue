@@ -18,7 +18,7 @@
           }
         },
         calendars: [],
-        msg: 'Welcome to Your Vue.js App'
+        msg: 'Hola mundo'
       }
     },
     created: function () {
