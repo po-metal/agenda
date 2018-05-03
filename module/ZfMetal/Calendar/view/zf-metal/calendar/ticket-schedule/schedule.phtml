@@ -1,29 +1,12 @@
-<div class="row">
-    <div class="col-lg-2">
-        <div class="card">
-            <div class="card-content">
-                <table class="table">
-                    <?php foreach ($tickets as $ticket): ?>
 
-                        <tr>
-                            <td><?php echo $ticket->getId(); ?></td>
-                            <td><?php echo $ticket->getSubject(); ?></td>
+<div id="app"></div>
 
-                        </tr>
 
-                    <?php endforeach; ?>
-                </table>
-            </div>
-        </div>
-    </div>
 
-    <div class="col-lg-10">
-        <div class="card">
-
-            <?php echo $this->partial('zf-metal/calendar/partials/day', ["calendars" => $calendars]); ?>
-        </div>
-
-    </div>
-</div>
+<?php
+$this->headScript()
+    ->appendScript($this->partial('zf-metal/calendar/vue-apps/ticket-schedule/dist/build.js'), 'text/javascript')
+   // ->appendScript($this->partial('zf-metal/calendar/vue-apps/ticket-schedule/dist/build.js'), 'text/javascript')
+?>
 
 

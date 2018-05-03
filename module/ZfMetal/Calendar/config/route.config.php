@@ -3,7 +3,7 @@
 return [
     'router' => [
         'routes' => [
-            'ZfMetalCalendar' => [
+            'ZfMetal\\Calendar' => [
                 'type' => 'Literal',
                 'mayTerminate' => false,
                 'options' => [
@@ -175,6 +175,30 @@ return [
                                     'defaults' => [
                                         'controller' => \ZfMetal\Calendar\Controller\TicketStateController::CLASS,
                                         'action' => 'grid',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'CalendarApi' => [
+                        'type' => 'Literal',
+                        'mayTerminate' => false,
+                        'options' => [
+                            'route' => '/calendar-api',
+                            'defaults' => [
+                                'controller' => \ZfMetal\Calendar\Controller\CalendarApiController::CLASS,
+                                'action' => 'list',
+                            ],
+                        ],
+                        'child_routes' => [
+                            'List' => [
+                                'type' => 'Segment',
+                                'mayTerminate' => true,
+                                'options' => [
+                                    'route' => '/list',
+                                    'defaults' => [
+                                        'controller' => \ZfMetal\Calendar\Controller\CalendarApiController::CLASS,
+                                        'action' => 'list',
                                     ],
                                 ],
                             ],
