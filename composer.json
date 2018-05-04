@@ -42,7 +42,8 @@
             "SkinMaterialDesignB4\\": "module/SkinMaterialDesignB4/src/",
             "SkinMaterialDashboard\\": "module/SkinMaterialDashboard/src/",
             "SkinTaurus\\": "module/SkinTaurus/src/",
-            "ZfMetal\\Calendar\\": "module/ZfMetal/Calendar/src/"
+            "ZfMetal\\Calendar\\": "module/ZfMetal/Calendar/src/",
+            "ZfMetal\\RestfulDoctrine\\": "module/ZfMetal/RestfulDoctrine/src/"
         }
     },
     "autoload-dev": {
