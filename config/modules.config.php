@@ -40,5 +40,6 @@ return [
     //'SkinMaterialDesignB4',
     'SkinMaterialDashboard',
     // 'SkinTaurus',
-    'ZfMetal\Calendar'
+    'ZfMetal\Calendar',
+    'ZfMetal\Restful'
 ];

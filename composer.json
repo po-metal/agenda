@@ -43,7 +43,7 @@
             "SkinMaterialDashboard\\": "module/SkinMaterialDashboard/src/",
             "SkinTaurus\\": "module/SkinTaurus/src/",
             "ZfMetal\\Calendar\\": "module/ZfMetal/Calendar/src/",
-            "ZfMetal\\RestfulDoctrine\\": "module/ZfMetal/RestfulDoctrine/src/"
+            "ZfMetal\\Restful\\": "module/ZfMetal/Restful/src/"
         }
     },
     "autoload-dev": {
