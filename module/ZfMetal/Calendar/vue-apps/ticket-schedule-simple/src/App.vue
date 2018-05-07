@@ -1,27 +1,26 @@
 <template>
-    <div id="app">
-        <HelloWorld/>
+    <div class="rows">
+        <div class="col-lg-3">
+            <tickets></tickets>
+        </div>
+        <div class="col-lg-9">
+            <calendars></calendars>
+        </div>
     </div>
 </template>
 
 <script>
-  import HelloWorld from './components/HelloWorld'
+  import tickets from './components/tickets.vue'
+  import calendars from './components/calendars.vue'
 
   export default {
     name: 'App',
+
     components: {
-      HelloWorld
+      tickets,
+      calendars,
+    },
+    created: function () {
     }
   }
 </script>
-
-<style>
-    #app {
-        font-family: 'Avenir', Helvetica, Arial, sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        text-align: center;
-        color: #2c3e50;
-        margin-top: 60px;
-    }
-</style>
