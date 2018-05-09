@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="text-center">
-            <day v-model="day"></day>
+            <day v-model="getDate"></day>
         </div>
         <calendar v-for="calendar in calendars" :calendar="calendar" :key="calendar.id">
         </calendar>
@@ -27,19 +27,25 @@
     data() {
       return {
         calendars: [],
-        day: this.dateToYMD(new Date())
+        date: new Date()
       }
     },
     created: function () {
-      this.list();
+      this.apiList();
     },
     methods: {
-      list: function () {
+      apiList: function () {
         http.get('list').then((response) => {
           if (response.data.success) {
             this.calendars = response.data.data;
+
           }
         })
+      },
+      getCalendarScheduleByDay: function (calendar, day) {
+        for (index = 0; index < this.calendars.length; ++index) {
+          console.log(a[index]);
+        }
       },
       dateToYMD(date) {
         var d = date.getDate();
@@ -47,12 +53,57 @@
         var y = date.getFullYear();
         return '' + y + '-' + (m <= 9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
       }
-
     },
     computed: {
+      getDate: function () {
+        return this.dateToYMD(this.date);
+      },
       getDay: function () {
-        return null;
+        return this.date.getDay() + 1;
+      },
+      hasCalendars: function () {
+        if (this.calendars != undefined && this.calendars.length > 0) {
+          return true;
+        }
+        return false;
+      },
+      getStart: function(){
+        var rstart = null;
+        if (this.hasCalendars) {
+          for (var index = 0; index < this.calendars.length; ++index) {
+            if (this.calendars[index].schedules.collection != undefined) {
+              for (var i = 0; i < this.calendars[index].schedules.collection.length; ++i) {
+                if (this.calendars[index].schedules.collection[i].day == this.getDay) {
+                  if (this.calendars[index].schedules.collection[i].start < rstart || rstart == null) {
+                    rstart = this.calendars[index].schedules.collection[i].start;
+                  }
+
+                }
+              }
+            }
+          }
+        }
+        return rstart;
+      },
+      getEnd: function(){
+        var rend= null;
+        if (this.hasCalendars) {
+          for (var index = 0; index < this.calendars.length; ++index) {
+            if (this.calendars[index].schedules.collection != undefined) {
+              for (var i = 0; i < this.calendars[index].schedules.collection.length; ++i) {
+                if (this.calendars[index].schedules.collection[i].day == this.getDay) {
+                  if (this.calendars[index].schedules.collection[i].end > rend || rend == null) {
+                    rend = this.calendars[index].schedules.collection[i].end;
+                  }
+
+                }
+              }
+            }
+          }
+        }
+        return rend;
       }
+
     }
   }
 </script>
