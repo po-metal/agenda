@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "vue": "^2.5.2",
-    "axios": "latest"
+    "axios": "latest",
+    "moment": "^2.22.1"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

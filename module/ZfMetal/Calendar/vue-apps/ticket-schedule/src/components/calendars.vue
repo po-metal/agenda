@@ -3,6 +3,19 @@
         <div class="text-center">
             <day v-model="getDate"></day>
         </div>
+
+        <div>
+            <table class="table">
+                <tr>
+                    <td>Hora</td>
+                </tr>
+
+
+
+
+            </table>
+        </div>
+
         <calendar v-for="calendar in calendars" :calendar="calendar" :key="calendar.id">
         </calendar>
     </div>
@@ -12,6 +25,8 @@
   import axios from 'axios'
   import day from './day.vue'
   import calendar from './calendar.vue'
+  import moment from 'moment'
+  import 'moment/locale/es';
 
   const http = axios.create({
     baseURL: '/calendar/api/',
@@ -27,7 +42,7 @@
     data() {
       return {
         calendars: [],
-        date: new Date()
+        date: moment().locale('es')
       }
     },
     created: function () {
@@ -56,10 +71,10 @@
     },
     computed: {
       getDate: function () {
-        return this.dateToYMD(this.date);
+        return this.date.format("YYYY-MM-DD");
       },
       getDay: function () {
-        return this.date.getDay() + 1;
+        return this.date.day() + 1;
       },
       hasCalendars: function () {
         if (this.calendars != undefined && this.calendars.length > 0) {
@@ -94,8 +109,7 @@
                 if (this.calendars[index].schedules.collection[i].day == this.getDay) {
                   if (this.calendars[index].schedules.collection[i].end > rend || rend == null) {
                     rend = this.calendars[index].schedules.collection[i].end;
-                  }
-
+                  }4
                 }
               }
             }
