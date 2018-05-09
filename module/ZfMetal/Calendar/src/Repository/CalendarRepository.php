@@ -2,7 +2,11 @@
 
 namespace ZfMetal\Calendar\Repository;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query;
+use phpDocumentor\Reflection\Types\Array_;
+use ZfMetal\Calendar\Entity\Calendar;
 
 /**
  * CalendarRepository
@@ -24,6 +28,21 @@ class CalendarRepository extends EntityRepository
     public function remove(\ZfMetal\Calendar\Entity\Calendar $entity)
     {
         $this->getEntityManager()->remove($entity); $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @return array
+     */
+    public function fullList()
+    {
+        $data = $this->getEntityManager()->createQueryBuilder('u')
+            ->select('u')
+            ->from(Calendar::class, 'u')
+            ->join('u.schedules', 's')
+            ->getQuery()
+            ->getResult();
+
+        return $data;
     }
 
 

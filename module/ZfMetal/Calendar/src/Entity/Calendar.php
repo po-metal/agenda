@@ -2,10 +2,13 @@
 
 namespace ZfMetal\Calendar\Entity;
 
+use Indaxia\OTR\ITransformable;
+use Indaxia\OTR\Traits\Transformable;
 use Zend\Form\Annotation as Annotation;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint as UniqueConstraint;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Indaxia\OTR\Annotations\Policy;
 
 /**
  * Calendar
@@ -18,8 +21,9 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table(name="cal_calendar")
  * @ORM\Entity(repositoryClass="ZfMetal\Calendar\Repository\CalendarRepository")
  */
-class Calendar
+class Calendar implements ITransformable
 {
+    use Transformable;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
@@ -54,6 +58,7 @@ class Calendar
      * "description":""})
      * @ORM\OneToMany(targetEntity="\ZfMetal\Calendar\Entity\SpecificSchedule",
      * mappedBy="calendar", cascade={"persist", "remove"})
+     * @Policy\To\Skip
      */
     public $specificSchedules = null;
 
@@ -62,6 +67,7 @@ class Calendar
      * @Annotation\Options({"label":"events","target_class":"\ZfMetal\Calendar\Entity\Event",
      * "description":""})
      * @ORM\OneToMany(targetEntity="\ZfMetal\Calendar\Entity\Event", mappedBy="calendar", cascade={"persist", "remove"})
+     * @Policy\To\Skip
      */
     public $events = null;
 
@@ -70,6 +76,7 @@ class Calendar
      * @Annotation\Options({"label":"predefinedEvents","empty_option": "",
      * "target_class":"\ZfMetal\Calendar\Entity\PredefinedEvents", "description":""})
      * @ORM\OneToOne(targetEntity="\ZfMetal\Calendar\Entity\PredefinedEvents", fetch="EAGER", mappedBy="calendar", cascade={"persist", "remove"})
+     * @Policy\To\Skip
      */
     public $predefinedEvents = null;
 

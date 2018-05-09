@@ -2,9 +2,12 @@
 
 namespace ZfMetal\Calendar\Controller;
 
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
+use Indaxia\OTR\Traits\Transformable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use ZfMetal\Calendar\Entity\Calendar;
+use ZfMetal\Calendar\Repository\CalendarRepository;
 
 /**
  * CalendarApiController
@@ -40,6 +43,9 @@ class CalendarApiController extends AbstractActionController
         return $this->getEm()->getRepository(self::ENTITY);
     }
 
+    /**
+     * @return CalendarRepository
+     */
     public function getCalendarRepository()
     {
         return $this->getEm()->getRepository(Calendar::class);
@@ -52,13 +58,23 @@ class CalendarApiController extends AbstractActionController
 
     public function listAction()
     {
-        $calendars = $this->getCalendarRepository()->findAll();
-        $o = array();
-        foreach ($calendars as $calendar){
-            $o[] = ["id" => $calendar->getId(), "name" => $calendar->getName()];
+        try {
+            $calendars = $this->getCalendarRepository()->fullList();
+
+            $results = Transformable::toArrays($calendars);
+            $a = [
+                "success" => true,
+                "data" => $results
+            ];
+            return new JsonModel($a);
+        } catch (Exception $e) {
+            $a = [
+                "success" => fale,
+                "data" => $e->getMessage()
+            ];
+            return new JsonModel($a);
         }
 
-        return new JsonModel($o);
     }
 
 

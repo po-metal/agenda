@@ -3,10 +3,13 @@
 namespace ZfMetal\Calendar\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection as ArrayCollection;
+use Indaxia\OTR\ITransformable;
+use Indaxia\OTR\Traits\Transformable;
 use Zend\Form\Annotation as Annotation;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint as UniqueConstraint;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Indaxia\OTR\Annotations\Policy;
 
 /**
  * Schedule
@@ -20,8 +23,9 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Entity(repositoryClass="ZfMetal\Calendar\Repository\ScheduleRepository")
  * @Annotation\Instance("\ZfMetal\Calendar\Entity\Schedule")
  */
-class Schedule
+class Schedule implements ITransformable
 {
+    use Transformable;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
@@ -39,6 +43,7 @@ class Schedule
      * @Annotation\Type("Zend\Form\Element\Hidden")
      * @ORM\ManyToOne(targetEntity="\ZfMetal\Calendar\Entity\Calendar")
      * @ORM\JoinColumn(name="calendar_id", referencedColumnName="id", nullable=true)
+     * @Policy\to\Skip
      */
     public $calendar = null;
 
@@ -55,6 +60,7 @@ class Schedule
      * @Annotation\Attributes({"type":"time"})
      * @Annotation\Options({"label":"start", "description":"", "addon":""})
      * @ORM\Column(type="time", unique=false, nullable=true, name="start")
+     * @Policy\To\KeepDateTime
      */
     public $start = null;
 
@@ -63,6 +69,7 @@ class Schedule
      * @Annotation\Attributes({"type":"time"})
      * @Annotation\Options({"label":"end", "description":"", "addon":""})
      * @ORM\Column(type="time", unique=false, nullable=true, name="end")
+     * @Policy\To\KeepDateTime
      */
     public $end = null;
 
@@ -71,6 +78,7 @@ class Schedule
      * @Annotation\Attributes({"type":"time"})
      * @Annotation\Options({"label":"startBreak", "description":"", "addon":""})
      * @ORM\Column(type="time", unique=false, nullable=true, name="start_break")
+     * @Policy\To\KeepDateTime
      */
     public $startBreak = null;
 
@@ -79,6 +87,7 @@ class Schedule
      * @Annotation\Attributes({"type":"time"})
      * @Annotation\Options({"label":"endBreak", "description":"", "addon":""})
      * @ORM\Column(type="time", unique=false, nullable=true, name="end_break")
+     * @Policy\To\KeepDateTime
      */
     public $endBreak = null;
 

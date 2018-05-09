@@ -11,10 +11,15 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/calendar/calendar-api': {
-      target: 'http://agenda.int',
-      changeOrigin: true,
-    }},
+      '/calendar/api/': {
+        target: 'http://agenda.int',
+        changeOrigin: true,
+      },
+      '/zfmapi/': {
+        target: 'http://agenda.int',
+        changeOrigin: true,
+      }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

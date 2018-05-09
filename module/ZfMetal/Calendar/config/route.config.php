@@ -180,11 +180,11 @@ return [
                             ],
                         ],
                     ],
-                    'CalendarApi' => [
+                    'Api' => [
                         'type' => 'Literal',
                         'mayTerminate' => false,
                         'options' => [
-                            'route' => '/calendar-api',
+                            'route' => '/api',
                             'defaults' => [
                                 'controller' => \ZfMetal\Calendar\Controller\CalendarApiController::CLASS,
                                 'action' => 'list',
