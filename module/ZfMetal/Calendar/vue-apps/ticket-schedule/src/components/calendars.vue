@@ -3,15 +3,18 @@
         <div class="text-center">
             <day v-model="getDate"></day>
         </div>
-
+        <div class="clearfix"></div>
         <div>
             <table class="table">
                 <tr>
                     <td>Hora</td>
                 </tr>
 
+                <tr v-for="hour in getHours" v-bind:key="hour">
 
+                    <td>{{hour}}</td>
 
+                </tr>
 
             </table>
         </div>
@@ -82,7 +85,7 @@
         }
         return false;
       },
-      getStart: function(){
+      getStart: function () {
         var rstart = null;
         if (this.hasCalendars) {
           for (var index = 0; index < this.calendars.length; ++index) {
@@ -100,8 +103,8 @@
         }
         return rstart;
       },
-      getEnd: function(){
-        var rend= null;
+      getEnd: function () {
+        var rend = null;
         if (this.hasCalendars) {
           for (var index = 0; index < this.calendars.length; ++index) {
             if (this.calendars[index].schedules.collection != undefined) {
@@ -109,16 +112,34 @@
                 if (this.calendars[index].schedules.collection[i].day == this.getDay) {
                   if (this.calendars[index].schedules.collection[i].end > rend || rend == null) {
                     rend = this.calendars[index].schedules.collection[i].end;
-                  }4
+                  }
+                  4
                 }
               }
             }
           }
         }
         return rend;
+      },
+      getHours: function () {
+        var hours = [];
+        if (this.hasCalendars) {
+          var flag = true;
+          var t = moment(this.getStart, "hh:mm");
+          var e = moment(this.getEnd, "hh:mm");
+          while (flag) {
+            hours.push(t.format("hh:mm"));
+            t.add(30, "minutes");
+            if (t >= e) {
+              flag = false;
+            }
+          }
+        }
+        return hours;
       }
 
     }
+
   }
 </script>
 
