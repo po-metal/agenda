@@ -1,6 +1,7 @@
 <template>
     <div class="rows">
         <div class="col-lg-3">
+            <h3>Tickets</h3>
             <tickets></tickets>
         </div>
         <div class="col-lg-9">

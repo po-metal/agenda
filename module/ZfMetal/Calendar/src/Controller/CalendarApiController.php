@@ -62,15 +62,17 @@ class CalendarApiController extends AbstractActionController
             $calendars = $this->getCalendarRepository()->fullList();
 
             $results = Transformable::toArrays($calendars);
+
+
             $a = [
                 "success" => true,
                 "data" => $results
             ];
             return new JsonModel($a);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $a = [
                 "success" => fale,
-                "data" => $e->getMessage()
+                "message" => $e->getMessage()
             ];
             return new JsonModel($a);
         }
