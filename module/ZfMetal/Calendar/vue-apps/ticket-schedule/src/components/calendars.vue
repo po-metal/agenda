@@ -5,7 +5,7 @@
         </div>
         <div class="clearfix"></div>
         <div>
-            <table class="table table-bordered table-striped">
+            <table class="table table-bordered table-striped zfc-td">
                 <thead>
                 <tr>
                     <th></th>
@@ -21,9 +21,9 @@
 
                     <td>{{hour}}</td>
 
-                    <td v-if="hasCalendars" v-for="calendar in calendars" :key="calendar.id">
-                    <drop style="width: 100%; height: 100%;" @drop="handleDrop">
--
+                    <td class="" v-if="hasCalendars" v-for="calendar in calendars" :key="calendar.id">
+                    <drop @drop="handleDrop">
+
                     </drop>
                     </td>
 
@@ -163,4 +163,15 @@
 </script>
 
 <style scoped>
+    table.zfc-td>tbody>tr>td,table.zfc-td>tbody>tr>th{
+        font-size: 14px;
+        height: 25px;
+        padding: 0;
+        margin: 0;
+        text-align: center;
+    }
+
+    table.zfc-td>tbody>tr>td>div{
+        height:100%
+    }
 </style>
