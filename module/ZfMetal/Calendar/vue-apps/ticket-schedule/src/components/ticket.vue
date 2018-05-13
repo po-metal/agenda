@@ -1,5 +1,5 @@
 <template>
-    <drag @drop="drogTicket" :transfer-data="obj.id">
+    <drag :transfer-data="{id: obj.id,type: 't'}">
         <div class="panel panel-default">
             {{obj.id}} - {{obj.subject}}
         </div>
