@@ -1,49 +1,56 @@
 <template>
-    <div>
-        <div class="text-center">
-            <day v-model="getDate"></day>
-        </div>
-        <div class="clearfix"></div>
-        <div class="zfc-calendars" ref="zfcCalendars">
-            <table class="table-bordered table-striped table-responsive  zfc-td">
-                <thead>
-                <tr>
-                    <th class="zfc-column-hours"></th>
-                    <th class="zfc-column-calendar" v-if="hasCalendars" v-for="calendar in calendars"
-                        :key="calendar.id">
-                        {{calendar.name}}
-                    </th>
-
-                </tr>
-                </thead>
-
-                <tbody>
-                <tr v-if="hasCalendars" v-for="hour in getHours" v-bind:key="hour">
-
-                    <td class="zfc-column-hours">{{hour}}</td>
-
-                    <calendarTd v-if="hasCalendars"
-                                v-for="calendar in calendars"
-                                :id="calendar.id" :name="calendar.name" :hour="hour"
-                                :parentTop="top" :parentLeft="left"
-                                :key='calendar.id + "-" + hour'
-                                v-on:dropForNewEvent="onDropForNewEvent"
-                                v-on:dropForChangeEvent="onDropForChangeEvent">
-                    </calendarTd>
-
-                </tr>
-                </tbody>
-
-            </table>
-
-            <event v-if="events" v-for="(event,index) in events" :key="index"
-                   :date="date" :calendar="event.calendar" :hour="event.hour" :ticketId="event.ticketId"
-                   :top="event.top" :left="event.left">
-
-            </event>
-
+    <div class="row">
+        <div class="col-lg-2">
+            <h3>Tickets</h3>
+            <ticket v-if="tickets" v-for="ticket in tickets" :ticket="ticket" :key="ticket.id" :event="ticket.event">
+            </ticket>
         </div>
 
+        <div class="col-lg-10">
+            <div class="text-center">
+                <day v-model="getDate"></day>
+            </div>
+            <div class="clearfix"></div>
+            <div class="zfc-calendars" ref="zfcCalendars">
+                <table class="table-bordered table-striped table-responsive  zfc-td">
+                    <thead>
+                    <tr>
+                        <th class="zfc-column-hours"></th>
+                        <th class="zfc-column-calendar" v-if="hasCalendars" v-for="calendar in calendars"
+                            :key="calendar.id">
+                            {{calendar.name}}
+                        </th>
+
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr v-if="hasCalendars" v-for="hour in getHours" v-bind:key="hour">
+
+                        <td class="zfc-column-hours">{{hour}}</td>
+
+                        <calendarTd v-if="hasCalendars"
+                                    v-for="calendar in calendars"
+                                    :id="calendar.id" :name="calendar.name" :hour="hour"
+                                    :parentTop="top" :parentLeft="left"
+                                    :key='calendar.id + "-" + hour'
+                                    v-on:dropForNewEvent="onDropForNewEvent"
+                                    v-on:dropForChangeEvent="onDropForChangeEvent">
+                        </calendarTd>
+
+                    </tr>
+                    </tbody>
+
+                </table>
+
+                <event v-if="events" v-for="(event,index) in events" :key="index"
+                       :date="date" :calendar="event.calendar" :hour="event.hour" :ticketId="event.ticketId"
+                       :top="event.top" :left="event.left">
+
+                </event>
+
+            </div>
+        </div>
     </div>
 </template>
 
@@ -58,6 +65,7 @@
   import day from './day.vue'
   import calendarTd from './calendarTd.vue'
   import event from './event.vue'
+  import ticket from "./ticket.vue";
 
   const http = axios.create({
     baseURL: '/calendar/api/',
@@ -68,12 +76,23 @@
   });
 
 
+  const httpTickets = axios.create({
+    baseURL: '/zfmapi/',
+    timeout: 5000,
+    headers: {
+      accept: 'application/json'
+    }
+  });
+
+
+
   export default {
     name: 'calendars',
-    components: {day, calendarTd, event, Drag, Drop},
+    components: {day, calendarTd, event, ticket, Drag, Drop},
     data() {
       return {
         calendars: [],
+        tickets: [],
         date: moment().locale('es'),
         events: [],
         top: 0,
@@ -81,17 +100,18 @@
       }
     },
     created: function () {
-      this.apiList();
+      this.calendarList();
+      this.ticketList();
     },
     mounted() {
-      this.$nextTick(function() {
+      this.$nextTick(function () {
         window.addEventListener('resize', this.onResize);
       });
       this.getTop();
       this.getLeft();
     },
     methods: {
-      apiList: function () {
+      calendarList: function () {
         http.get('list').then((response) => {
           if (response.data.success) {
             this.calendars = response.data.data;
@@ -99,7 +119,12 @@
           }
         })
       },
-      onResize: function(){
+      ticketList: function () {
+        httpTickets.get('list/ticket').then((response) => {
+          this.tickets = response.data.data;
+        })
+      },
+      onResize: function () {
         this.getTop();
         this.getLeft();
       },
@@ -117,12 +142,21 @@
           top: top + this.getScrollX() + this.getBodyScrollTop(),
           left: left + this.getScrollY() + this.getBodyScrollLeft()
         });
+        this.getTicketById(ticketId).event = 1;
       },
       onDropForChangeEvent: function (calendar, eventKey, hour, top, left) {
         this.events[eventKey].top = top + this.getScrollX() + this.getBodyScrollTop();
         this.events[eventKey].left = left + this.getScrollY() + this.getBodyScrollLeft();
         this.events[eventKey].hour = hour;
         this.events[eventKey].calendar = calendar;
+      },
+      getTicketById: function(id){
+        for(var i=0; i< this.tickets.length;i++){
+          if(this.tickets[i].id == id){
+            return this.tickets[i];
+          }
+        }
+        return null;
       },
       getScrollX: function () {
         return this.$refs.zfcCalendars.scrollTop;

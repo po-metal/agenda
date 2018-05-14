@@ -14,12 +14,12 @@
 
   export default {
     name: 'event',
-    props: ['date', 'calendar', 'ticketId', 'hour','top','left','parentScrollX','parentScrollY'],
+    props: ['date', 'calendar', 'ticketId', 'hour','top','left'],
     components: {Drag},
     data() {
       return {
         id: '',
-        duration: 30,
+        duration: 50,
         title: '',
         description: '',
       }
@@ -29,10 +29,10 @@
     methods: {},
     computed: {
       getMainClass: function () {
-        return 'zfc-event panel panel-primary'
+        return 'zfc-event'
       },
       getStyle: function () {
-        return 'top: '+this.getTop+ 'px' + '; left: '+this.getLeft+ 'px';
+        return 'top: '+this.getTop+ 'px;' + ' left: '+this.getLeft+ 'px;' + ' height:' + this.getHeight+ "px;";
       },
       getTop: function(){
         return this.top;
@@ -48,6 +48,14 @@
         var end = moment(this._date.format("YYYY-MM-DD")+ " "+ this.hour);
         return end.add(this.duration, "minutes");
         return end;
+      },
+      getHeight: function(){
+        if(this.duration <= 30) {
+          return 25;
+        }else{
+          return  Math.ceil(this.duration / 30) * 25;
+        }
+
       }
     }
   }

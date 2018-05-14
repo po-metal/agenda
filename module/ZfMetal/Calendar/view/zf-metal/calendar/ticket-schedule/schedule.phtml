@@ -7,7 +7,7 @@
 
 
 <?php
-$this->headScript()->appendScript($this->partial('zf-metal/calendar/assets//dist/ticket-schedule.js'), 'text/javascript')
+//$this->headScript()->appendScript($this->partial('zf-metal/calendar/assets//dist/ticket-schedule.js'), 'text/javascript')
 ?>
 
 
@@ -17,3 +17,14 @@ $this->headScript()->appendScript($this->partial('zf-metal/calendar/assets//dist
 //    ->appendScript($this->partial('zf-metal/calendar/vue-apps/ticket-schedule/dist/static/js/vendor.625b8ebb5e7fc8e764bb.js'), 'text/javascript')
 //    ->appendScript($this->partial('zf-metal/calendar/vue-apps/ticket-schedule/dist/static/js/app.6ee3bb3203559455c530.js'), 'text/javascript')
 ?>
+
+<?php
+$this->headScript()
+    ->appendScript($this->partial('zf-metal/calendar/vue-apps/ticket-schedule/dist/static/js/manifest.js'), 'text/javascript')
+    ->appendScript($this->partial('zf-metal/calendar/vue-apps/ticket-schedule/dist/static/js/vendor.js'), 'text/javascript')
+    ->appendScript($this->partial('zf-metal/calendar/vue-apps/ticket-schedule/dist/static/js/app.js'), 'text/javascript')
+?>
+
+<style>
+   <?php echo $this->partial('zf-metal/calendar/vue-apps/ticket-schedule/dist/static/css/app.css'); ?>
+</style>

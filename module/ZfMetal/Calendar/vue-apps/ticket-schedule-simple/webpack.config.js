@@ -4,7 +4,7 @@ var webpack = require('webpack')
 module.exports = {
   entry: './src/main.js',
   output: {
-    path: path.resolve(__dirname, '../..//view/zf-metal/calendar/assets/dist'),
+    path: path.resolve(__dirname, '../../view/zf-metal/calendar/assets/dist'),
     publicPath: '/dist/',
     filename: 'ticket-schedule.js'
   },
