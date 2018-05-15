@@ -3,8 +3,11 @@
 namespace ZfMetal\Restful\Controller;
 
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
+use Indaxia\OTR\Traits\Transformable;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
+use ZfMetal\Restful\Filter\Builder;
+use ZfMetal\Restful\Filter\DoctrineQueryBuilderFilter;
 use ZfMetal\Restful\Options\ModuleOptions;
 
 /**
@@ -85,25 +88,43 @@ class MainController extends AbstractRestfulController
         return $data;
     }
 
+
+    protected function filterQuery($query)
+    {
+
+        $qb = $this->getEntityRepository()->createQueryBuilder('u')->select('u');
+
+        $builder = new Builder($query, Builder::TYPE_SIMPLE);
+        $builder->build();
+
+        $DoctrineQueryBuilderFilter = new DoctrineQueryBuilderFilter($qb, $builder->getFilters());
+        $qb = $DoctrineQueryBuilderFilter->applyFilters();
+
+
+        return $qb->getQuery()->getResult();
+    }
+
     /**
      * Return list of resources
      *
      * @return array
      */
-    public function listAction()
+    public function get($id = null)
     {
         try {
-            $data = $this->findAll();
+            $query = $this->getRequest()->getQuery();
 
-            return new JsonModel(array(
-                'success' => true,
-                'data' => $data,
-            ));
-        } catch (\Exception $exception) {
-            return new JsonModel(array(
-                'success' => false,
-                'message' => $exception->getMessage()
-            ));
+            $objects = $this->filterQuery($query);
+
+            $results = Transformable::toArrays($objects);
+
+            return new JsonModel($results);
+
+        } catch (\Exception $e) {
+            $a = [
+                "messages" => $e->getMessage()
+            ];
+            return new JsonModel($a);
         }
     }
 
