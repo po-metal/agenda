@@ -7,21 +7,16 @@ return [
                 'type' => 'Literal',
                 'mayTerminate' => false,
                 'options' => [
-                    'route' => '/zfmapi',
-                    'defaults' => [
-                        'controller' => \ZfMetal\Restful\Controller\MainController::CLASS,
-                        'action' => 'list',
-                    ],
+                    'route' => '/zfmr/api',
                 ],
                 'child_routes' => [
                     'list' => [
                         'type' => 'Segment',
                         'mayTerminate' => false,
                         'options' => [
-                            'route' => '/list/:entityAlias',
+                            'route' => '/:entityAlias[/:id]',
                             'defaults' => [
                                 'controller' => \ZfMetal\Restful\Controller\MainController::CLASS,
-                                'action' => 'list',
                             ],
                         ],
                     ],
