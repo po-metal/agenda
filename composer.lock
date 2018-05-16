@@ -5344,16 +5344,16 @@
         },
         {
             "name": "zf-metal/commons",
-            "version": "1.2.7",
+            "version": "1.2.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zf-metal/commons.git",
-                "reference": "72994132b30711b2e3b139dad742b942666c35e1"
+                "reference": "d7705e1a1c84d04670b15b7a302a46805dbf396c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zf-metal/commons/zipball/72994132b30711b2e3b139dad742b942666c35e1",
-                "reference": "72994132b30711b2e3b139dad742b942666c35e1",
+                "url": "https://api.github.com/repos/zf-metal/commons/zipball/d7705e1a1c84d04670b15b7a302a46805dbf396c",
+                "reference": "d7705e1a1c84d04670b15b7a302a46805dbf396c",
                 "shasum": ""
             },
             "require": {
@@ -5392,7 +5392,7 @@
             "keywords": [
                 "zf3"
             ],
-            "time": "2018-04-29T14:56:28+00:00"
+            "time": "2018-05-16T02:25:12+00:00"
         },
         {
             "name": "zf-metal/datagrid",
