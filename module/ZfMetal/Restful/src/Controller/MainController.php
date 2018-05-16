@@ -170,9 +170,17 @@ class MainController extends AbstractRestfulController
         try {
             $query = $this->getRequest()->getQuery();
 
-            $objects = $this->filterQuery($query);
+            if($id){
+                $object = $this->getEntityRepository()->find($id);
+                if(!$object){
+                    throw new \Exception("Entity not found");
+                }
+                $results =$object->toArray();
+            }else{
+                $objects = $this->filterQuery($query);
+                $results = Transformable::toArrays($objects);
+            }
 
-            $results = Transformable::toArrays($objects);
 
             return new JsonModel($results);
 
