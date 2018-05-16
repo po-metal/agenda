@@ -3,18 +3,18 @@
 return [
     'router' => [
         'routes' => [
-            'zfmapi' => [
+            'zfmr' => [
                 'type' => 'Literal',
                 'mayTerminate' => false,
                 'options' => [
-                    'route' => '/zfmr/api',
+                    'route' => '/zfmr',
                 ],
                 'child_routes' => [
-                    'list' => [
+                    'api' => [
                         'type' => 'Segment',
                         'mayTerminate' => false,
                         'options' => [
-                            'route' => '/:entityAlias[/:id]',
+                            'route' => '/api/:entityAlias[/:id]',
                             'defaults' => [
                                 'controller' => \ZfMetal\Restful\Controller\MainController::CLASS,
                             ],
