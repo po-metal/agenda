@@ -8,12 +8,12 @@
 
 namespace ZfMetal\Calendar\PolicyHandler;
 
-class EntityToId
+class EntityIdName
 {
 
     public static function transform($original,$transformed){
         if($original && method_exists($original,"getId")){
-            return $original->getId();
+            return ["id"=> $original->getId(),"name" =>$original->getName()];
         }
         return $transformed;
     }

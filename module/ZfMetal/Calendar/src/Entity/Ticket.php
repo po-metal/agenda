@@ -3,11 +3,13 @@
 namespace ZfMetal\Calendar\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection as ArrayCollection;
+use Indaxia\OTR\ITransformable;
+use Indaxia\OTR\Traits\Transformable;
 use Zend\Form\Annotation as Annotation;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint as UniqueConstraint;
 use Gedmo\Mapping\Annotation as Gedmo;
-
+use Indaxia\OTR\Annotations\Policy;
 /**
  * Ticket
  *
@@ -19,10 +21,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table(name="cal_ticket")
  * @ORM\Entity(repositoryClass="ZfMetal\Calendar\Repository\TicketRepository")
  */
-class Ticket
+class Ticket implements ITransformable
 {
 
-
+    use Transformable;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
@@ -49,6 +51,7 @@ class Ticket
     public $updatedAt = null;
 
     /**
+     * @Policy\Skip
      * @Annotation\Type("DoctrineModule\Form\Element\ObjectMultiCheckbox")
      * @Annotation\Options({"label":"Evento","target_class":"\ZfMetal\Calendar\Entity\Event",
      * "description":""})
@@ -57,6 +60,7 @@ class Ticket
     public $event = null;
 
     /**
+     * @Policy\To\Custom(transform= "\ZfMetal\Calendar\PolicyHandler\EntityIdName::transform")
      * @Annotation\Type("DoctrineModule\Form\Element\ObjectSelect")
      * @Annotation\Options({"label":"Estado","empty_option": "",
      * "target_class":"\ZfMetal\Calendar\Entity\TicketState", "description":""})

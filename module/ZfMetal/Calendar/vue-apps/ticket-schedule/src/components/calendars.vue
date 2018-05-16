@@ -68,7 +68,7 @@
   import ticket from "./ticket.vue";
 
   const http = axios.create({
-    baseURL: '/calendar/api/',
+    baseURL: '/zfmc/api/',
     timeout: 5000,
     headers: {
       accept: 'application/json'
@@ -112,7 +112,7 @@
     },
     methods: {
       calendarList: function () {
-        http.get('list').then((response) => {
+        http.get('calendars').then((response) => {
           if (response.data.success) {
             this.calendars = response.data.data;
 

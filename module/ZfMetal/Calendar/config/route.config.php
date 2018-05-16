@@ -180,11 +180,30 @@ return [
                         'type' => 'Segment',
                         'mayTerminate' => false,
                         'options' => [
-                            'route' => '/api/:entityAlias[/:id]',
-                            'defaults' => [
-                                'controller' => \ZfMetal\Restful\Controller\MainController::CLASS,
-                            ],
+                            'route' => '/api',
                         ],
+                        'child_routes' => [
+                            'ticket' => [
+                                'type' => 'Segment',
+                                'mayTerminate' => false,
+                                'options' => [
+                                    'route' => '/tickets[/:id]',
+                                    'defaults' => [
+                                        'controller' => \ZfMetal\Calendar\Controller\ApiTicketController::CLASS,
+                                    ],
+                                ],
+                            ],
+                            'entity' => [
+                                'type' => 'Segment',
+                                'mayTerminate' => false,
+                                'options' => [
+                                    'route' => '/:entityAlias[/:id]',
+                                    'defaults' => [
+                                        'controller' => \ZfMetal\Restful\Controller\MainController::CLASS,
+                                    ],
+                                ],
+                            ]
+                        ]
                     ],
                 ],
             ],

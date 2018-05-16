@@ -38,7 +38,7 @@ class Event implements ITransformable
     public $id = null;
 
     /**
-     * @Policy\To\Custom(transform= "\ZfMetal\Calendar\PolicyHandler\EntityToId::transform")
+     * @Policy\To\Custom(transform= "\ZfMetal\Calendar\PolicyHandler\EntityIdName::transform")
      * @Annotation\Type("DoctrineModule\Form\Element\ObjectSelect")
      * @Annotation\Options({"label":"calendar","empty_option": "",
      * "target_class":"\ZfMetal\Calendar\Entity\Calendar", "description":""})
@@ -57,6 +57,7 @@ class Event implements ITransformable
     public $ticket = null;
 
     /**
+     * @Policy\To\FormatDateTime(format="Y-m-d H:i")
      * @Annotation\Type("Zend\Form\Element\DateTime")
      * @Annotation\Attributes({"type":"datetime"})
      * @Annotation\Options({"label":"start", "description":"", "addon":""})
@@ -65,6 +66,7 @@ class Event implements ITransformable
     public $start = null;
 
     /**
+     * @Policy\To\FormatDateTime(format="Y-m-d H:i")
      * @Annotation\Type("Zend\Form\Element\DateTime")
      * @Annotation\Attributes({"type":"datetime"})
      * @Annotation\Options({"label":"end", "description":"", "addon":""})
