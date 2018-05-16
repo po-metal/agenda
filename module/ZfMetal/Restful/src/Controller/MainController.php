@@ -9,6 +9,8 @@ use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 use ZfMetal\Commons\Facade\Service\FormBuilder;
 use ZfMetal\Commons\Facade\Service\FormProcess;
+use ZfMetal\Restful\Exception\ItemNotExistException;
+use ZfMetal\Restful\Exception\ValidationException;
 use ZfMetal\Restful\Filter\Builder;
 use ZfMetal\Restful\Filter\DoctrineQueryBuilderFilter;
 use ZfMetal\Restful\Options\ModuleOptions;
@@ -43,7 +45,6 @@ class MainController extends AbstractRestfulController
      * @var string
      */
     protected $entityAlias;
-
 
 
     public function getEm()
@@ -131,26 +132,19 @@ class MainController extends AbstractRestfulController
         return $this->getEm()->getRepository($this->getEntityClass());
     }
 
-    protected function findAll()
-    {
-        //$data= $this->getEntityRepository()->findAll();
-
-        $qb = $this->getEntityRepository()->createQueryBuilder('u');
-
-        $data = $qb->select('u')
-            ->getQuery()
-            ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-
-        return $data;
-    }
-
 
     protected function filterQuery($query)
     {
 
         $qb = $this->getEntityRepository()->createQueryBuilder('u')->select('u');
 
-        $builder = new Builder($query, Builder::TYPE_SYMBOL);
+        $filterType = Builder::TYPE_SYMBOL;
+
+        if (key_exists("filterType", $query)) {
+            $filterType = $query["filterType"];
+        }
+
+        $builder = new Builder($query, $filterType);
         $builder->build();
 
         $DoctrineQueryBuilderFilter = new DoctrineQueryBuilderFilter($qb, $builder->getFilters());
@@ -158,35 +152,6 @@ class MainController extends AbstractRestfulController
 
 
         return $qb->getQuery()->getResult();
-    }
-
-    /**
-     * Return list of resources
-     *
-     * @return array
-     */
-    public function get($id = null)
-    {
-        try {
-            $query = $this->getRequest()->getQuery();
-
-            if($id){
-                $object = $this->getEntityRepository()->find($id);
-                if(!$object){
-                    throw new \Exception("Entity not found");
-                }
-                $results =$object->toArray();
-            }else{
-                $objects = $this->filterQuery($query);
-                $results = Transformable::toArrays($objects);
-            }
-
-
-            return new JsonModel($results);
-
-        } catch (\Exception $e) {
-            return $this->sendErrorResponse($e);
-        }
     }
 
     /**
@@ -215,6 +180,32 @@ class MainController extends AbstractRestfulController
     }
 
 
+    /**
+     * Return list of resources
+     *
+     * @return array
+     */
+    public function get($id = null)
+    {
+        try {
+
+            if ($id) {
+                $object = $this->getEntityRepository()->find($id);
+                if (!$object) {
+                    throw new ItemNotExistException();
+                }
+                $results = $object->toArray();
+            }
+
+            return new JsonModel($results);
+        } catch (ItemNotExistException $e) {
+            return $this->responseSpecificException($e);
+        } catch (\Exception $e) {
+            return $this->responseGeneralException($e);
+        }
+    }
+
+
     public function create($data)
     {
         try {
@@ -227,8 +218,18 @@ class MainController extends AbstractRestfulController
 
             $result = FormProcess::process($this->getEm(), $form, false, $data)->getArrayResult();
 
+            if (!$result["status"]) {
+                throw new ValidationException();
+            } else {
+                $result["message"] = "The item was created successfully";
+            }
+
+            $this->getResponse()->setStatusCode(Response::STATUS_CODE_201);
+
             return new JsonModel($result);
 
+        } catch (ValidationException $e) {
+            return $this->responseValidationException($e, $result["errors"]);
         } catch (\Exception $e) {
             $this->getResponse()->setStatusCode(Response::STATUS_CODE_500);
             $a = [
@@ -239,57 +240,115 @@ class MainController extends AbstractRestfulController
     }
 
 
-    public function update($id,$data){
+    public function update($id, $data)
+    {
         try {
 
             $form = FormBuilder::generate($this->getEm(), $this->getEntityClass());
 
             $object = $this->getEntityRepository()->find($id);
+            if (!$object) {
+                throw new ItemNotExistException();
+            }
+
+
             $form->bind($object);
 
             $result = FormProcess::process($this->getEm(), $form, false, $data)->getArrayResult();
 
+            if (!$result["status"]) {
+                throw new ValidationException();
+            } else {
+                $result["message"] = "The item was updated successfully";
+            }
+
+            $this->getResponse()->setStatusCode(Response::STATUS_CODE_200);
+
             return new JsonModel($result);
 
+        } catch (ItemNotExistException $e) {
+            return $this->responseSpecificException($e);
+        } catch (ValidationException $e) {
+            return $this->responseValidationException($e, $result["errors"]);
         } catch (\Exception $e) {
-            $this->getResponse()->setStatusCode(Response::STATUS_CODE_500);
-            $a = [
-                "message" => $e->getMessage()
-            ];
-            return new JsonModel($a);
+            return $this->responseGeneralException($e);
         }
 
     }
 
 
-    public function delete($id){
+    public function delete($id)
+    {
+
         try {
             $object = $this->getEntityRepository()->find($id);
+            if (!$object) {
+                throw new ItemNotExistException();
+            }
             $this->getEm()->remove($object);
             $this->getEm()->flush();
             $a = [
-                "message" => "Object Delete"
+                "message" => "Item Delete"
             ];
 
             return new JsonModel($a);
+        } catch (ItemNotExistException $e) {
+            return $this->responseSpecificException($e);
         } catch (\Exception $e) {
-           return $this->sendErrorResponse($e);
+            return $this->responseGeneralException($e);
         }
 
 
     }
 
     /**
-     * @param $e
+     * @param \Exception $e
      * @return JsonModel
      */
-    public function sendErrorResponse(\Exception $e)
+    public function responseGeneralException(\Exception $e)
     {
         $this->getResponse()->setStatusCode(Response::STATUS_CODE_500);
         $a = [
-            "messages" => $e->getMessage()
+            "message" => $e->getMessage()
         ];
         return new JsonModel($a);
+    }
+
+    /**
+     * @param \Exception $e
+     * @param null|array $data
+     * @return \Zend\View\Model\JsonModel
+     */
+    public function responseSpecificException(\Exception $e, $data = null)
+    {
+        $this->getResponse()->setStatusCode($e->getCode());
+        $a = [
+            "message" => $e->getMessage()
+        ];
+
+        if ($data) {
+            $a = array_merge_recursive($a, $data);
+        }
+
+        $jm = new JsonModel($a);
+        return $jm;
+    }
+
+    /**
+     * @param \Exception $e
+     * @param null|array $data
+     * @return \Zend\View\Model\JsonModel
+     */
+    public function responseValidationException(\Exception $e, $errors = null)
+    {
+        $this->getResponse()->setStatusCode($e->getCode());
+        $a = [
+            "message" => $e->getMessage(),
+            "errors" => $errors
+        ];
+
+        $jm = new JsonModel($a);
+        return $jm;
     }
 
 }

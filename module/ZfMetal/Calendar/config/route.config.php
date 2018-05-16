@@ -177,31 +177,12 @@ return [
                         ],
                     ],
                     'api' => [
+                        'type' => 'Segment',
                         'mayTerminate' => false,
                         'options' => [
-                            'route' => '/api',
-                        ],
-                        'type' => 'Literal',
-                        'child_routes' => [
-                            'calendars' => [
-                                'mayTerminate' => false,
-                                'options' => [
-                                    'route' => '/calendars[/:id]',
-                                    'defaults' => [
-                                        'controller' => \ZfMetal\Calendar\Controller\ApiCalendarController::CLASS,
-                                    ],
-                                ],
-                                'type' => 'Segment',
-                            ],
-                            'events' => [
-                                'mayTerminate' => false,
-                                'options' => [
-                                    'route' => '/events[/:id]',
-                                    'defaults' => [
-                                        'controller' => \ZfMetal\Calendar\Controller\ApiEventController::CLASS,
-                                    ],
-                                ],
-                                'type' => 'Segment',
+                            'route' => '/api/:entityAlias[/:id]',
+                            'defaults' => [
+                                'controller' => \ZfMetal\Restful\Controller\MainController::CLASS,
                             ],
                         ],
                     ],

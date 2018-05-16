@@ -15,8 +15,7 @@
     "axios": "latest",
     "moment": "^2.22.1",
     "vue": "^2.5.2",
-    "vue-drag-drop": "^1.0.0",
-    "vue-scroll": "^2.1.7"
+    "vue-drag-drop": "^1.0.0"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

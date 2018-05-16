@@ -3,17 +3,19 @@
 namespace ZfMetal\Calendar\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection as ArrayCollection;
+use Indaxia\OTR\ITransformable;
+use Indaxia\OTR\Traits\Transformable;
 use Zend\Form\Annotation as Annotation;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint as UniqueConstraint;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Indaxia\OTR\ITransformable;
-use Indaxia\OTR\Traits\Transformable;
+use Indaxia\OTR\Annotations\Policy;
+
 /**
  * Event
- *
- *
- *
+ * 
+ * 
+ * 
  * @author
  * @license
  * @link
@@ -36,11 +38,12 @@ class Event implements ITransformable
     public $id = null;
 
     /**
+     * @Policy\To\Custom(transform= "\ZfMetal\Calendar\PolicyHandler\EntityToId::transform")
      * @Annotation\Type("DoctrineModule\Form\Element\ObjectSelect")
      * @Annotation\Options({"label":"calendar","empty_option": "",
      * "target_class":"\ZfMetal\Calendar\Entity\Calendar", "description":""})
      * @ORM\ManyToOne(targetEntity="\ZfMetal\Calendar\Entity\Calendar")
-     * @ORM\JoinColumn(name="calendar_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="calendar_id", referencedColumnName="id", nullable=false)
      */
     public $calendar = null;
 
@@ -156,6 +159,8 @@ class Event implements ITransformable
     {
         $this->ticket = $ticket;
     }
+
+
 
     public function __toString()
     {
