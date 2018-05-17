@@ -1,6 +1,6 @@
 <?php
 
-namespace Indaxia\OTR\Annotations\Policy;
+namespace  ZfMetal\Restful\Transformation\Annotations\Policy;
 
 use \ZfMetal\Restful\Transformation\Annotations\Policy\Interfaces;
 use \Doctrine\ORM\Mapping as ORM;

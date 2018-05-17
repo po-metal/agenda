@@ -1,7 +1,7 @@
 <?php
-namespace Indaxia\OTR\Annotations\Policy;
+namespace  ZfMetal\Restful\Transformation\Annotations\Policy;
 
-use  ZfMetal\Restful\Transformation\Annotations\Policy\Interfaces;
+use \ZfMetal\Restful\Transformation\Annotations\Policy\Interfaces;
 use \Doctrine\ORM\Mapping as ORM;
 
 /** ITransformable policy.
@@ -10,8 +10,8 @@ use \Doctrine\ORM\Mapping as ORM;
  * Local policy: overrides and ignores all the global policy parameters. 
  * @Annotation */
 class Auto
-    extends  ZfMetal\Restful\Transformation\Annotations\Annotation
-    implements Interfaces\AutoTo {
+    extends  \ZfMetal\Restful\Transformation\Annotations\Annotation
+    implements Interfaces\Auto {
 
     public $priority = 0.1;
 }

@@ -9,7 +9,7 @@ use Zend\Form\Annotation as Annotation;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint as UniqueConstraint;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Indaxia\OTR\Annotations\Policy;
+use ZfMetal\Restful\Transformation\Annotations\Policy;
 
 /**
  * Event
@@ -38,7 +38,7 @@ class Event implements ITransformable
     public $id = null;
 
     /**
-     * @Policy\To\Custom(transform= "\ZfMetal\Calendar\PolicyHandler\EntityIdName::transform")
+     * @Policy\Custom(transform= "\ZfMetal\Calendar\PolicyHandler\EntityIdName::transform")
      * @Annotation\Type("DoctrineModule\Form\Element\ObjectSelect")
      * @Annotation\Options({"label":"calendar","empty_option": "",
      * "target_class":"\ZfMetal\Calendar\Entity\Calendar", "description":""})
@@ -57,7 +57,7 @@ class Event implements ITransformable
     public $ticket = null;
 
     /**
-     * @Policy\To\FormatDateTime(format="Y-m-d H:i")
+     * @Policy\FormatDateTime(format="Y-m-d H:i")
      * @Annotation\Type("Zend\Form\Element\DateTime")
      * @Annotation\Attributes({"type":"datetime"})
      * @Annotation\Options({"label":"start", "description":"", "addon":""})
@@ -66,7 +66,7 @@ class Event implements ITransformable
     public $start = null;
 
     /**
-     * @Policy\To\FormatDateTime(format="Y-m-d H:i")
+     * @Policy\FormatDateTime(format="Y-m-d H:i")
      * @Annotation\Type("Zend\Form\Element\DateTime")
      * @Annotation\Attributes({"type":"datetime"})
      * @Annotation\Options({"label":"end", "description":"", "addon":""})

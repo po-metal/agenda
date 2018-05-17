@@ -12,6 +12,11 @@ use \Doctrine\Common\Annotations\Reader;
 use \Doctrine\Common\Annotations\AnnotationReader;
 use \Doctrine\Common\Annotations\CachedReader;
 use \Doctrine\Common\Cache\ArrayCache;
+use \Doctrine\ORM\Mapping\ManyToOne;
+use \Doctrine\ORM\Mapping\ManyToMany;
+use \Doctrine\ORM\Mapping\OneToOne;
+use \Doctrine\ORM\Mapping\OneToMany;
+use ZfMetal\Restful\Transformation\Annotations\PolicyResolver;
 
 class Transform
 {
@@ -51,46 +56,46 @@ class Transform
 
     /**
      * Transform constructor.
+     *
      * @param $entity
      * @param Annotations\Policy\Interfaces\Policy $policy
      * @param int $maxDepth
      * @param int $depth
      */
-    public function __construct($entity, Annotations\Policy\Interfaces\Policy $policy = null, $maxDepth = 2, $depth = 1)
+    public function __construct(Annotations\Policy\Interfaces\Policy $policy = null, $maxDepth = 2, $depth = 1)
     {
-        $this->entity = $entity;
+
         $this->policy = $policy;
-        $this->reader = $this->createCachedReader();
+        $this->reader = new CachedReader(new AnnotationReader(), new ArrayCache());
         $this->policyResolver = new PolicyResolver();
-        $this->refClass = new \ReflectionClass($this->entity);
+
+
         $this->depth = $depth;
         $this->maxDepth = $maxDepth;
 
     }
 
 
-    protected function getProperties()
+    protected function getProperties($refClass)
     {
-        if (!$this->properties) {
-            $this->properties = $this->refClass->getProperties(\ReflectionProperty::IS_PUBLIC
-                | \ReflectionProperty::IS_PROTECTED
-                | \ReflectionProperty::IS_PRIVATE);
-        }
-        return $this->properties;
+
+        return $refClass->getProperties(\ReflectionProperty::IS_PUBLIC
+            | \ReflectionProperty::IS_PROTECTED
+            | \ReflectionProperty::IS_PRIVATE);
+
     }
 
-
-    public function createCachedReader()
+    /**
+     * @param $entity
+     * @param int $depth
+     * @return mixed
+     */
+    public function toArray($entity, $depth = 1)
     {
-        return new CachedReader(new AnnotationReader(), new ArrayCache());
-    }
-
-
-    public function toArray()
-    {
+        $refClass = new \ReflectionClass($entity);
 
         /** @var \ReflectionProperty $property */
-        foreach ($this->getProperties() as $property) {
+        foreach ($this->getProperties($refClass) as $property) {
 
             if ($property->isStatic()) {
                 continue;
@@ -109,115 +114,24 @@ class Transform
                 continue;
             }
 
-            $result[$propertyName] = $this->toArrayProperty($property, $propertyName, $propertyPolicy);
+            $getter = $propertyPolicy->getter ?: 'get' . ucfirst($propertyName);
+            $value = $entity->$getter();
+
+            $result[$propertyName] = $this->toArrayProperty($property, $propertyName, $value, $propertyPolicy, $depth);
         }
         return $result;
     }
 
-    protected function _check($propertyName)
-    {
-        if ($propertyName[0] === '_' && $propertyName[1] === '_') {
-            var_dump($propertyName);
-            die; //TODO review
-            return true;
-        }
-        return false;
-    }
-
-
-    protected function scalarTypes($property, $propertyName, $getter, $policy)
+    protected function toArrayProperty(\ReflectionProperty $property, $propertyName, $value, $policy, $depth)
     {
         $result = null;
 
         if ($column = $this->reader->getPropertyAnnotation($property, 'Doctrine\ORM\Mapping\Column')) {
-
-            //Value
-            $result = $this->entity->$getter();
-
-            //Custom Policy
-            if (($policy instanceof Annotations\Policy\Interfaces\Custom) && $policy->format) {
-                return call_user_func_array($policy->format, [$result, $column->type]);
-            }
-
-
-            //Date-Time
-            if (in_array($column->type, self::DATE_TYPES)) {
-                if ($result !== null) {
-                    if ($policy instanceof Annotations\Policy\Interfaces\FormatDateTime) {
-                        $result = $result->format($policy->format);
-                        if ($result === false) {
-                            throw new Exceptions\PolicyException('Wrong DateTime format for field "' . $propertyName . '"');
-                        }
-                    } else if (!$policy instanceof Annotations\Policy\Interfaces\KeepDateTime) {
-                        $result = $result->format('Y-m-d\TH:i:s') . '.000Z';
-                    }
-                }
-            }
-
-            if ($column->type == 'simple_array') {
-                if ($this->policyResolver->hasOption(PolicyResolver::SIMPLE_ARRAY_FIX)
-                    && is_array($result)
-                    && (count($result) === 1)
-                    && ($result[0] === null)) {
-                    return [];
-                }
-            }
-        }
-        return $result;
-    }
-
-    protected function toArrayProperty($property, $propertyName, $policy, \ReflectionClass $headRefClass)
-    {
-        $getter = $policy->getter ?: 'get' . ucfirst($propertyName);
-
-        $result = null;
-
-        //SCALAR TYPES
-        if ($result = $this->scalarTypes($property, $propertyName, $getter, $policy)) {
-        //RELATIONS
-        } else if ($association = $this->getPropertyAssociation($property)) { // entity or collection
-            $isCollection = false;
-
-            if ($association instanceof OneToMany || $association instanceof ManyToMany) {
-                $isCollection = true;
-            }
-
-            $relEntity = $this->entity->$getter();
-
-            // ========== COLLECTION RELATION ==========
-            if ($isCollection) {
-                $collection = $relEntity;
-                if ($collection->count()) {
-                    if ($policy instanceof Annotations\Policy\Interfaces\FetchPaginateTo) { // pagination policy
-                        if ($policy->fromTail) {
-                            $offset = $collection->count() - $policy->limit - $policy->offset;
-                            if ($offset < 0) {
-                                $offset = 0;
-                            }
-                            $limit = ($collection->count() > $policy->limit) ? $collection->count() : $policy->limit;
-                            $collection = $collection->slice($offset, $limit);
-                        } else {
-                            $collection = $collection->slice($policy->offset, $policy->limit);
-                        }
-                    }
-                    foreach ($collection as $el) {
-                        $result['collection'][] = $this->recursiveEntity($el);
-                    }
-                }
-
-            } else { // single entity
-                if ($relEntity) {
-                    $result = $this->recursiveEntity($relEntity);
-                }
-            }
-
-            if (($policy instanceof Annotations\Policy\Interfaces\Custom) && $policy->transform) {
-                $result = call_user_func_array($policy->transform, [$relEntity, $result]);
-            }
-
-        //NON-DOCTRINE TYPE
+            $result = $this->scalarTypes($propertyName, $value, $column->type, $policy);
+        } else if ($association = $this->getPropertyAssociation($property)) {
+            $result = $this->associationTypes($association, $value, $policy, $depth);
         } else {
-            $result = $this->$getter();
+            $result = $value;
             if (($policy instanceof Annotations\Policy\Interfaces\Custom) && $policy->format) {
                 return call_user_func_array($policy->format, [$result, null]);
             }
@@ -226,20 +140,102 @@ class Transform
         return $result;
     }
 
-
-    protected function recursiveEntity($relEntity){
-        if($this->depth < $this->maxDepth) {
-            $transform = new Transform($relEntity, $this->policy, $this->maxDepth, $this->depth + 1);
-            return $transform->toArray();
+    protected function _check($propertyName)
+    {
+        if ($propertyName[0] === '_' && $propertyName[1] === '_') {
+            return true;
         }
-        return null;//TODO Review
+        return false;
+    }
+
+
+    protected function scalarTypes($propertyName, $value, $columnType, $policy)
+    {
+
+        //Value
+        $result = $value;
+
+        //Custom Policy
+        if (($policy instanceof Annotations\Policy\Interfaces\Custom) && $policy->format) {
+            return call_user_func_array($policy->format, [$result, $columnType]);
+        }
+
+
+        //Date-Time
+        if (in_array($columnType, self::DATE_TYPES)) {
+            if ($result !== null) {
+                if ($policy instanceof Annotations\Policy\Interfaces\FormatDateTime) {
+                    $result = $result->format($policy->format);
+                    if ($result === false) {
+                        throw new Exceptions\PolicyException('Wrong DateTime format for field "' . $propertyName . '"');
+                    }
+                } else if (!$policy instanceof Annotations\Policy\Interfaces\KeepDateTime) {
+                    $result = $result->format('Y-m-d\TH:i:s') . '.000Z';
+                }
+            }
+        }
+
+        if ($columnType == 'simple_array') {
+            if ($this->policyResolver->hasOption(PolicyResolver::SIMPLE_ARRAY_FIX)
+                && is_array($result)
+                && (count($result) === 1)
+                && ($result[0] === null)) {
+                return [];
+            }
+        }
+
+        return $result;
+    }
+
+
+    protected function associationTypes($association, $value, $policy, $depth)
+    {
+
+        $result = null;
+        if ($depth < $this->maxDepth) {
+            $isCollection = false;
+
+            if ($association instanceof OneToMany || $association instanceof ManyToMany) {
+                $isCollection = true;
+            }
+            $relEntity = $value;
+
+            if ($isCollection) {
+                $collection = $value;
+                if ($collection->count()) {
+
+                    if ($policy instanceof Annotations\Policy\Interfaces\Paginate) { // pagination policy
+                        $collection = $this->paginate($policy, $collection);
+                    }
+
+
+                    foreach ($collection as $entity) {
+                        $result[] =  $this->toArray($entity, $depth + 1);
+                    }
+
+                }
+
+            } else { // single entity
+                if ($relEntity) {
+                    $result =  $this->toArray($relEntity, $depth + 1);
+                }
+            }
+
+            if (($policy instanceof Annotations\Policy\Interfaces\Custom) && $policy->transform) {
+                $result = call_user_func_array($policy->transform, [$relEntity, $result]);
+            }
+        }
+        return $result;
+
     }
 
 
     /** @return Annotation|null returns null if its inversed side of bidirectional relation */
-    protected function getPropertyAssociation(\ReflectionProperty $property)
+    protected
+    function getPropertyAssociation(\ReflectionProperty $property)
     {
         $annotations = $this->reader->getPropertyAnnotations($property);
+
         foreach ($annotations as $an) {
             if (($an instanceof ManyToOne && !$an->inversedBy)
                 || ($an instanceof ManyToMany && !$an->inversedBy)
@@ -249,6 +245,37 @@ class Transform
             }
         }
         return null;
+    }
+
+
+    public function toArrays(array $entities)
+    {
+        $arrays = [];
+
+        foreach ($entities as $entity) {
+            $arrays[] = $this->toArray($entity);
+        }
+        return $arrays;
+    }
+
+    /**
+     * @param $policy
+     * @param $collection
+     * @return mixed
+     */
+    protected function paginate($policy, $collection)
+    {
+        if ($policy->fromTail) {
+            $offset = $collection->count() - $policy->limit - $policy->offset;
+            if ($offset < 0) {
+                $offset = 0;
+            }
+            $limit = ($collection->count() > $policy->limit) ? $collection->count() : $policy->limit;
+            $collection = $collection->slice($offset, $limit);
+        } else {
+            $collection = $collection->slice($policy->offset, $policy->limit);
+        }
+        return $collection;
     }
 
 }

@@ -1,5 +1,5 @@
 <?php
-namespace Indaxia\OTR\Annotations\Policy;
+namespace  ZfMetal\Restful\Transformation\Annotations\Policy;
 
 use \ZfMetal\Restful\Transformation\Annotations\Policy\Interfaces;
 use \Doctrine\ORM\Mapping as ORM;
@@ -11,7 +11,7 @@ use \Doctrine\ORM\Mapping as ORM;
  * @Annotation */
 class KeepDateTime
     extends  \ZfMetal\Restful\Transformation\Annotations\Annotation
-    implements Interfaces\KeepDateTimeTo {
+    implements Interfaces\KeepDateTime {
 
     public $priority = 0.2;
 }

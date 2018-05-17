@@ -52,13 +52,13 @@ class PolicyResolver
         // global
         $pa = $ar->getPropertyAnnotations($p);
         foreach ($pa as $a) {
-            if ($a instanceof Policy\Interfaces\PolicyTo) {
+            if ($a instanceof Policy\Interfaces\Policy) {
                 $policies[] = $this->cloneWithLowerPriority($a);
             }
         }
 
         // propagating
-        if ($this->isPropagating($policy) && ($policy instanceof Policy\Interfaces\PolicyTo)) {
+        if ($this->isPropagating($policy) && ($policy instanceof Policy\Interfaces\Policy)) {
             $policies[] = $this->cloneWithLowerPriority($policy)->clear();
         } else { // not propagating
             $policies[] = $this->createAutoWithDoubleLoweredPriority();
@@ -66,10 +66,10 @@ class PolicyResolver
 
         // local
         if (isset($policy->nested[$propertyName])) {
-            if ($policy->nested[$propertyName] instanceof Policy\Interfaces\PolicyTo) {
+            if ($policy->nested[$propertyName] instanceof Policy\Interfaces\Policy) {
                 $policies[] = $policy->nested[$propertyName];
             } else {
-                $policies[] = (new Policy\To\Auto())->insideOf($policy->nested[$propertyName]);
+                $policies[] = (new Policy\Auto())->insideOf($policy->nested[$propertyName]);
             }
         }
 

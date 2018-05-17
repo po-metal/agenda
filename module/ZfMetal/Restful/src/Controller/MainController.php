@@ -3,7 +3,6 @@
 namespace ZfMetal\Restful\Controller;
 
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
-use Indaxia\OTR\Traits\Transformable;
 use Zend\Http\Response;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
@@ -14,6 +13,7 @@ use ZfMetal\Restful\Exception\ValidationException;
 use ZfMetal\Restful\Filter\Builder;
 use ZfMetal\Restful\Filter\DoctrineQueryBuilderFilter;
 use ZfMetal\Restful\Options\ModuleOptions;
+use ZfMetal\Restful\Transformation\Transform;
 
 /**
  * MainController
@@ -112,6 +112,7 @@ class MainController extends AbstractRestfulController
     public function __construct(\Doctrine\ORM\EntityManager $em)
     {
         $this->em = $em;
+        $this->layout()->setTerminal(true);
     }
 
     /**
@@ -166,7 +167,8 @@ class MainController extends AbstractRestfulController
 
             $objects = $this->filterQuery($query);
 
-            $results = Transformable::toArrays($objects);
+            $transform = new Transform();
+            $results = $transform->toArrays($objects);
 
             return new JsonModel($results);
 
@@ -194,7 +196,10 @@ class MainController extends AbstractRestfulController
                 if (!$object) {
                     throw new ItemNotExistException();
                 }
-                $results = $object->toArray();
+
+                $transform = new Transform();
+                $results = $transform->toArray($object);
+
             }
 
             return new JsonModel($results);

@@ -9,7 +9,7 @@ use Zend\Form\Annotation as Annotation;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint as UniqueConstraint;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Indaxia\OTR\Annotations\Policy;
+use ZfMetal\Restful\Transformation\Annotations\Policy;
 
 /**
  * Schedule
@@ -43,7 +43,7 @@ class Schedule implements ITransformable
      * @Annotation\Type("Zend\Form\Element\Hidden")
      * @ORM\ManyToOne(targetEntity="\ZfMetal\Calendar\Entity\Calendar")
      * @ORM\JoinColumn(name="calendar_id", referencedColumnName="id", nullable=true)
-     * @Policy\to\Skip
+     * @Policy\Skip
      */
     public $calendar = null;
 
@@ -60,7 +60,7 @@ class Schedule implements ITransformable
      * @Annotation\Attributes({"type":"time"})
      * @Annotation\Options({"label":"start", "description":"", "addon":""})
      * @ORM\Column(type="time", unique=false, nullable=true, name="start")
-     * @Policy\To\KeepDateTime
+     * @Policy\KeepDateTime
      */
     public $start = null;
 
@@ -69,7 +69,7 @@ class Schedule implements ITransformable
      * @Annotation\Attributes({"type":"time"})
      * @Annotation\Options({"label":"end", "description":"", "addon":""})
      * @ORM\Column(type="time", unique=false, nullable=true, name="end")
-     * @Policy\To\KeepDateTime
+     * @Policy\KeepDateTime
      */
     public $end = null;
 
@@ -78,7 +78,7 @@ class Schedule implements ITransformable
      * @Annotation\Attributes({"type":"time"})
      * @Annotation\Options({"label":"startBreak", "description":"", "addon":""})
      * @ORM\Column(type="time", unique=false, nullable=true, name="start_break")
-     * @Policy\To\KeepDateTime
+     * @Policy\KeepDateTime
      */
     public $startBreak = null;
 
@@ -87,7 +87,7 @@ class Schedule implements ITransformable
      * @Annotation\Attributes({"type":"time"})
      * @Annotation\Options({"label":"endBreak", "description":"", "addon":""})
      * @ORM\Column(type="time", unique=false, nullable=true, name="end_break")
-     * @Policy\To\KeepDateTime
+     * @Policy\KeepDateTime
      */
     public $endBreak = null;
 

@@ -1,5 +1,5 @@
 <?php
-namespace Indaxia\OTR\Annotations\Policy;
+namespace  ZfMetal\Restful\Transformation\Annotations\Policy;
 
 use \Doctrine\ORM\Mapping as ORM;
 
@@ -8,11 +8,11 @@ use \Doctrine\ORM\Mapping as ORM;
  * Opposite to Accept.
  * @Annotation */
 class Skip 
-    extends  ZfMetal\Restful\Transformation\Annotations\Annotation
-    implements Interfaces\SkipTo
+    extends  \ZfMetal\Restful\Transformation\Annotations\Annotation
+    implements \ZfMetal\Restful\Transformation\Annotations\Policy\Interfaces\Skip
 {        
     public function inside(array $policy) {
-        throw new  ZfMetal\Restful\Transformation\Exceptions\PolicyException("Policy\\Skip cannot contain policies");
+        throw new  \ZfMetal\Restful\Transformation\Exceptions\PolicyException("Policy\\Skip cannot contain policies");
     }
 
     public $priority = 0.9;
