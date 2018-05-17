@@ -3,13 +3,11 @@
 namespace ZfMetal\Calendar\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection as ArrayCollection;
-use Indaxia\OTR\ITransformable;
-use Indaxia\OTR\Traits\Transformable;
 use Zend\Form\Annotation as Annotation;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint as UniqueConstraint;
 use Gedmo\Mapping\Annotation as Gedmo;
-use ZfMetal\Restful\Transformation\Annotations\Policy;
+use ZfMetal\Restful\Transformation;
 
 /**
  * Event
@@ -22,10 +20,8 @@ use ZfMetal\Restful\Transformation\Annotations\Policy;
  * @ORM\Table(name="cal_events")
  * @ORM\Entity(repositoryClass="ZfMetal\Calendar\Repository\EventRepository")
  */
-class Event implements ITransformable
+class Event
 {
-
-    use Transformable;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
@@ -38,7 +34,7 @@ class Event implements ITransformable
     public $id = null;
 
     /**
-     * @Policy\Custom(transform= "\ZfMetal\Calendar\PolicyHandler\EntityIdName::transform")
+     * @Transformation\Policy\Custom(transform= "\ZfMetal\Calendar\PolicyHandler\EntityIdName::transform")
      * @Annotation\Type("DoctrineModule\Form\Element\ObjectSelect")
      * @Annotation\Options({"label":"calendar","empty_option": "",
      * "target_class":"\ZfMetal\Calendar\Entity\Calendar", "description":""})
@@ -57,7 +53,7 @@ class Event implements ITransformable
     public $ticket = null;
 
     /**
-     * @Policy\FormatDateTime(format="Y-m-d H:i")
+     * @Transformation\Policy\FormatDateTime(format="Y-m-d H:i")
      * @Annotation\Type("Zend\Form\Element\DateTime")
      * @Annotation\Attributes({"type":"datetime"})
      * @Annotation\Options({"label":"start", "description":"", "addon":""})
@@ -66,7 +62,7 @@ class Event implements ITransformable
     public $start = null;
 
     /**
-     * @Policy\FormatDateTime(format="Y-m-d H:i")
+     * @Transformation\Policy\FormatDateTime(format="Y-m-d H:i")
      * @Annotation\Type("Zend\Form\Element\DateTime")
      * @Annotation\Attributes({"type":"datetime"})
      * @Annotation\Options({"label":"end", "description":"", "addon":""})

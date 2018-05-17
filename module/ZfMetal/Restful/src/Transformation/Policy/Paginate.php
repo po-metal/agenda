@@ -1,7 +1,7 @@
 <?php
-namespace  ZfMetal\Restful\Transformation\Annotations\Policy;
+namespace  ZfMetal\Restful\Transformation\Policy;
 
-use \ZfMetal\Restful\Transformation\Annotations\Policy\Interfaces;
+use \ZfMetal\Restful\Transformation\Policy\Interfaces;
 use \Doctrine\ORM\Mapping as ORM;
 
 /** ITransformable policy.
@@ -13,7 +13,7 @@ use \Doctrine\ORM\Mapping as ORM;
  * It's not inherited from parent's policy (!). Specify inside() to change behaviour.
  * @Annotation */
 class Paginate
-    extends  \ZfMetal\Restful\Transformation\Annotations\Annotation
+    extends  \ZfMetal\Restful\Transformation\Policy\Annotation
     implements Interfaces\Paginate {
     public $offset = 0;
     public $limit = \PHP_INT_MAX;

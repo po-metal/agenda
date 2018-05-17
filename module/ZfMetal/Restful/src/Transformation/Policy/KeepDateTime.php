@@ -1,7 +1,7 @@
 <?php
-namespace  ZfMetal\Restful\Transformation\Annotations\Policy;
+namespace  ZfMetal\Restful\Transformation\Policy;
 
-use \ZfMetal\Restful\Transformation\Annotations\Policy\Interfaces;
+use \ZfMetal\Restful\Transformation\Policy\Interfaces;
 use \Doctrine\ORM\Mapping as ORM;
 
 /** ITransformable policy.
@@ -10,7 +10,7 @@ use \Doctrine\ORM\Mapping as ORM;
  * Note: ITransformable always works in UTC timezone.
  * @Annotation */
 class KeepDateTime
-    extends  \ZfMetal\Restful\Transformation\Annotations\Annotation
+    extends  \ZfMetal\Restful\Transformation\Policy\Annotation
     implements Interfaces\KeepDateTime {
 
     public $priority = 0.2;

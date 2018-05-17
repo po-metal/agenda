@@ -1,10 +1,10 @@
 <?php
 
-namespace ZfMetal\Restful\Transformation\Annotations;
+namespace ZfMetal\Restful\Transformation;
 
 use \Doctrine\Common\Annotations\Reader;
-use \ZfMetal\Restful\Transformation\Annotations\Policy;
-use \ZfMetal\Restful\Transformation\Annotations\Annotation;
+use \ZfMetal\Restful\Transformation\Policy;
+use \ZfMetal\Restful\Transformation\Policy\Annotation;
 use \ZfMetal\Restful\Transformation\Exceptions\PolicyException;
 
 /** Resolves policies passed by \Indaxia\OTR\Traits\Transformable */

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "259319297b2b0850728d51b0a590b206",
+    "content-hash": "8b4211acada992b0772444e68ea928f4",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -1068,55 +1068,6 @@
                 "uploadable"
             ],
             "time": "2018-05-08T12:28:40+00:00"
-        },
-        {
-            "name": "indaxia/doctrine-orm-transformations",
-            "version": "2.0.1-stable",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Indaxia/doctrine-orm-transformations.git",
-                "reference": "b2612b9945990c16269c1225eeb4e7f3753a638f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Indaxia/doctrine-orm-transformations/zipball/b2612b9945990c16269c1225eeb4e7f3753a638f",
-                "reference": "b2612b9945990c16269c1225eeb4e7f3753a638f",
-                "shasum": ""
-            },
-            "require": {
-                "doctrine/orm": "^2.5",
-                "php": ">=5.4.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "5.6.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Indaxia\\OTR\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "ScorpioT1000",
-                    "email": "ScorpioT1000@yandex.ru",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Provides JSON-ready Doctrine ORM Entity-Array transfomtaions",
-            "homepage": "http://indaxia.github.io/doctrine-orm-transformations/",
-            "keywords": [
-                "array",
-                "doctrine",
-                "entity",
-                "json",
-                "orm"
-            ],
-            "time": "2016-11-18T04:44:43+00:00"
         },
         {
             "name": "mk-j/php_xlsxwriter",
@@ -5364,16 +5315,16 @@
         },
         {
             "name": "zf-metal/commons",
-            "version": "1.3.0",
+            "version": "1.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zf-metal/commons.git",
-                "reference": "5c15f48ab184ff1cbf7d63a8d20e03d604c3d01f"
+                "reference": "c0154b17c5661a8cb43c1e8cdce2b3082a5a7fc4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zf-metal/commons/zipball/5c15f48ab184ff1cbf7d63a8d20e03d604c3d01f",
-                "reference": "5c15f48ab184ff1cbf7d63a8d20e03d604c3d01f",
+                "url": "https://api.github.com/repos/zf-metal/commons/zipball/c0154b17c5661a8cb43c1e8cdce2b3082a5a7fc4",
+                "reference": "c0154b17c5661a8cb43c1e8cdce2b3082a5a7fc4",
                 "shasum": ""
             },
             "require": {
@@ -5412,7 +5363,7 @@
             "keywords": [
                 "zf3"
             ],
-            "time": "2018-05-16T19:37:42+00:00"
+            "time": "2018-05-16T19:52:23+00:00"
         },
         {
             "name": "zf-metal/datagrid",

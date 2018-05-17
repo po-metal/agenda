@@ -16,12 +16,11 @@ use \Doctrine\ORM\Mapping\ManyToOne;
 use \Doctrine\ORM\Mapping\ManyToMany;
 use \Doctrine\ORM\Mapping\OneToOne;
 use \Doctrine\ORM\Mapping\OneToMany;
-use ZfMetal\Restful\Transformation\Annotations\PolicyResolver;
 
 class Transform
 {
     /**
-     * @var Annotations\Policy\Interfaces\Policy
+     * @var Policy\Interfaces\Policy
      */
     protected $policy;
 
@@ -31,7 +30,7 @@ class Transform
     protected $reader;
 
     /**
-     * @var \ZfMetal\Restful\Transformation\Annotations\PolicyResolver
+     * @var \ZfMetal\Restful\Transformation\PolicyResolver
      */
     protected $policyResolver;
 
@@ -58,11 +57,11 @@ class Transform
      * Transform constructor.
      *
      * @param $entity
-     * @param Annotations\Policy\Interfaces\Policy $policy
+     * @param Policy\Interfaces\Policy $policy
      * @param int $maxDepth
      * @param int $depth
      */
-    public function __construct(Annotations\Policy\Interfaces\Policy $policy = null, $maxDepth = 2, $depth = 1)
+    public function __construct(Policy\Interfaces\Policy $policy = null, $maxDepth = 2, $depth = 1)
     {
 
         $this->policy = $policy;
@@ -110,7 +109,7 @@ class Transform
             $propertyPolicy = $this->policyResolver->resolvePropertyPolicyTo(
                 $this->policy, $propertyName, $property, $this->reader);
 
-            if ($propertyPolicy instanceof Annotations\Policy\Interfaces\Skip) {
+            if ($propertyPolicy instanceof Policy\Interfaces\Skip) {
                 continue;
             }
 
@@ -132,7 +131,7 @@ class Transform
             $result = $this->associationTypes($association, $value, $policy, $depth);
         } else {
             $result = $value;
-            if (($policy instanceof Annotations\Policy\Interfaces\Custom) && $policy->format) {
+            if (($policy instanceof Policy\Interfaces\Custom) && $policy->format) {
                 return call_user_func_array($policy->format, [$result, null]);
             }
         }
@@ -156,7 +155,7 @@ class Transform
         $result = $value;
 
         //Custom Policy
-        if (($policy instanceof Annotations\Policy\Interfaces\Custom) && $policy->format) {
+        if (($policy instanceof Policy\Interfaces\Custom) && $policy->format) {
             return call_user_func_array($policy->format, [$result, $columnType]);
         }
 
@@ -164,12 +163,12 @@ class Transform
         //Date-Time
         if (in_array($columnType, self::DATE_TYPES)) {
             if ($result !== null) {
-                if ($policy instanceof Annotations\Policy\Interfaces\FormatDateTime) {
+                if ($policy instanceof Policy\Interfaces\FormatDateTime) {
                     $result = $result->format($policy->format);
                     if ($result === false) {
                         throw new Exceptions\PolicyException('Wrong DateTime format for field "' . $propertyName . '"');
                     }
-                } else if (!$policy instanceof Annotations\Policy\Interfaces\KeepDateTime) {
+                } else if (!$policy instanceof Policy\Interfaces\KeepDateTime) {
                     $result = $result->format('Y-m-d\TH:i:s') . '.000Z';
                 }
             }
@@ -204,7 +203,7 @@ class Transform
                 $collection = $value;
                 if ($collection->count()) {
 
-                    if ($policy instanceof Annotations\Policy\Interfaces\Paginate) { // pagination policy
+                    if ($policy instanceof Policy\Interfaces\Paginate) { // pagination policy
                         $collection = $this->paginate($policy, $collection);
                     }
 
@@ -221,7 +220,7 @@ class Transform
                 }
             }
 
-            if (($policy instanceof Annotations\Policy\Interfaces\Custom) && $policy->transform) {
+            if (($policy instanceof Policy\Interfaces\Custom) && $policy->transform) {
                 $result = call_user_func_array($policy->transform, [$relEntity, $result]);
             }
         }

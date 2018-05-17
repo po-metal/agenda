@@ -1,5 +1,5 @@
 <?php
-namespace ZfMetal\Restful\Transformation\Annotations;
+namespace ZfMetal\Restful\Transformation\Policy;
 
 /** Annotation - general Policy skeleton class */
 abstract class Annotation implements \Doctrine\ORM\Mapping\Annotation {

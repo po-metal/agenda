@@ -32,8 +32,7 @@
         "zf-metal/datagrid": "^1.0.1",
         "zf-metal/generator": "^1.0.4",
         "zendframework/zend-mvc-console": "^1.1",
-        "phpunit/phpunit": "5.7.27",
-        "Indaxia/doctrine-orm-transformations": "2.*"
+        "phpunit/phpunit": "5.7.27"
     },
     "autoload": {
         "psr-4": {
