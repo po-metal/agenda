@@ -31,6 +31,8 @@ return [
     'ZfMetal\Datagrid',
     'ZfMetal\Generator',
     'ZfMetal\Security',
+    'ZfMetal\Calendar',
+    'ZfMetal\Restful',
     //'ZfMetal\SecuritySocial',
     'ZfcRbac',
     //MODULES
@@ -38,8 +40,8 @@ return [
     //'SkinAdminlte',
     //'SkinCentaurus',
     //'SkinMaterialDesignB4',
+
     'SkinMaterialDashboard',
     // 'SkinTaurus',
-    'ZfMetal\Calendar',
-    'ZfMetal\Restful'
+
 ];

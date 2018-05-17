@@ -20,7 +20,7 @@
         var top = this.$el.getBoundingClientRect().top - this.parentTop;
         var left = this.$el.getBoundingClientRect().left - this.parentLeft + 10;
         if (data.type != undefined && data.type == 't') {
-          this.$emit("dropForNewEvent",  {id: this.id, name: this.name}, data.id, this.hour, top, left);
+          this.$emit("dropForNewEvent",  this.id, data.id, this.hour, top, left);
         }
         if (data.type != undefined && data.type == 'e') {
           this.$emit("dropForChangeEvent", {id: this.id, name: this.name}, data.id, this.hour, top, left);

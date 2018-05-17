@@ -8,7 +8,9 @@
 
         <div class="col-lg-10">
             <div class="text-center">
+                <loading :isLoading="loading"></loading>
                 <day v-model="getDate"></day>
+
             </div>
             <div class="clearfix"></div>
             <div class="zfc-calendars" ref="zfcCalendars">
@@ -43,204 +45,225 @@
 
                 </table>
 
-                <event v-if="events" v-for="(event,index) in events" :key="index"
-                       :date="date" :calendar="event.calendar" :hour="event.hour" :ticketId="event.ticketId"
+                <event v-if="events" v-for="(event,index) in events" :key="index" :index="index"
+                       :id="event.id" :title="event.title" :description="event.description" :duration="event.duration"
+                       :date="event.date" :calendar="event.calendar" :hour="event.hour" :ticketId="event.ticketId"
                        :top="event.top" :left="event.left">
 
                 </event>
 
             </div>
         </div>
+
+        <modal :modalId="'event'" :title="'Evento'" :modalSize="'modal-lg'">
+            <form-event v-model="nowEvent" :index="nowEventId" v-on:remove="removeEvent"/>
+        </modal>
+
     </div>
 </template>
 
 <script>
-  import axios from 'axios'
-  import {Drag, Drop} from 'vue-drag-drop';
+    import axios from 'axios'
+    import {Drag, Drop} from 'vue-drag-drop';
 
-  import moment from 'moment'
-  import 'moment/locale/es';
+    import moment from 'moment'
+    import 'moment/locale/es';
 
+    import modal from './helpers/modal.vue'
+    import loading from './helpers/loading.vue'
 
-  import day from './day.vue'
-  import calendarTd from './calendarTd.vue'
-  import event from './event.vue'
-  import ticket from "./ticket.vue";
+    import day from './day.vue'
+    import calendarTd from './calendarTd.vue'
+    import event from './event.vue'
+    import ticket from "./ticket.vue";
 
-  const http = axios.create({
-    baseURL: '/zfmc/api/',
-    timeout: 5000,
-    headers: {
-      accept: 'application/json'
-    }
-  });
+    import formEvent from './forms/form-event.vue'
 
-
-  const httpTickets = axios.create({
-    baseURL: '/zfmapi/',
-    timeout: 5000,
-    headers: {
-      accept: 'application/json'
-    }
-  });
-
-
-
-  export default {
-    name: 'calendars',
-    components: {day, calendarTd, event, ticket, Drag, Drop},
-    data() {
-      return {
-        calendars: [],
-        tickets: [],
-        date: moment().locale('es'),
-        events: [],
-        top: 0,
-        left: 0
-      }
-    },
-    created: function () {
-      this.calendarList();
-      this.ticketList();
-    },
-    mounted() {
-      this.$nextTick(function () {
-        window.addEventListener('resize', this.onResize);
-      });
-      this.getTop();
-      this.getLeft();
-    },
-    methods: {
-      calendarList: function () {
-        http.get('calendars').then((response) => {
-          if (response.data.success) {
-            this.calendars = response.data.data;
-
-          }
-        })
-      },
-      ticketList: function () {
-        httpTickets.get('list/ticket').then((response) => {
-          this.tickets = response.data.data;
-        })
-      },
-      onResize: function () {
-        this.getTop();
-        this.getLeft();
-      },
-      getTop: function () {
-        this.top = this.$refs.zfcCalendars.getBoundingClientRect().top;
-      },
-      getLeft: function () {
-        this.left = this.$refs.zfcCalendars.getBoundingClientRect().left;
-      },
-      onDropForNewEvent: function (calendar, ticketId, hour, top, left) {
-        this.events.push({
-          calendar: calendar,
-          ticketId: ticketId,
-          hour: hour,
-          top: top + this.getScrollX() + this.getBodyScrollTop(),
-          left: left + this.getScrollY() + this.getBodyScrollLeft()
-        });
-        this.getTicketById(ticketId).event = 1;
-      },
-      onDropForChangeEvent: function (calendar, eventKey, hour, top, left) {
-        this.events[eventKey].top = top + this.getScrollX() + this.getBodyScrollTop();
-        this.events[eventKey].left = left + this.getScrollY() + this.getBodyScrollLeft();
-        this.events[eventKey].hour = hour;
-        this.events[eventKey].calendar = calendar;
-      },
-      getTicketById: function(id){
-        for(var i=0; i< this.tickets.length;i++){
-          if(this.tickets[i].id == id){
-            return this.tickets[i];
-          }
+    const http = axios.create({
+        baseURL: '/zfmc/api/',
+        timeout: 5000,
+        headers: {
+            accept: 'application/json'
         }
-        return null;
-      },
-      getScrollX: function () {
-        return this.$refs.zfcCalendars.scrollTop;
-      },
-      getScrollY: function () {
-        return this.$refs.zfcCalendars.scrollLeft;
-      },
-      getBodyScrollTop() {
-        return window.pageYOffset || document.documentElement.scrollTop;
-      },
-      getBodyScrollLeft() {
-        return window.pageXOffset || document.documentElement.scrollLeft;
-      },
-    },
-    computed: {
+    });
 
-      getDate: function () {
-        return this.date.format("YYYY-MM-DD");
-      },
-      getDay: function () {
-        return this.date.day() + 1;
-      },
-      hasCalendars: function () {
-        if (this.calendars != undefined && this.calendars.length > 0) {
-          return true;
-        }
-        return false;
-      },
-      getStart: function () {
-        var rstart = null;
-        if (this.hasCalendars) {
-          for (var index = 0; index < this.calendars.length; ++index) {
-            if (this.calendars[index].schedules.collection != undefined) {
-              for (var i = 0; i < this.calendars[index].schedules.collection.length; ++i) {
-                if (this.calendars[index].schedules.collection[i].day == this.getDay) {
-                  if (this.calendars[index].schedules.collection[i].start < rstart || rstart == null) {
-                    rstart = this.calendars[index].schedules.collection[i].start;
-                  }
 
+    export default {
+        name: 'calendars',
+        components: {day, calendarTd, event, ticket, Drag, Drop, modal, loading, formEvent},
+        data() {
+            return {
+                calendars: [],
+                tickets: [],
+                date: moment().locale('es'),
+                events: [],
+                top: 0,
+                left: 0,
+                nowEvent: {},
+                nowEventId: '',
+                loading: false
+            }
+        },
+        created: function () {
+            this.calendarList();
+            this.ticketList();
+        },
+        mounted() {
+            this.$nextTick(function () {
+                window.addEventListener('resize', this.onResize);
+            });
+            this.getTop();
+            this.getLeft();
+        },
+        methods: {
+            calendarList: function () {
+                http.get('calendars').then((response) => {
+                    this.calendars = response.data;
+                })
+            },
+            ticketList: function () {
+                http.get('tickets').then((response) => {
+                    this.tickets = response.data;
+                })
+            },
+            onResize: function () {
+                this.getTop();
+                this.getLeft();
+            },
+            getTop: function () {
+                this.top = this.$refs.zfcCalendars.getBoundingClientRect().top;
+            },
+            getLeft: function () {
+                this.left = this.$refs.zfcCalendars.getBoundingClientRect().left;
+            },
+            removeEvent: function () {
+
+            },
+            createEvent: function (event) {
+                this.loading = true;
+                axios.post("/zfmc/api/events", event
+                ).then((response) => {
+                    event.id = response.data.id
+                    this.getTicketById(event.ticketId).event = response.data.id;
+                    this.events.push(event);
+                    this.loading = false;
+                }).catch((error) => {
+                    this.nowEvent.errors = error.response.data.errors
+                    this.loading = false;
+                })
+            },
+            onDropForNewEvent: function (calendar, ticketId, hour, top, left) {
+                var event = {};
+                event.id = '';
+                event.calendar = calendar;
+                event.ticketId = ticketId;
+                event.hour = hour;
+                event.top = top + this.getScrollX() + this.getBodyScrollTop();
+                event.left = left + this.getScrollY() + this.getBodyScrollLeft();
+                event.date = this.date;
+                event.start = this.getDate + " " + hour;
+                event.end = this.getDate + " " + hour;
+                event.duration = 60;
+                this.createEvent(event);
+
+            },
+            onDropForChangeEvent: function (calendar, eventKey, hour, top, left) {
+                this.events[eventKey].top = top + this.getScrollX() + this.getBodyScrollTop();
+                this.events[eventKey].left = left + this.getScrollY() + this.getBodyScrollLeft();
+                this.events[eventKey].hour = hour;
+                this.events[eventKey].calendar = calendar;
+            },
+            getTicketById: function (id) {
+                for (var i = 0; i < this.tickets.length; i++) {
+                    if (this.tickets[i].id == id) {
+                        return this.tickets[i];
+                    }
                 }
-              }
-            }
-          }
-        }
-        return rstart;
-      },
-      getEnd: function () {
-        var rend = null;
-        if (this.hasCalendars) {
-          for (var index = 0; index < this.calendars.length; ++index) {
-            if (this.calendars[index].schedules.collection != undefined) {
-              for (var i = 0; i < this.calendars[index].schedules.collection.length; ++i) {
-                if (this.calendars[index].schedules.collection[i].day == this.getDay) {
-                  if (this.calendars[index].schedules.collection[i].end > rend || rend == null) {
-                    rend = this.calendars[index].schedules.collection[i].end;
-                  }
-                  4
+                return null;
+            },
+            getScrollX: function () {
+                return this.$refs.zfcCalendars.scrollTop;
+            },
+            getScrollY: function () {
+                return this.$refs.zfcCalendars.scrollLeft;
+            },
+            getBodyScrollTop() {
+                return window.pageYOffset || document.documentElement.scrollTop;
+            },
+            getBodyScrollLeft() {
+                return window.pageXOffset || document.documentElement.scrollLeft;
+            },
+        },
+        computed: {
+
+            getDate: function () {
+                return this.date.format("YYYY-MM-DD");
+            },
+            getDay: function () {
+                return this.date.day() + 1;
+            },
+            hasCalendars: function () {
+                if (this.calendars != undefined && this.calendars.length > 0) {
+                    return true;
                 }
-              }
+                return false;
+            },
+            getStart: function () {
+                var rstart = null;
+                if (this.hasCalendars) {
+                    for (var index = 0; index < this.calendars.length; ++index) {
+                        if (this.calendars[index].schedules != undefined) {
+                            for (var i = 0; i < this.calendars[index].schedules.length; ++i) {
+                                if (this.calendars[index].schedules[i].day == this.getDay) {
+                                    if (this.calendars[index].schedules[i].start < rstart || rstart == null) {
+                                        rstart = this.calendars[index].schedules[i].start;
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                }
+                return rstart;
+            },
+            getEnd: function () {
+                var rend = null;
+                if (this.hasCalendars) {
+                    for (var index = 0; index < this.calendars.length; ++index) {
+                        if (this.calendars[index].schedules != undefined) {
+                            for (var i = 0; i < this.calendars[index].schedules.length; ++i) {
+                                if (this.calendars[index].schedules[i].day == this.getDay) {
+                                    if (this.calendars[index].schedules[i].end > rend || rend == null) {
+                                        rend = this.calendars[index].schedules[i].end;
+                                    }
+                                    4
+                                }
+                            }
+                        }
+                    }
+                }
+                return rend;
+            },
+            getHours: function () {
+                var hours = [];
+                if (this.hasCalendars) {
+                    var flag = true;
+                    var t = moment(this.getStart, "hh:mm");
+                    var e = moment(this.getEnd, "hh:mm");
+                    while (flag) {
+                        hours.push(t.format("hh:mm"));
+                        t.add(30, "minutes");
+                        if (t >= e) {
+                            flag = false;
+                        }
+                    }
+                }
+                return hours;
             }
-          }
+
         }
-        return rend;
-      },
-      getHours: function () {
-        var hours = [];
-        if (this.hasCalendars) {
-          var flag = true;
-          var t = moment(this.getStart, "hh:mm");
-          var e = moment(this.getEnd, "hh:mm");
-          while (flag) {
-            hours.push(t.format("hh:mm"));
-            t.add(30, "minutes");
-            if (t >= e) {
-              flag = false;
-            }
-          }
-        }
-        return hours;
-      }
 
     }
-
-  }
 </script>
 
 <style scoped>
