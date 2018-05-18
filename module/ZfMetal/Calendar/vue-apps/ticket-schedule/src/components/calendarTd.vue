@@ -1,34 +1,45 @@
 <template>
-    <td class="zfc-column-calendar">
+    <td class="zfc-column-calendar" :id="tid">
         <drop @drop="handleDrop" class="zfc-dropcell">
         </drop>
     </td>
 </template>
 
 <script>
-  import {Drag, Drop} from 'vue-drag-drop';
+    import {Drag, Drop} from 'vue-drag-drop';
 
-  export default {
-    name: 'calnedarTd',
-    props: ['id', 'name', 'hour', 'parentTop', 'parentLeft'],
-    components: {Drag, Drop},
-    data() {
-      return {}
-    },
-    methods: {
-      handleDrop: function (data) {
-        var top = this.$el.getBoundingClientRect().top - this.parentTop;
-        var left = this.$el.getBoundingClientRect().left - this.parentLeft + 10;
-        if (data.type != undefined && data.type == 't') {
-          this.$emit("dropForNewEvent",  this.id, data.id, this.hour, top, left);
+    export default {
+        name: 'calnedarTd',
+        props: ['calendarId', 'tid', 'name', 'hour', 'parentTop', 'parentLeft'],
+        components: {Drag, Drop},
+        data() {
+            return {}
+        },
+        mounted: function () {
+            this.reportCoordinates();
+        },
+        methods: {
+            reportCoordinates: function () {
+                this.$emit("rc", this.tid, this.getTop, this.getLeft);
+            },
+            handleDrop: function (data) {
+                if (data.type != undefined && data.type == 't') {
+                    this.$emit("dropForNewEvent", this.calendarId, data.id, this.hour, this.getTop, this.getLeft);
+                }
+                if (data.type != undefined && data.type == 'e') {
+                    this.$emit("dropForChangeEvent", this.calendarId, data.id, this.hour, top, left);
+                }
+            },
+        },
+        computed: {
+            getTop: function () {
+                return this.$el.getBoundingClientRect().top - this.parentTop;
+            },
+            getLeft: function () {
+                return this.$el.getBoundingClientRect().left - this.parentLeft + 10;
+            },
         }
-        if (data.type != undefined && data.type == 'e') {
-          this.$emit("dropForChangeEvent", {id: this.id, name: this.name}, data.id, this.hour, top, left);
-        }
-      }
-      ,
     }
-  }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

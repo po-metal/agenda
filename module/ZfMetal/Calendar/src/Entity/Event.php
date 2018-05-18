@@ -34,7 +34,7 @@ class Event
     public $id = null;
 
     /**
-     * @Transformation\Policy\Custom(transform= "\ZfMetal\Calendar\PolicyHandler\EntityIdName::transform")
+     * @Transformation\Policy\Custom(transform= "\ZfMetal\Calendar\PolicyHandler\EntityId::transform")
      * @Annotation\Type("DoctrineModule\Form\Element\ObjectSelect")
      * @Annotation\Options({"label":"calendar","empty_option": "",
      * "target_class":"\ZfMetal\Calendar\Entity\Calendar", "description":""})
@@ -87,6 +87,8 @@ class Event
      * name="description")
      */
     public $description = null;
+
+
 
     public function getId()
     {
@@ -157,7 +159,6 @@ class Event
     {
         $this->ticket = $ticket;
     }
-
 
 
     public function __toString()

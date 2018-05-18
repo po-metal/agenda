@@ -31,9 +31,10 @@
 
                         <td class="zfc-column-hours">{{hour}}</td>
 
-                        <calendarTd v-if="hasCalendars"
+                        <calendarTd v-if="hasCalendars" v-on:rc="onRc"
                                     v-for="calendar in calendars"
-                                    :id="calendar.id" :name="calendar.name" :hour="hour"
+                                    :tid='calendar.id + "-" + hour'
+                                    :calendarId="calendar.id" :name="calendar.name" :hour="hour"
                                     :parentTop="top" :parentLeft="left"
                                     :key='calendar.id + "-" + hour'
                                     v-on:dropForNewEvent="onDropForNewEvent"
@@ -99,6 +100,7 @@
                 tickets: [],
                 date: moment().locale('es'),
                 events: [],
+                tds: {},
                 top: 0,
                 left: 0,
                 nowEvent: {},
@@ -109,7 +111,7 @@
         created: function () {
             this.calendarList();
             this.ticketList();
-            this.loadEvents();
+
         },
         mounted() {
             this.$nextTick(function () {
@@ -117,6 +119,7 @@
             });
             this.getTop();
             this.getLeft();
+            this.loadEvents();
         },
         methods: {
             calendarList: function () {
@@ -128,6 +131,10 @@
                 http.get('tickets').then((response) => {
                     this.tickets = response.data;
                 })
+            },
+            onRc: function(tid,top,left){
+              this.tds[tid] = {top: top,left:left};
+
             },
             onResize: function () {
                 this.getTop();
@@ -142,10 +149,33 @@
             removeEvent: function () {
 
             },
+            calculateEventDuraction: function(event){
+                if(event.start && event.end){
+                    return moment(event.end).diff(moment(event.start),'minutes');
+                }
+              return null;
+            },
+            getEventTid: function(event){
+                if(event.calendar && event.hour){
+                return event.calendar+'-'+event.hour;
+                }
+                return null;
+            },
             loadEvents: function (event) {
-                axios.get("/zfmc/api/events?start=>="+this.getDate, event
+                axios.get("/zfmc/api/events?start=>="+this.getDate
                 ).then((response) => {
-                    this.events = response.data;
+                    for(var i=0; i < response.data.length;i++){
+                        var event = response.data[i]
+                        //Hour
+                        event.hour = moment(response.data[i].start).tz('America/Argentina/Buenos_Aires').format("H");
+                        //Duration
+                        event.duration = this.calculateEventDuraction(response.data[i]);
+                        //TOP-LEFT
+                        event.top = this.tds[this.getEventTid(event)].top
+                        event.left = this.tds[this.getEventTid(event)].left
+                        this.events.push(event);
+                    }
+
                     this.loading = false;
                 }).catch((error) => {
                     this.nowEvent.errors = error.response.data.errors
