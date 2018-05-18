@@ -47,8 +47,9 @@
 
                 <event v-if="events" v-for="(event,index) in events" :key="index" :index="index"
                        :id="event.id" :title="event.title" :description="event.description" :duration="event.duration"
-                       :date="event.date" :calendar="event.calendar" :hour="event.hour" :ticketId="event.ticketId"
-                       :top="event.top" :left="event.left">
+                       :date="event.getDate" :calendar="event.calendar" :hour="event.hour" :ticketId="event.ticketId"
+                       :top="event.top" :left="event.left"
+                :start="event.start" :end="event.end">
 
                 </event>
 
@@ -67,6 +68,7 @@
     import {Drag, Drop} from 'vue-drag-drop';
 
     import moment from 'moment'
+    import momenttz from 'moment-timezone'
     import 'moment/locale/es';
 
     import modal from './helpers/modal.vue'
@@ -107,6 +109,7 @@
         created: function () {
             this.calendarList();
             this.ticketList();
+            this.loadEvents();
         },
         mounted() {
             this.$nextTick(function () {
@@ -139,6 +142,16 @@
             removeEvent: function () {
 
             },
+            loadEvents: function (event) {
+                axios.get("/zfmc/api/events?start=>="+this.getDate, event
+                ).then((response) => {
+                    this.events = response.data;
+                    this.loading = false;
+                }).catch((error) => {
+                    this.nowEvent.errors = error.response.data.errors
+                    this.loading = false;
+                })
+            },
             createEvent: function (event) {
                 this.loading = true;
                 axios.post("/zfmc/api/events", event
@@ -146,6 +159,16 @@
                     event.id = response.data.id
                     this.getTicketById(event.ticketId).event = response.data.id;
                     this.events.push(event);
+                    this.loading = false;
+                }).catch((error) => {
+                    this.nowEvent.errors = error.response.data.errors
+                    this.loading = false;
+                })
+            },
+            updateEvent: function (event) {
+                this.loading = true;
+                axios.put("/zfmc/api/events/"+event.id, event
+                ).then((response) => {
                     this.loading = false;
                 }).catch((error) => {
                     this.nowEvent.errors = error.response.data.errors
@@ -160,10 +183,12 @@
                 event.hour = hour;
                 event.top = top + this.getScrollX() + this.getBodyScrollTop();
                 event.left = left + this.getScrollY() + this.getBodyScrollLeft();
+                event.duration = 60;
                 event.date = this.date;
                 event.start = this.getDate + " " + hour;
-                event.end = this.getDate + " " + hour;
-                event.duration = 60;
+                var end = moment(this.getDate + " " + hour);
+                event.end = end.add(event.duration, "minutes").tz('America/Argentina/Buenos_Aires').format("YYYY-MM-DD HH:mm");
+
                 this.createEvent(event);
 
             },
@@ -172,6 +197,11 @@
                 this.events[eventKey].left = left + this.getScrollY() + this.getBodyScrollLeft();
                 this.events[eventKey].hour = hour;
                 this.events[eventKey].calendar = calendar;
+                this.events[eventKey].start = this.getDate + " " + hour;
+                var end = moment(this.getDate + " " + hour);
+                this.events[eventKey].end = end.add(this.events[eventKey].duration, "minutes").tz('America/Argentina/Buenos_Aires').format("YYYY-MM-DD HH:mm");
+
+                this.updateEvent(this.events[eventKey]);
             },
             getTicketById: function (id) {
                 for (var i = 0; i < this.tickets.length; i++) {
@@ -197,7 +227,7 @@
         computed: {
 
             getDate: function () {
-                return this.date.format("YYYY-MM-DD");
+                return this.date.tz('America/Argentina/Buenos_Aires').format("YYYY-MM-DD");
             },
             getDay: function () {
                 return this.date.day() + 1;

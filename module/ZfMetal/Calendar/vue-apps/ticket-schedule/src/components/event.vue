@@ -29,13 +29,14 @@
             'id',
             'title',
             'description',
-            'date',
             'calendar',
             'ticketId',
             'hour',
             'top',
             'left',
-            'duration'
+            'duration',
+            'start',
+            'end'
             ],
         components: {Drag},
         data() {
@@ -61,15 +62,6 @@
             },
             getLeft: function () {
                 return this.left;
-            },
-            getStart: function () {
-                var start = moment(this.date.format("YYYY-MM-DD") + " " + this.hour);
-                return start;
-            },
-            getEnd: function () {
-                var end = moment(this.date.format("YYYY-MM-DD") + " " + this.hour);
-                return end.add(this.duration, "minutes");
-                return end;
             },
             getHeight: function () {
                 if (this.duration <= 30) {
