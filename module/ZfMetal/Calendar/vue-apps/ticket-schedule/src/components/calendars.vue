@@ -119,12 +119,12 @@
             });
             this.getTop();
             this.getLeft();
-            this.loadEvents();
         },
         methods: {
             calendarList: function () {
                 http.get('calendars').then((response) => {
                     this.calendars = response.data;
+                    setTimeout(this.loadEvents,5000);
                 })
             },
             ticketList: function () {
@@ -162,14 +162,15 @@
                 return null;
             },
             loadEvents: function (event) {
+                alert("Ok?");
                 axios.get("/zfmc/api/events?start=>="+this.getDate
                 ).then((response) => {
                     for(var i=0; i < response.data.length;i++){
                         var event = response.data[i]
                         //Hour
-                        event.hour = moment(response.data[i].start).tz('America/Argentina/Buenos_Aires').format("H");
+                        event.hour = moment(event.start).tz('America/Argentina/Buenos_Aires').format("H");
                         //Duration
-                        event.duration = this.calculateEventDuraction(response.data[i]);
+                        event.duration = this.calculateEventDuraction(event);
                         //TOP-LEFT
                         event.top = this.tds[this.getEventTid(event)].top
                         event.left = this.tds[this.getEventTid(event)].left
