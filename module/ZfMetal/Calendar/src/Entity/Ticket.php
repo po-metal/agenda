@@ -21,7 +21,7 @@ use ZfMetal\Restful\Transformation;
  * @ORM\Table(name="cal_ticket")
  * @ORM\Entity(repositoryClass="ZfMetal\Calendar\Repository\TicketRepository")
  */
-class Ticket {
+class Ticket implements TicketInterface {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
@@ -50,11 +50,11 @@ class Ticket {
     public $updatedAt = null;
 
     /**
-     * @Transformation\Policy\Skip
      * @Annotation\Type("DoctrineModule\Form\Element\ObjectMultiCheckbox")
      * @Annotation\Options({"label":"Evento","target_class":"\ZfMetal\Calendar\Entity\Event",
      * "description":""})
-     * @ORM\OneToMany(targetEntity="\ZfMetal\Calendar\Entity\Event", mappedBy="ticket")
+     * @ORM\OneToOne(targetEntity="\ZfMetal\Calendar\Entity\Event")
+     * @ORM\JoinColumn(name="event_id", referencedColumnName="id")
      */
     public $event = null;
 
@@ -76,6 +76,16 @@ class Ticket {
      * name="subject")
      */
     public $subject = null;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Attributes({"type":"text"})
+     * @Annotation\Options({"label":"Ubicación", "description":"", "addon":""})
+     * @ORM\Column(type="string", length=120, unique=false, nullable=true,
+     * name="location")
+     */
+    public $location = null;
+
 
     public function getId()
     {
@@ -137,6 +147,24 @@ class Ticket {
     {
         $this->state = $state;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    /**
+     * @param mixed $location
+     */
+    public function setLocation($location)
+    {
+        $this->location = $location;
+    }
+
+
 
     public function __toString()
     {

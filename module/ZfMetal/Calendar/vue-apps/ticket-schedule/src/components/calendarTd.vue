@@ -6,40 +6,36 @@
 </template>
 
 <script>
-    import {Drag, Drop} from 'vue-drag-drop';
+  import {Drag, Drop} from 'vue-drag-drop';
 
-    export default {
-        name: 'calnedarTd',
-        props: ['calendarId', 'tid', 'name', 'hour', 'parentTop', 'parentLeft'],
-        components: {Drag, Drop},
-        data() {
-            return {}
-        },
-        mounted: function () {
-            this.reportCoordinates();
-        },
-        methods: {
-            reportCoordinates: function () {
-                this.$emit("rc", this.tid, this.getTop, this.getLeft);
-            },
-            handleDrop: function (data) {
-                if (data.type != undefined && data.type == 't') {
-                    this.$emit("dropForNewEvent", this.calendarId, data.id, this.hour, this.getTop, this.getLeft);
-                }
-                if (data.type != undefined && data.type == 'e') {
-                    this.$emit("dropForChangeEvent", this.calendarId, data.id, this.hour, top, left);
-                }
-            },
-        },
-        computed: {
-            getTop: function () {
-                return this.$el.getBoundingClientRect().top - this.parentTop;
-            },
-            getLeft: function () {
-                return this.$el.getBoundingClientRect().left - this.parentLeft + 10;
-            },
+  export default {
+    name: 'calnedarTd',
+    props: ['calendarId', 'tid', 'name', 'hour', 'parentTop', 'parentLeft'],
+    components: {Drag, Drop},
+    data() {
+      return {}
+    },
+    mounted: function () {
+    },
+    methods: {
+      handleDrop: function (data) {
+        if (data.type != undefined && data.type == 't') {
+          this.$emit("dropForNewEvent", this.calendarId, data.id, data.subject, data.location, this.hour, this.getTop, this.getLeft);
         }
+        if (data.type != undefined && data.type == 'e') {
+          this.$emit("dropForChangeEvent", this.calendarId, data.id,  this.hour, this.getTop, this.getLeft);
+        }
+      },
+    },
+    computed: {
+      getTop: function () {
+        return this.$el.getBoundingClientRect().top - this.parentTop;
+      },
+      getLeft: function () {
+        return this.$el.getBoundingClientRect().left - this.parentLeft + 10;
+      },
     }
+  }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

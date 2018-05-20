@@ -1,6 +1,6 @@
 <template>
     <section v-if="errors">
-        <span class="help-block" v-for="(error, index) in errors" :key="index">
+        <span class="text-danger help-block " v-for="(error, index) in errors" :key="index">
             {{error}}
         </span>
     </section>

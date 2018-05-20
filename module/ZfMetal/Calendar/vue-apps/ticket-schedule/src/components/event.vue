@@ -1,12 +1,12 @@
 <template>
-    <Drag :transfer-data="{id: $vnode.key , type: 'e'}" :class="getMainClass" :style="getStyle">
+    <Drag :transfer-data="{id: $vnode.key, type: 'e'}" :class="getMainClass" :style="getStyle">
         <div class="row">
             <div class="col-lg-3">
                 <a class="btn btn-xs"> <i class="material-icons" @click="edit">edit</i></a>
             </div>
             <div class="col-lg-9">
-                <span>Ticket: {{ticketId}}</span><br>
-                <span>{{title}}</span>
+                <span> {{ticketId}} - {{title}}</span><br>
+
             </div>
         </div>
 
@@ -47,7 +47,7 @@
         },
         methods: {
             edit: function () {
-                this.$emit("editEvent", this.id);
+                this.$emit("editEvent", this.index);
             }
         },
         computed: {
