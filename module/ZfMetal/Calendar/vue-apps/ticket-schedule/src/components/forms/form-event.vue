@@ -1,10 +1,30 @@
 <template>
 
 
-
-    <form method="POST" name="EventForm" v-on:submit.prevent="save" >
+    <form method="POST" name="EventForm" v-on:submit.prevent="save">
         <alert :show="h.alertShow" :msg="h.alertMsg" :type="h.alertType" v-on:close="h.alertShow = false"></alert>
         <saveStatus :isSaved="h.isSaved"></saveStatus>
+
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="form-group">
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 control-label">
+
+                    <label class="control-label">Calendario</label>
+                </div>
+                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                    <select name="state" class=" form-control" v-model="entity.calendar" @change="unsaved">
+                        <option v-if="calendars" v-for="calendar in calendars"
+                                v-bind:value="calendar.id"
+                                :selected="entity.calendar == calendar.id">
+                            {{calendar.name}}
+                        </option>
+                    </select>
+                    <fe :errors="errors.calendar"/>
+                </div>
+            </div>
+        </div>
+
+
         <div class="col-lg-12 col-md-12 col-xs-12">
             <div class="form-group">
 
@@ -41,17 +61,16 @@
         </div>
 
 
-
         <div class="col-lg-12 col-md-12 col-xs-12">
             <div class="form-group">
 
                 <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 control-label">
-                <label class="control-label">Inicio</label>
+                    <label class="control-label">Inicio</label>
                 </div>
 
                 <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-                <input type="datetime" name="start" class=" form-control" ref="start"
-                       v-model="entity.start" @keydown="unsaved">
+                    <input type="datetime" name="start" class=" form-control" ref="start"
+                           v-model="entity.start" @keydown="unsaved">
                     <fe :errors="errors.start"/>
                 </div>
 
@@ -61,12 +80,12 @@
         <div class="col-lg-12 col-md-12 col-xs-12">
             <div class="form-group">
                 <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 control-label">
-                <label class="control-label">Fin</label>
+                    <label class="control-label">Fin</label>
                 </div>
 
                 <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-                <input type="datetime" name="end" class=" form-control" ref="end"
-                       v-model="entity.end" @keydown="unsaved">
+                    <input type="datetime" name="end" class=" form-control" ref="end"
+                           v-model="entity.end" @keydown="unsaved">
                     <fe :errors="errors.end"/>
                 </div>
 
@@ -106,8 +125,8 @@
 
   export default {
     name: 'form-event',
-    props: ['value', 'isSaved'],
-    components: {fe, saveStatus,alert},
+    props: ['value', 'isSaved','calendars'],
+    components: {fe, saveStatus, alert},
     data() {
       return {
         errors: [],
@@ -124,7 +143,7 @@
         entity: {}
       }
     },
-    mounted: function(){
+    mounted: function () {
       this.$refs.title.focus()
     },
     methods: {
@@ -139,7 +158,7 @@
       unsaved: function () {
         this.h.isSaved = false
       },
-      iSave: function(){
+      iSave: function () {
         this.h.alertShow = false
         this.h.alertMsg = ''
         this.h.submitValue = 'Guardando..'
@@ -147,7 +166,7 @@
         this.errors = ''
         this.h.submitInProgress = true
       },
-      fSave: function(){
+      fSave: function () {
         this.h.submitValue = 'Guardar'
         this.h.submitClass = 'btn-primary'
         this.h.submitInProgress = false
@@ -173,7 +192,7 @@
       },
       update: function () {
         this.iSave()
-        axios.put("/zfmc/api/events/"+this.entity.id, this.entity
+        axios.put("/zfmc/api/events/" + this.entity.id, this.entity
         ).then((response) => {
           this.fSave()
           this.$emit("eventUpdate", this.entity)

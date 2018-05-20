@@ -65,7 +65,7 @@
         </div>
 
         <modal :title="titleModal" :showModal="showModal" @close="showModal = false">
-                <form-event  v-model="eventForm" :index="eventIndex" v-on:remove="removeEvent"/>
+                <form-event :calendars="calendars"  v-model="eventForm" :index="eventIndex" v-on:remove="removeEvent"/>
         </modal>
 
     </div>
