@@ -64,11 +64,14 @@
                 return this.left;
             },
             getHeight: function () {
-                if (this.duration <= 30) {
-                    return 25;
-                } else {
-                    return Math.ceil(this.duration / 30) * 25;
+              var height = 25;
+                if (this.duration > 30) {
+                    height =  Math.ceil(this.duration / 30) * 25;
                 }
+                if(height > 600){
+                  height = 600
+                }
+                return height
 
             }
         }

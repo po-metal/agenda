@@ -65,7 +65,10 @@
         </div>
 
         <modal :title="titleModal" :showModal="showModal" @close="showModal = false">
-                <form-event :calendars="calendars"  v-model="eventForm" :index="eventIndex" v-on:remove="removeEvent"/>
+                <form-event :calendars="calendars"  v-model="eventForm"
+                            :index="eventIndex" v-on:remove="removeEvent"
+                v-on:eventUpdate="onEventUpdate"
+                />
         </modal>
 
     </div>
@@ -157,7 +160,18 @@
       },
       getEventTid: function (event) {
         if (event.calendar && event.hour) {
-          return this.getCalendarTdRef(event.calendar, event.hour)
+          var hs = event.hour.split(":");
+          var hour = "";
+          if(hs[1] == "00" || hs[1] == "30") {
+            hour = event.hour
+          }else{
+            if(hs[1]>30 ){
+              hour = hs[0]+":30"
+            }else{
+              hour = hs[0]+":00"
+            }
+          }
+          return this.getCalendarTdRef(event.calendar, hour)
         }
         return null;
       },
@@ -244,6 +258,17 @@
         var end = moment(this.getDate + " " + hour)
         this.events[eventKey].end = end.add(this.events[eventKey].duration, "minutes").tz('America/Argentina/Buenos_Aires').format("YYYY-MM-DD HH:mm")
         this.updateEvent(this.events[eventKey])
+      },
+      onEventUpdate: function(event){
+        if(this.getDate != moment(event.start).format("YYYY-MM-DD") ){
+          this.events.splice(this.eventIndex,1)
+        }else{
+          event.hour = moment(event.start).tz('America/Argentina/Buenos_Aires').format("HH:mm");
+          event.duration = this.calculateEventDuraction(event);
+          event.top = this.getCalendarTdTop(this.getEventTid(event));
+          event.left = this.getCalendarTdLeft(this.getEventTid(event));
+
+        }
       },
       getTicketById: function (id) {
         for (var i = 0; i < this.tickets.length; i++) {

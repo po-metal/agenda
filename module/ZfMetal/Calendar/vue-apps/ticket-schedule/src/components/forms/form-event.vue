@@ -14,7 +14,7 @@
                 <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                     <select name="state" class=" form-control" v-model="entity.calendar" @change="unsaved">
                         <option v-if="calendars" v-for="calendar in calendars"
-                                v-bind:value="calendar.id"
+                                v-bind:value="calendar.id" :key="calendar.id"
                                 :selected="entity.calendar == calendar.id">
                             {{calendar.name}}
                         </option>
