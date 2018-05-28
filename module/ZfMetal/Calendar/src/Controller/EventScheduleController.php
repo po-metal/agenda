@@ -4,9 +4,8 @@ namespace ZfMetal\Calendar\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 
-
 /**
- * TicketScheduleController
+ * EventScheduleController
  *
  *
  *
@@ -14,10 +13,10 @@ use Zend\Mvc\Controller\AbstractActionController;
  * @license
  * @link
  */
-class TicketScheduleController extends AbstractActionController
+class EventScheduleController extends AbstractActionController
 {
 
-    const ENTITY = '\\ZfMetal\\Calendar\\Entity\\Calendar';
+    const ENTITY = \ZfMetal\Calendar\Entity\Calendar::class;
 
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -39,10 +38,9 @@ class TicketScheduleController extends AbstractActionController
         return $this->getEm()->getRepository(self::ENTITY);
     }
 
-    public function getTicketRepository()
+    public function getCalendarRepository()
     {
-        $entity = $this->ZfMetalCalendarOptions()->getTicketEntity();
-        return $this->getEm()->getRepository($entity);
+        return $this->getEm()->getRepository(self::ENTITY);
     }
 
     public function __construct(\Doctrine\ORM\EntityManager $em)
@@ -52,9 +50,6 @@ class TicketScheduleController extends AbstractActionController
 
     public function scheduleAction()
     {
-        $this->layout()->setTemplate('zf-metal/calendar/layout/ticket-schedule');
-
-        $this->layoutHelper()->setPageTitle("Programación de tickets");
         return [];
     }
 

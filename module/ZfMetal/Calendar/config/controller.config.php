@@ -13,6 +13,8 @@ return array(
             \ZfMetal\Calendar\Controller\ApiCalendarController::class => \ZfMetal\Calendar\Factory\Controller\ApiCalendarControllerFactory::class,
             \ZfMetal\Calendar\Controller\ApiEventController::class => \ZfMetal\Calendar\Factory\Controller\ApiEventControllerFactory::class,
             \ZfMetal\Calendar\Controller\ApiTicketController::class => \ZfMetal\Calendar\Factory\Controller\ApiTicketControllerFactory::class,
+            \ZfMetal\Calendar\Controller\HomeController::class => \ZfMetal\Calendar\Factory\Controller\HomeControllerFactory::class,
+            \ZfMetal\Calendar\Controller\EventScheduleController::class => \ZfMetal\Calendar\Factory\Controller\EventScheduleControllerFactory::class,
         ),
     ),
 );
