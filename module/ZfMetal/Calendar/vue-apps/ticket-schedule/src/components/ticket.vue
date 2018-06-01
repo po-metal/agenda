@@ -1,7 +1,7 @@
 <template>
-    <drag :transfer-data="{id: obj.id,subject:obj.subject,location: obj.location,type: 't'}" :draggable="isDraggable" >
+    <drag :transfer-data="{id: obj.id,subject:obj.title,location: obj.location,type: 't'}" :draggable="isDraggable" >
         <div class="zfc-ticket" :class="{'zfc-ticket-a' : !isDraggable}">
-            {{obj.id}} - {{obj.subject}}
+            {{obj.id}} - {{obj.title}}
         </div>
     </drag>
 </template>
@@ -18,7 +18,8 @@
       return {
         obj: {
           id: '',
-          subject: '',
+          calendar: '',
+          title: '',
           location: '',
           description: '',
           time: 60
@@ -32,7 +33,7 @@
     },
     computed: {
       isDraggable: function(){
-        if(this.event == null){
+        if(this.calendar == null){
           return true;
         }else{
           return false;
