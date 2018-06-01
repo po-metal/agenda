@@ -122,7 +122,7 @@
     },
     created: function () {
       this.calendarList();
-      this.ticketList();
+      this.eventPendingList();
 
     },
     mounted() {
@@ -139,8 +139,8 @@
           this.loadEvents();
         })
       },
-      ticketList: function () {
-        http.get('tickets').then((response) => {
+        eventPendingList: function () {
+        http.get('events?state=!=1').then((response) => {
           this.tickets = response.data;
         })
       },

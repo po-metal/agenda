@@ -23,6 +23,7 @@ return [
     //DOCTRINE
     'DoctrineModule',
     'DoctrineORMModule',
+    'DoctrineDataFixtureModule',
     'SwissEngine\Tools\Doctrine\Extension',
     //ZFMETAL
     'ZfMetal\Log',

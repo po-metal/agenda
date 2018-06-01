@@ -6,7 +6,7 @@ use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
 /**
- * ApiTicketControllerFactory
+ * EventControllerFactory
  *
  *
  *
@@ -14,14 +14,16 @@ use Zend\ServiceManager\Factory\FactoryInterface;
  * @license
  * @link
  */
-class ApiTicketControllerFactory implements FactoryInterface
+class EventControllerFactory implements FactoryInterface
 {
 
     public function __invoke(\Interop\Container\ContainerInterface $container, $requestedName, array $options = null)
     {
         /* @var $em \Doctrine\ORM\EntityManager */
         $em = $container->get("doctrine.entitymanager.orm_default");
-        return new \ZfMetal\Calendar\Controller\ApiTicketController($em);
+        /* @var $grid \ZfMetal\Datagrid\Grid */
+        $grid = $container->build("zf-metal-datagrid", ["customKey" => "zfmetal-calendar-entity-event"]);
+        return new \ZfMetal\Calendar\Controller\EventController($em,$grid);
     }
 
 
