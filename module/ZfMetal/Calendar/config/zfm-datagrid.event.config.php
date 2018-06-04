@@ -39,6 +39,7 @@ return [
                 ],
                 'ticket' => [
                     'displayName' => 'Ticket',
+                    'hidden' => true
                 ],
                 'start' => [
                     'type' => 'date',

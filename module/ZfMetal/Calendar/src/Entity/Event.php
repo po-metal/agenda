@@ -7,6 +7,7 @@ use Zend\Form\Annotation as Annotation;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint as UniqueConstraint;
 use Gedmo\Mapping\Annotation as Gedmo;
+use ZfMetal\Restful\Transformation;
 
 /**
  * Event
@@ -38,6 +39,7 @@ class Event
      * "target_class":"\ZfMetal\Calendar\Entity\Calendar", "description":""})
      * @ORM\ManyToOne(targetEntity="\ZfMetal\Calendar\Entity\Calendar")
      * @ORM\JoinColumn(name="calendar_id", referencedColumnName="id", nullable=true)
+     * @Transformation\Policy\Custom(transform= "\ZfMetal\Calendar\PolicyHandler\EntityId::transform")
      */
     public $calendar = null;
 
@@ -51,15 +53,25 @@ class Event
     public $ticket = null;
 
     /**
-     * @Annotation\Type("\Zend\Form\Element\DateTime")
-     * @Annotation\Options({"label":"start", "description":"", "addon":""})
+     * @Transformation\Policy\FormatDateTime(format="Y-m-d H:i")
+     * @Annotation\Type("Zend\Form\Element\DateTimeLocal")
+     * @Annotation\Attributes({"type":"datetime"})
+     * @Annotation\Options({"label":"start", "description":"", "addon":"", "format" : "Y-m-d H:i"})
+     * @Annotation\Validator({"name":"Date", "options": {"format":"Y-m-d H:i",
+     * "messages": {"dateInvalidDate": "Fecha no válida. Formato: Año-Mes-Dia Hora:Minuto (Ej: 1985-12-31 23:59)",
+     * "dateFalseFormat":"Fecha no válida. Formato: Año-Mes-Dia Hora:Minuto (Ej: 1985-12-31 23:59)"}}})
      * @ORM\Column(type="datetime", unique=false, nullable=false, name="start")
      */
     public $start = null;
 
     /**
-     * @Annotation\Type("\Zend\Form\Element\DateTime")
-     * @Annotation\Options({"label":"end", "description":"", "addon":""})
+     * @Transformation\Policy\FormatDateTime(format="Y-m-d H:i")
+     * @Annotation\Type("Zend\Form\Element\DateTimeLocal")
+     * @Annotation\Attributes({"type":"datetime"})
+     * @Annotation\Options({"label":"end", "description":"", "addon":"", "format" : "Y-m-d H:i"})
+     * @Annotation\Validator({"name":"Date", "options": {"format":"Y-m-d H:i",
+     * "messages": {"dateInvalidDate": "Fecha no válida. Formato: Año-Mes-Dia Hora:Minuto (Ej: 1985-12-31 23:59)",
+     * "dateFalseFormat":"Fecha no válida. Formato: Año-Mes-Dia Hora:Minuto (Ej: 1985-12-31 23:59)"}}})
      * @ORM\Column(type="datetime", unique=false, nullable=false, name="end")
      */
     public $end = null;
@@ -97,6 +109,7 @@ class Event
      * "target_class":"\ZfMetal\Calendar\Entity\EventState", "description":""})
      * @ORM\ManyToOne(targetEntity="\ZfMetal\Calendar\Entity\EventState")
      * @ORM\JoinColumn(name="state_id", referencedColumnName="id", nullable=true)
+     * @Transformation\Policy\Custom(transform= "\ZfMetal\Calendar\PolicyHandler\EntityId::transform")
      */
     public $state = null;
 

@@ -1,6 +1,6 @@
 <template>
-    <drag :transfer-data="{id: obj.id,subject:obj.title,location: obj.location,type: 't'}" :draggable="isDraggable" >
-        <div class="zfc-ticket" :class="{'zfc-ticket-a' : !isDraggable}">
+    <drag :transfer-data="{obj: obj, type: 't'}" :draggable="isDraggable" >
+        <div class="zfc-pre-event" :class="{'zfc-pre-event-a' : !isDraggable}">
             {{obj.id}} - {{obj.title}}
         </div>
     </drag>
@@ -11,8 +11,8 @@
   import {Drag, Drop} from 'vue-drag-drop';
 
   export default {
-    name: 'ticket',
-    props: ['ticket','event'],
+    name: 'preEvent',
+    props: ['preEvent'],
     components: {Drag, Drop},
     data() {
       return {
@@ -27,13 +27,13 @@
       }
     },
     created: function () {
-      this.obj = this.ticket;
+      this.obj = this.preEvent;
     },
     methods: {
     },
     computed: {
       isDraggable: function(){
-        if(this.calendar == null){
+        if(this.obj.calendar == null){
           return true;
         }else{
           return false;
@@ -45,14 +45,14 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    .zfc-ticket {
+    .zfc-pre-event {
         border-radius: 3px;
         border: 1px solid #5c6667;
         padding: 3px;
         margin: 2px;
     }
 
-    .zfc-ticket-a{
+    .zfc-pre-event-a{
         background: #5c6667;
     }
 
