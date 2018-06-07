@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint as UniqueConstraint;
 use Gedmo\Mapping\Annotation as Gedmo;
 use ZfMetal\Restful\Transformation;
-
 /**
  * Event
  *
@@ -32,6 +31,7 @@ class Event
      * @ORM\Column(type="integer", length=11, unique=false, nullable=false, name="id")
      */
     public $id = null;
+
 
     /**
      * @Annotation\Type("DoctrineModule\Form\Element\ObjectSelect")
@@ -60,7 +60,7 @@ class Event
      * @Annotation\Validator({"name":"Date", "options": {"format":"Y-m-d H:i",
      * "messages": {"dateInvalidDate": "Fecha no válida. Formato: Año-Mes-Dia Hora:Minuto (Ej: 1985-12-31 23:59)",
      * "dateFalseFormat":"Fecha no válida. Formato: Año-Mes-Dia Hora:Minuto (Ej: 1985-12-31 23:59)"}}})
-     * @ORM\Column(type="datetime", unique=false, nullable=false, name="start")
+     * @ORM\Column(type="datetime", unique=false, nullable=true, name="start")
      */
     public $start = null;
 
@@ -72,7 +72,7 @@ class Event
      * @Annotation\Validator({"name":"Date", "options": {"format":"Y-m-d H:i",
      * "messages": {"dateInvalidDate": "Fecha no válida. Formato: Año-Mes-Dia Hora:Minuto (Ej: 1985-12-31 23:59)",
      * "dateFalseFormat":"Fecha no válida. Formato: Año-Mes-Dia Hora:Minuto (Ej: 1985-12-31 23:59)"}}})
-     * @ORM\Column(type="datetime", unique=false, nullable=false, name="end")
+     * @ORM\Column(type="datetime", unique=false, nullable=true, name="end")
      */
     public $end = null;
 
@@ -113,6 +113,43 @@ class Event
      */
     public $state = null;
 
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Attributes({"type":"text"})
+     * @Annotation\Options({"label":"Duracion", "description":"Duración en Minutos",
+     * "addon":""})
+     * @ORM\Column(type="integer", length=5, unique=false, nullable=true,
+     * name="duration")
+     */
+    public $duration = null;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Attributes({"type":"text"})
+     * @Annotation\Options({"label":"Latitud", "description":"", "addon":""})
+     * @ORM\Column(type="decimal",  scale=6, precision=11, unique=false, nullable=true,
+     * name="lat")
+     */
+    public $lat = 0;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Attributes({"type":"text"})
+     * @Annotation\Options({"label":"Longitud", "description":"", "addon":""})
+     * @ORM\Column(type="decimal",  scale=6, precision=11, unique=false, nullable=true,
+     * name="lng")
+     */
+    public $lng = 0;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Attributes({"type":"text"})
+     * @Annotation\Options({"label":"Codigo Postal", "description":"", "addon":""})
+     * @ORM\Column(type="string", length=15, unique=false, nullable=true,
+     * name="postal_code")
+     */
+    public $postalCode = null;
+
     public function getId()
     {
         return $this->id;
@@ -131,6 +168,16 @@ class Event
     public function setCalendar($calendar)
     {
         $this->calendar = $calendar;
+    }
+
+    public function getTicket()
+    {
+        return $this->ticket;
+    }
+
+    public function setTicket($ticket)
+    {
+        $this->ticket = $ticket;
     }
 
     public function getStart()
@@ -163,22 +210,6 @@ class Event
         $this->title = $title;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getLocation()
-    {
-        return $this->location;
-    }
-
-    /**
-     * @param mixed $location
-     */
-    public function setLocation($location)
-    {
-        $this->location = $location;
-    }
-
     public function getDescription()
     {
         return $this->description;
@@ -189,14 +220,14 @@ class Event
         $this->description = $description;
     }
 
-    public function getTicket()
+    public function getLocation()
     {
-        return $this->ticket;
+        return $this->location;
     }
 
-    public function setTicket($ticket)
+    public function setLocation($location)
     {
-        $this->ticket = $ticket;
+        $this->location = $location;
     }
 
     public function getState()
@@ -207,6 +238,46 @@ class Event
     public function setState($state)
     {
         $this->state = $state;
+    }
+
+    public function getDuration()
+    {
+        return $this->duration;
+    }
+
+    public function setDuration($duration)
+    {
+        $this->duration = $duration;
+    }
+
+    public function getLat()
+    {
+        return $this->lat;
+    }
+
+    public function setLat($lat)
+    {
+        $this->lat = $lat;
+    }
+
+    public function getLng()
+    {
+        return $this->lng;
+    }
+
+    public function setLng($lng)
+    {
+        $this->lng = $lng;
+    }
+
+    public function getPostalCode()
+    {
+        return $this->postalCode;
+    }
+
+    public function setPostalCode($postalCode)
+    {
+        $this->postalCode = $postalCode;
     }
 
     public function __toString()

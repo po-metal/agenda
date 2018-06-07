@@ -11,9 +11,9 @@ use ZfMetal\Restful\Transformation;
 
 /**
  * Event
- * 
- * 
- * 
+ *
+ *
+ *
  * @author
  * @license
  * @link
@@ -34,12 +34,12 @@ class Event
     public $id = null;
 
     /**
-     * @Transformation\Policy\Custom(transform= "\ZfMetal\Calendar\PolicyHandler\EntityId::transform")
      * @Annotation\Type("DoctrineModule\Form\Element\ObjectSelect")
      * @Annotation\Options({"label":"calendar","empty_option": "",
      * "target_class":"\ZfMetal\Calendar\Entity\Calendar", "description":""})
      * @ORM\ManyToOne(targetEntity="\ZfMetal\Calendar\Entity\Calendar")
-     * @ORM\JoinColumn(name="calendar_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="calendar_id", referencedColumnName="id", nullable=true)
+     * @Transformation\Policy\Custom(transform= "\ZfMetal\Calendar\PolicyHandler\EntityId::transform")
      */
     public $calendar = null;
 
@@ -60,7 +60,7 @@ class Event
      * @Annotation\Validator({"name":"Date", "options": {"format":"Y-m-d H:i",
      * "messages": {"dateInvalidDate": "Fecha no válida. Formato: Año-Mes-Dia Hora:Minuto (Ej: 1985-12-31 23:59)",
      * "dateFalseFormat":"Fecha no válida. Formato: Año-Mes-Dia Hora:Minuto (Ej: 1985-12-31 23:59)"}}})
-     * @ORM\Column(type="datetime", unique=false, nullable=false, name="start")
+     * @ORM\Column(type="datetime", unique=false, nullable=true, name="start")
      */
     public $start = null;
 
@@ -72,7 +72,7 @@ class Event
      * @Annotation\Validator({"name":"Date", "options": {"format":"Y-m-d H:i",
      * "messages": {"dateInvalidDate": "Fecha no válida. Formato: Año-Mes-Dia Hora:Minuto (Ej: 1985-12-31 23:59)",
      * "dateFalseFormat":"Fecha no válida. Formato: Año-Mes-Dia Hora:Minuto (Ej: 1985-12-31 23:59)"}}})
-     * @ORM\Column(type="datetime", unique=false, nullable=false, name="end")
+     * @ORM\Column(type="datetime", unique=false, nullable=true, name="end")
      */
     public $end = null;
 
@@ -86,15 +86,6 @@ class Event
     public $title = null;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Attributes({"type":"text"})
-     * @Annotation\Options({"label":"Ubicación", "description":"", "addon":""})
-     * @ORM\Column(type="string", length=120, unique=false, nullable=true,
-     * name="location")
-     */
-    public $location = null;
-
-    /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Attributes({"type":"textarea"})
      * @Annotation\Options({"label":"description", "description":""})
@@ -103,7 +94,24 @@ class Event
      */
     public $description = null;
 
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Attributes({"type":"text"})
+     * @Annotation\Options({"label":"Ubicacion", "description":"", "addon":""})
+     * @ORM\Column(type="string", length=120, unique=false, nullable=true,
+     * name="location")
+     */
+    public $location = null;
 
+    /**
+     * @Annotation\Type("DoctrineModule\Form\Element\ObjectSelect")
+     * @Annotation\Options({"label":"Estado","empty_option": "",
+     * "target_class":"\ZfMetal\Calendar\Entity\EventState", "description":""})
+     * @ORM\ManyToOne(targetEntity="\ZfMetal\Calendar\Entity\EventState")
+     * @ORM\JoinColumn(name="state_id", referencedColumnName="id", nullable=true)
+     * @Transformation\Policy\Custom(transform= "\ZfMetal\Calendar\PolicyHandler\EntityId::transform")
+     */
+    public $state = null;
 
     public function getId()
     {
@@ -171,8 +179,6 @@ class Event
         $this->location = $location;
     }
 
-
-
     public function getDescription()
     {
         return $this->description;
@@ -193,6 +199,15 @@ class Event
         $this->ticket = $ticket;
     }
 
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    public function setState($state)
+    {
+        $this->state = $state;
+    }
 
     public function __toString()
     {

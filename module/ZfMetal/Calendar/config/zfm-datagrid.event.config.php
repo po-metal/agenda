@@ -44,10 +44,12 @@ return [
                 'start' => [
                     'type' => 'date',
                     'format' => 'Y-m-d H:i:s',
+                    'hidden' => true
                 ],
                 'end' => [
                     'type' => 'date',
                     'format' => 'Y-m-d H:i:s',
+                    'hidden' => true
                 ],
                 'location' => [
                     'displayName' => 'Ubicacion',
@@ -55,6 +57,21 @@ return [
                 'state' => [
                     'displayName' => 'Estado',
                     'type' => 'relational',
+                ],
+                'description' => [
+                    'hidden' => true
+                ],
+                'duration' => [
+                    'hidden' => true
+                ],
+                'lat' => [
+                    'hidden' => true
+                ],
+                'lng' => [
+                    'hidden' => true
+                ],
+                'postalCode' => [
+                    'hidden' => true
                 ],
             ],
             'crudConfig' => [
