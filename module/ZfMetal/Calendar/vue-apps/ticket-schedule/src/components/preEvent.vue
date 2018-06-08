@@ -12,12 +12,13 @@
 
   export default {
     name: 'preEvent',
-    props: ['preEvent'],
+    props: ['preEvent','index'],
     components: {Drag, Drop},
     data() {
       return {
         obj: {
           id: '',
+          index: '',
           calendar: '',
           title: '',
           location: '',
@@ -27,7 +28,8 @@
       }
     },
     created: function () {
-      this.obj = this.preEvent;
+      this.obj = this.preEvent
+      this.obj.index = this.index
     },
     methods: {
     },

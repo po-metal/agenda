@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint as UniqueConstraint;
 use Gedmo\Mapping\Annotation as Gedmo;
 use ZfMetal\Restful\Transformation;
+
 /**
  * Event
  *
@@ -31,6 +32,25 @@ class Event
      * @ORM\Column(type="integer", length=11, unique=false, nullable=false, name="id")
      */
     public $id = null;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Attributes({"type":"text"})
+     * @Annotation\Options({"label":"title", "description":"", "addon":""})
+     * @ORM\Column(type="string", length=100, unique=false, nullable=true,
+     * name="title")
+     */
+    public $title = null;
+
+    /**
+     * @Annotation\Type("DoctrineModule\Form\Element\ObjectSelect")
+     * @Annotation\Options({"label":"Estado","empty_option": "",
+     * "target_class":"\ZfMetal\Calendar\Entity\EventState", "description":""})
+     * @ORM\ManyToOne(targetEntity="\ZfMetal\Calendar\Entity\EventState")
+     * @ORM\JoinColumn(name="state_id", referencedColumnName="id", nullable=true)
+     * @Transformation\Policy\Custom(transform= "\ZfMetal\Calendar\PolicyHandler\EntityId::transform")
+     */
+    public $state = null;
 
 
     /**
@@ -65,6 +85,16 @@ class Event
     public $start = null;
 
     /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Attributes({"type":"text"})
+     * @Annotation\Options({"label":"Duracion", "description":"Duración en Minutos",
+     * "addon":""})
+     * @ORM\Column(type="integer", length=5, unique=false, nullable=true,
+     * name="duration")
+     */
+    public $duration = null;
+
+    /**
      * @Transformation\Policy\FormatDateTime(format="Y-m-d H:i")
      * @Annotation\Type("Zend\Form\Element\DateTimeLocal")
      * @Annotation\Attributes({"type":"datetime"})
@@ -76,14 +106,6 @@ class Event
      */
     public $end = null;
 
-    /**
-     * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Attributes({"type":"text"})
-     * @Annotation\Options({"label":"title", "description":"", "addon":""})
-     * @ORM\Column(type="string", length=100, unique=false, nullable=true,
-     * name="title")
-     */
-    public $title = null;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
@@ -103,25 +125,6 @@ class Event
      */
     public $location = null;
 
-    /**
-     * @Annotation\Type("DoctrineModule\Form\Element\ObjectSelect")
-     * @Annotation\Options({"label":"Estado","empty_option": "",
-     * "target_class":"\ZfMetal\Calendar\Entity\EventState", "description":""})
-     * @ORM\ManyToOne(targetEntity="\ZfMetal\Calendar\Entity\EventState")
-     * @ORM\JoinColumn(name="state_id", referencedColumnName="id", nullable=true)
-     * @Transformation\Policy\Custom(transform= "\ZfMetal\Calendar\PolicyHandler\EntityId::transform")
-     */
-    public $state = null;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Attributes({"type":"text"})
-     * @Annotation\Options({"label":"Duracion", "description":"Duración en Minutos",
-     * "addon":""})
-     * @ORM\Column(type="integer", length=5, unique=false, nullable=true,
-     * name="duration")
-     */
-    public $duration = null;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
@@ -150,139 +153,218 @@ class Event
      */
     public $postalCode = null;
 
+    /**
+     * @return mixed
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * @param mixed $id
+     */
     public function setId($id)
     {
         $this->id = $id;
     }
 
-    public function getCalendar()
-    {
-        return $this->calendar;
-    }
-
-    public function setCalendar($calendar)
-    {
-        $this->calendar = $calendar;
-    }
-
-    public function getTicket()
-    {
-        return $this->ticket;
-    }
-
-    public function setTicket($ticket)
-    {
-        $this->ticket = $ticket;
-    }
-
-    public function getStart()
-    {
-        return $this->start;
-    }
-
-    public function setStart($start)
-    {
-        $this->start = $start;
-    }
-
-    public function getEnd()
-    {
-        return $this->end;
-    }
-
-    public function setEnd($end)
-    {
-        $this->end = $end;
-    }
-
+    /**
+     * @return mixed
+     */
     public function getTitle()
     {
         return $this->title;
     }
 
+    /**
+     * @param mixed $title
+     */
     public function setTitle($title)
     {
         $this->title = $title;
     }
 
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
-    public function getLocation()
-    {
-        return $this->location;
-    }
-
-    public function setLocation($location)
-    {
-        $this->location = $location;
-    }
-
+    /**
+     * @return mixed
+     */
     public function getState()
     {
         return $this->state;
     }
 
+    /**
+     * @param mixed $state
+     */
     public function setState($state)
     {
         $this->state = $state;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getCalendar()
+    {
+        return $this->calendar;
+    }
+
+    /**
+     * @param mixed $calendar
+     */
+    public function setCalendar($calendar)
+    {
+        $this->calendar = $calendar;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTicket()
+    {
+        return $this->ticket;
+    }
+
+    /**
+     * @param mixed $ticket
+     */
+    public function setTicket($ticket)
+    {
+        $this->ticket = $ticket;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStart()
+    {
+        return $this->start;
+    }
+
+    /**
+     * @param mixed $start
+     */
+    public function setStart($start)
+    {
+        $this->start = $start;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getDuration()
     {
         return $this->duration;
     }
 
+    /**
+     * @param mixed $duration
+     */
     public function setDuration($duration)
     {
         $this->duration = $duration;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getEnd()
+    {
+        return $this->end;
+    }
+
+    /**
+     * @param mixed $end
+     */
+    public function setEnd($end)
+    {
+        $this->end = $end;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param mixed $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    /**
+     * @param mixed $location
+     */
+    public function setLocation($location)
+    {
+        $this->location = $location;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getLat()
     {
         return $this->lat;
     }
 
+    /**
+     * @param mixed $lat
+     */
     public function setLat($lat)
     {
         $this->lat = $lat;
     }
 
+    /**
+     * @return mixed
+     */
     public function getLng()
     {
         return $this->lng;
     }
 
+    /**
+     * @param mixed $lng
+     */
     public function setLng($lng)
     {
         $this->lng = $lng;
     }
 
+    /**
+     * @return mixed
+     */
     public function getPostalCode()
     {
         return $this->postalCode;
     }
 
+    /**
+     * @param mixed $postalCode
+     */
     public function setPostalCode($postalCode)
     {
         $this->postalCode = $postalCode;
     }
 
+
     public function __toString()
     {
-        return (string) $this->title;
+        return (string)$this->title;
     }
 
 

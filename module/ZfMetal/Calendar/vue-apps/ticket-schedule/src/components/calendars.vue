@@ -2,8 +2,8 @@
     <div class="row">
         <div class="col-lg-2">
             <h3>Tickets</h3>
-            <preEvent v-if="preEvents" v-for="preEvent in preEvents" :preEvent="preEvent"
-                      :key="preEvent.id">
+            <preEvent v-if="preEvents" v-for="(preEvent,index) in preEvents" :preEvent="preEvent"
+                      :key="preEvent.id" :index="index">
             </preEvent>
         </div>
 
@@ -142,7 +142,7 @@
         })
       },
       eventPendingList: function () {
-        http.get('events').then((response) => {
+        http.get('events?calendar=isNotNull').then((response) => {
           this.preEvents = response.data;
         })
       },
@@ -184,9 +184,12 @@
         this.showModal = true
       },
       onChangeDate: function (d) {
-        this.events = [];
-        this.date = moment(d)
-        this.loadEvents()
+        var d = moment(d)
+        if (d.isValid()) {
+          this.date = d
+          this.events = []
+          this.loadEvents()
+        }
       },
       loadEvents: function () {
         this.loading = true;
@@ -234,7 +237,6 @@
         })
       },
       onDropForNewEvent: function (preEvent, top, left) {
-        console.log(preEvent)
         var event = preEvent;
         event.top = top + this.getScrollX() + this.getBodyScrollTop()
         event.left = left + this.getScrollY() + this.getBodyScrollLeft()
@@ -242,9 +244,9 @@
         event.date = this.date
         event.start = this.getDate + " " + event.hour
         event.end = this.getEndByStartDuration(event.start, event.duration)
-        console.log(event.id);
         this.updateEvent(event)
-//        this.events[event.id] = event;
+        this.events.push(event);
+        this.preEvents.splice(preEvent.index,1)
       },
       getEndByStartDuration: function (start, duration) {
         var end = moment(start)
@@ -257,14 +259,14 @@
         this.events[eventKey].hour = hour
         this.events[eventKey].calendar = calendar
         this.events[eventKey].start = this.getDate + " " + hour
-        this.events[eventKey].end = this.getEndByStartDuration(this.events[eventKey].start,this.events[eventKey].duration)
+        this.events[eventKey].end = this.getEndByStartDuration(this.events[eventKey].start, this.events[eventKey].duration)
         this.updateEvent(this.events[eventKey])
       },
       onEventUpdate: function (event) {
         if (this.getDate != moment(event.start).format("YYYY-MM-DD")) {
           this.events.splice(this.eventIndex, 1)
         } else {
-          event.hour = momenttz(event.start,this.mytz).format("HH:mm");
+          event.hour = momenttz(event.start, this.mytz).format("HH:mm");
           event.duration = this.calculateEventDuraction(event);
           event.top = this.getCalendarTdTop(this.getEventTid(event));
           event.left = this.getCalendarTdLeft(this.getEventTid(event));
