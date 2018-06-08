@@ -22,7 +22,7 @@
         if (data.type != undefined && data.type == 't') {
           data.obj.calendar = this.calendarId;
           data.obj.hour = this.hour;
-          this.$emit("dropForNewEvent", data.obj, this.getTop, this.getLeft);
+          this.$emit("dropForNewEvent", data.obj,data.index, this.getTop, this.getLeft);
         }
         if (data.type != undefined && data.type == 'e') {
           this.$emit("dropForChangeEvent", this.calendarId, data.id,  this.hour, this.getTop, this.getLeft);

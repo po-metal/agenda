@@ -33,7 +33,7 @@
         "zf-metal/commons": "^1.1.5",
         "zf-metal/datagrid": "^1.0.1",
         "zf-metal/generator": "^1.0.4",
-        "zf-metal/restful": "dev-master",
+        "zf-metal/restful": "^1.0.1",
         "zendframework/zend-mvc-console": "^1.1",
         "phpunit/phpunit": "5.7.27"
     },

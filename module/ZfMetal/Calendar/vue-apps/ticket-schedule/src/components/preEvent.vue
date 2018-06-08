@@ -1,5 +1,5 @@
 <template>
-    <drag :transfer-data="{obj: obj, type: 't'}" :draggable="isDraggable" >
+    <drag :transfer-data="{obj: obj, index:index, type: 't'}" :draggable="isDraggable" >
         <div class="zfc-pre-event" :class="{'zfc-pre-event-a' : !isDraggable}">
             {{obj.id}} - {{obj.title}}
         </div>
@@ -18,7 +18,6 @@
       return {
         obj: {
           id: '',
-          index: '',
           calendar: '',
           title: '',
           location: '',
@@ -29,7 +28,6 @@
     },
     created: function () {
       this.obj = this.preEvent
-      this.obj.index = this.index
     },
     methods: {
     },
