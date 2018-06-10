@@ -63,12 +63,23 @@ class Event
      */
     public $calendar = null;
 
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Attributes({"type":"text"})
+     * @Annotation\Options({"label":"Servicio", "description":"", "addon":""})
+     * @ORM\Column(type="integer", length=11, unique=false, nullable=true,
+     * name="service_id")
+     */
+    public $service = null;
+
+
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Attributes({"type":"text"})
      * @Annotation\Options({"label":"Ticket", "description":"", "addon":""})
      * @ORM\Column(type="integer", length=11, unique=false, nullable=true,
-     * name="ticket")
+     * name="ticket_id")
      */
     public $ticket = null;
 
@@ -359,6 +370,23 @@ class Event
     public function setPostalCode($postalCode)
     {
         $this->postalCode = $postalCode;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getService()
+    {
+        return $this->service;
+    }
+
+    /**
+     * @param mixed $service
+     */
+    public function setService($service)
+    {
+        $this->service = $service;
     }
 
 
