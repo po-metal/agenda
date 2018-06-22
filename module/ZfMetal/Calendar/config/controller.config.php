@@ -12,6 +12,9 @@ return array(
             \ZfMetal\Calendar\Controller\HomeController::class => \ZfMetal\Calendar\Factory\Controller\HomeControllerFactory::class,
             \ZfMetal\Calendar\Controller\EventScheduleController::class => \ZfMetal\Calendar\Factory\Controller\EventScheduleControllerFactory::class,
             \ZfMetal\Calendar\Controller\EventController::class => \ZfMetal\Calendar\Factory\Controller\EventControllerFactory::class,
+            \ZfMetal\Calendar\Controller\EventStateController::class => \ZfMetal\Calendar\Factory\Controller\EventStateControllerFactory::class,
+            \ZfMetal\Calendar\Controller\EventTypeController::class => \ZfMetal\Calendar\Factory\Controller\EventTypeControllerFactory::class,
+            \ZfMetal\Calendar\Controller\OutOfServiceController::class => \ZfMetal\Calendar\Factory\Controller\OutOfServiceControllerFactory::class,
         ),
     ),
 );

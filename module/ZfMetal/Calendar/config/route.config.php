@@ -181,6 +181,78 @@ return [
                             ],
                         ],
                     ],
+                    'EventState' => [
+                        'mayTerminate' => false,
+                        'options' => [
+                            'route' => '/event-state',
+                            'defaults' => [
+                                'controller' => \ZfMetal\Calendar\Controller\EventStateController::CLASS,
+                                'action' => 'grid',
+                            ],
+                        ],
+                        'type' => 'Literal',
+                        'child_routes' => [
+                            'Grid' => [
+                                'mayTerminate' => true,
+                                'options' => [
+                                    'route' => '/grid',
+                                    'defaults' => [
+                                        'controller' => \ZfMetal\Calendar\Controller\EventStateController::CLASS,
+                                        'action' => 'grid',
+                                    ],
+                                ],
+                                'type' => 'Segment',
+                            ],
+                        ],
+                    ],
+                    'EventType' => [
+                        'mayTerminate' => false,
+                        'options' => [
+                            'route' => '/event-type',
+                            'defaults' => [
+                                'controller' => \ZfMetal\Calendar\Controller\EventTypeController::CLASS,
+                                'action' => 'grid',
+                            ],
+                        ],
+                        'type' => 'Literal',
+                        'child_routes' => [
+                            'Grid' => [
+                                'mayTerminate' => true,
+                                'options' => [
+                                    'route' => '/grid',
+                                    'defaults' => [
+                                        'controller' => \ZfMetal\Calendar\Controller\EventTypeController::CLASS,
+                                        'action' => 'grid',
+                                    ],
+                                ],
+                                'type' => 'Segment',
+                            ],
+                        ],
+                    ],
+                    'OutOfService' => [
+                        'mayTerminate' => false,
+                        'options' => [
+                            'route' => '/out-of-service',
+                            'defaults' => [
+                                'controller' => \ZfMetal\Calendar\Controller\OutOfServiceController::CLASS,
+                                'action' => 'grid',
+                            ],
+                        ],
+                        'type' => 'Literal',
+                        'child_routes' => [
+                            'Grid' => [
+                                'mayTerminate' => true,
+                                'options' => [
+                                    'route' => '/grid',
+                                    'defaults' => [
+                                        'controller' => \ZfMetal\Calendar\Controller\OutOfServiceController::CLASS,
+                                        'action' => 'grid',
+                                    ],
+                                ],
+                                'type' => 'Segment',
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ],
