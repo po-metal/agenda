@@ -8,10 +8,12 @@ import 'moment/locale/es';
 import {getters} from './getters'
 import {HTTP} from './../utils/http-client'
 import {calculateEventDuraction} from './../utils/helpers'
-import { SET_DATE,
+import {
+  SET_DATE,
   ADD_CALENDAR, SET_CALENDARS, SET_PRE_EVENTS,
   SET_EVENTS, CLEAR_EVENTS, ADD_EVENT, UPDATE_EVENT, REMOVE_PRE_EVENTS, SET_COORDINATE,
-  SET_BODY_SCROLL, SET_CALENDAR_SCROLL, SET_CALENDAR_POSITION
+  SET_BODY_SCROLL, SET_CALENDAR_SCROLL, SET_CALENDAR_POSITION,
+  SET_EVENT_STATES, SET_EVENT_TYPES
 } from './mutation-types'
 
 Vue.use(Vuex)
@@ -27,6 +29,8 @@ const state = {
   calendars: [],
   preEvents: [],
   events: [],
+  eventStates: [],
+  eventType: []
 };
 
 
@@ -35,10 +39,25 @@ const actions = {
     console.log(date)
     var newDate = moment(date)
     if (newDate.isValid()) {
-      commit('SET_DATE',newDate);
-      commit('CLEAR_EVENTS',newDate);
+      commit('SET_DATE', newDate);
+      commit('CLEAR_EVENTS', newDate);
       dispatch('eventList');
     }
+  },
+
+  eventStateList({commit}) {
+    state.loading = true;
+    HTTP.get('event-states').then((response) => {
+      commit("SET_EVENT_STATES", response.data);
+      state.loading = false;
+    })
+  },
+  eventTypeList({commit}) {
+    state.loading = true;
+    HTTP.get('event-types').then((response) => {
+      commit("SET_EVENT_TYPES", response.data);
+      state.loading = false;
+    })
   },
   calendarList({state, commit, dispatch}) {
     state.loading = true;
@@ -67,7 +86,7 @@ const actions = {
       state.loading = false;
     })
   },
-  pushEvent({state, commit,getters}, event) {
+  pushEvent({state, commit, getters}, event) {
     event.hour = moment(event.start).tz('America/Argentina/Buenos_Aires').format("HH:mm");
     // event.duration = calculateEventDuraction(event);
     event.top = getters.getCoordinate(event.calendar, event.hour, 'top');
@@ -84,7 +103,7 @@ const actions = {
 
 
   },
-  updateEvent({state, commit,getters}, {index, event}) {
+  updateEvent({state, commit, getters}, {index, event}) {
     event.top = getters.getCoordinate(event.calendar, event.hour, 'top');
     event.left = getters.getCoordinate(event.calendar, event.hour, 'left');
     state.loading = true;
@@ -109,6 +128,12 @@ const mutations = {
   [ADD_CALENDAR](state, calendar) {
     state.calendars.push(calendar);
   },
+  [SET_EVENT_STATES](state, eventStates) {
+    state.eventStates = eventStates;
+  },
+  [SET_EVENT_TYPES](state, eventTypes) {
+    state.eventTypes = eventTypes;
+  },
   [SET_CALENDARS](state, calendars) {
     state.calendars = calendars;
   },
@@ -118,8 +143,8 @@ const mutations = {
   [SET_EVENTS](state, events) {
     state.events = events;
   },
-  [CLEAR_EVENTS](state){
-    state.events= []
+  [CLEAR_EVENTS](state) {
+    state.events = []
   },
   [REMOVE_PRE_EVENTS](state, index) {
     state.preEvents.splice(index, 1);

@@ -103,6 +103,8 @@
       }
     },
     created: function () {
+      this.eventStateList();
+      this.eventTypeList();
       this.calendarList();
       this.preEventList();
     },
@@ -129,6 +131,8 @@
     },
     methods: {
       ...mapActions([
+        'eventStateList',
+        'eventTypeList',
         'calendarList',
         'preEventList',
         'removePreEvent',
@@ -137,12 +141,6 @@
       ]),
       removeEvent: function(){
 
-      },
-      calculateEventDuraction: function (event) {
-        if (event.start && event.end) {
-          return moment(event.end).diff(moment(event.start), 'minutes');
-        }
-        return null;
       },
       onEditEvent: function (index) {
         this.eventForm = this.getEventByKey(index)
