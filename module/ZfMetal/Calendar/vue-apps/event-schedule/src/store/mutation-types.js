@@ -1,0 +1,3 @@
+export const ADD_CALENDAR = 'ADD_CALENDAR'
+export const SET_CALENDARS = 'SET_CALENDARS'
+export const SET_PRE_EVENTS = 'SET_PRE_EVENTS'
