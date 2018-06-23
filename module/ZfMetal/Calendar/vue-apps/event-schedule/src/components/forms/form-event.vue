@@ -70,7 +70,7 @@
 
                 <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                     <input type="datetime" name="start" class=" form-control" ref="start"
-                           v-model="entity.start" @keydown="unsaved">
+                           v-model="entity.start" @keyup="refreshEnd" @change="refreshEnd">
                     <fe :errors="errors.start"/>
                 </div>
 
@@ -87,7 +87,7 @@
 
                 <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                     <input type="number" name="duration" class=" form-control" ref="duration"
-                           v-model="entity.duration" @keydown="refreshEnd" @change="refreshEnd">
+                           v-model="entity.duration" @keyup="refreshEnd" @change="refreshEnd">
                     <fe :errors="errors.duration"/>
                 </div>
 

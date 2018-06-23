@@ -31,6 +31,7 @@
                     </thead>
 
                     <tbody>
+
                     <tr v-if="hasCalendars" v-for="hour in getHours" v-bind:key="hour">
 
                         <td class="zfc-column-hours">{{hour}}</td>
@@ -44,6 +45,19 @@
                                     :parentTop="top" :parentLeft="left"
                                     v-on:dropForNewEvent="onDropForNewEvent"
                                     v-on:dropForChangeEvent="onDropForChangeEvent">
+                        </calendarTd>
+
+                    </tr>
+
+                    <tr>
+                        <th class="zfc-column-hours">FB</th>
+                        <calendarTd v-if="hasCalendars"
+                                    v-for="calendar in calendars"
+                                    :ref='calendar.id+"_fb"'
+                                    :tid='calendar.id+"_fb"'
+                                    :key='calendar.id+"_fb"'
+                                    :calendarId="calendar.id" :name="calendar.name" :hour="'fb'"
+                                    :parentTop="top" :parentLeft="left">
                         </calendarTd>
 
                     </tr>
@@ -162,18 +176,14 @@
       },
       getEventTid: function (event) {
         if (event.calendar && event.hour) {
-          var hs = event.hour.split(":");
-          var hour = "";
-          if (hs[1] == "00" || hs[1] == "30") {
-            hour = event.hour
-          } else {
-            if (hs[1] > 30) {
-              hour = hs[0] + ":30"
-            } else {
-              hour = hs[0] + ":00"
-            }
+          var sh = event.hour.split(":");
+          var h = sh[0];
+          var m = sh[1];
+          if (m != "00" && m != "30") {
+            m  = (m > 30 ? "30" : "00")
           }
-          return this.getCalendarTdRef(event.calendar, hour)
+          return event.calendar + "_" + h + "_" + m
+
         }
         return null;
       },
@@ -193,7 +203,7 @@
       },
       loadEvents: function () {
         this.loading = true;
-        axios.get("/zfmc/api/events?start=" + this.getDate + "<>" + this.getNextDate
+        axios.get("/zfmc/api/events?calendar=isNotNull&start=" + this.getDate + "<>" + this.getNextDate
         ).then((response) => {
           var events = [];
           for (var i = 0; i < response.data.length; i++) {
@@ -204,8 +214,8 @@
               //Duration
               event.duration = this.calculateEventDuraction(event);
               //TOP-LEFT
-              event.top = this.getCalendarTdTop(this.getEventTid(event));
-              event.left = this.getCalendarTdLeft(this.getEventTid(event));
+              event.top = this.getCalendarTdTop(event);
+              event.left = this.getCalendarTdLeft(event);
               events.push(event);
             }
           }
@@ -314,11 +324,23 @@
       getBodyScrollLeft() {
         return window.pageXOffset || document.documentElement.scrollLeft;
       },
-      getCalendarTdTop: function (refid) {
-        return this.$refs[refid][0].getTop;
+      getCalendarTdTop: function (event) {
+        var refid = this.getEventTid(event)
+        if(this.$refs[refid] != undefined && this.$refs[refid][0] != undefined) {
+          return this.$refs[refid][0].getTop
+        }else{
+          refid = event.calendar+"_fb"
+          return this.$refs[refid][0].getTop
+        }
       },
-      getCalendarTdLeft: function (refid) {
-        return this.$refs[refid][0].getLeft;
+      getCalendarTdLeft: function (event) {
+        var refid = this.getEventTid(event)
+        if(this.$refs[refid] != undefined && this.$refs[refid][0] != undefined) {
+          return this.$refs[refid][0].getLeft
+        }else{
+          refid = event.calendar+"_fb"
+          return this.$refs[refid][0].getLeft
+        }
       },
       onResize: function () {
         this.getTop();
