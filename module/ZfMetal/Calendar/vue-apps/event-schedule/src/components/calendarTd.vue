@@ -6,6 +6,7 @@
 </template>
 
 <script>
+  import { mapGetters, mapActions } from 'vuex';
   import {Drag, Drop} from 'vue-drag-drop';
 
   export default {
@@ -13,29 +14,44 @@
     props: ['calendarId', 'tid', 'name', 'hour', 'parentTop', 'parentLeft'],
     components: {Drag, Drop},
     data() {
-      return {}
+      return {
+        top: 0,
+        left: 0,
+      }
     },
     mounted: function () {
+      this.calculateTop();
+      this.calculateLeft();
     },
     methods: {
       handleDrop: function (data) {
         if (data.type != undefined && data.type == 't') {
           data.obj.calendar = this.calendarId;
           data.obj.hour = this.hour;
-          this.$emit("dropForNewEvent", data.obj,data.index, this.getTop, this.getLeft);
+          this.$emit("dropForNewEvent", data.obj,data.index);
         }
         if (data.type != undefined && data.type == 'e') {
-          this.$emit("dropForChangeEvent", this.calendarId, data.id,  this.hour, this.getTop, this.getLeft);
+          this.$emit("dropForChangeEvent", this.calendarId, data.id,  this.hour);
         }
       },
+      calculateTop() {
+        this.top = this.$el.getBoundingClientRect().top - this.parentTop;
+        this.$store.commit('SET_COORDINATE',{calendar: this.calendarId,hour:this.hour,type:'top',value:this.top});
+      },
+      calculateLeft() {
+        this.left = this.$el.getBoundingClientRect().left - this.parentLeft + 10;
+        this.$store.commit('SET_COORDINATE',{calendar: this.calendarId,hour:this.hour,type:'left',value:this.left});
+      }
+    },
+    watch: {
+      parentTop: function(){
+        this.calculateTop()
+      },
+      parentLeft: function(){
+        this.calculateLeft()
+      }
     },
     computed: {
-      getTop: function () {
-        return this.$el.getBoundingClientRect().top - this.parentTop;
-      },
-      getLeft: function () {
-        return this.$el.getBoundingClientRect().left - this.parentLeft + 10;
-      },
     }
   }
 </script>

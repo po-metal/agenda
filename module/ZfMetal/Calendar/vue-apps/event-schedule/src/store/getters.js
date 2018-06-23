@@ -3,30 +3,47 @@ import tz from 'moment-timezone'
 import 'moment/locale/es';
 
 export const getters = {
+  getCoordinates: state => {
+    return state.coordinates;
+  },
+  getCoordinate: (state) => (calendar,hour,type) => {
+    if(state.coordinates[calendar][hour] == undefined){
+      return state.coordinates[calendar]['fb'][type];
+    }
+    return state.coordinates[calendar][hour][type];
+  },
+  getLoading: state => {
+    return state.loading;
+  },
   getCalendars: state => {
     return state.calendars;
   },
   getPreEvents: state => {
     return state.preEvents;
   },
+  getEvents: state => {
+    return state.events;
+  },
+  getEventByKey: (state) => (key) => {
+    return state.events[key];
+  },
   getDate: state => {
     return state.date.format("YYYY-MM-DD");
   },
-  getNextDate:  (state, getters)  => {
+  getNextDate: (state, getters) => {
     var nextDate = tz(getters.getDate);
     return nextDate.add(1, 'day').format("YYYY-MM-DD");
   },
-  getDay:  state => {
+  getDay: state => {
     return state.date.day() + 1;
   },
   hasCalendars: (state) => {
-    console.log(state.calendars.length)
     if (state.calendars != undefined && state.calendars.length > 0) {
       return true;
     }
     return false;
   },
-  getStart: (state,getters) => {
+  getStart: (state, getters) => {
     var rstart = null;
     if (getters.hasCalendars) {
       for (var index = 0; index < state.calendars.length; ++index) {
@@ -43,7 +60,7 @@ export const getters = {
     }
     return rstart;
   },
-  getEnd:  (state,getters) => {
+  getEnd: (state, getters) => {
     var rend = null;
     if (getters.hasCalendars) {
       for (var index = 0; index < state.calendars.length; ++index) {
@@ -60,7 +77,7 @@ export const getters = {
     }
     return rend;
   },
-  getHours:  (state, getters)  => {
+  getHours: (state, getters) => {
     var hours = [];
     if (getters.hasCalendars) {
       var flag = true;

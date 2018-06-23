@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-lg-2">
             <h3>Tickets</h3>
-            <preEvent v-if="preEvents" v-for="(preEvent,index) in getPreEvents" :preEvent="preEvent"
+            <preEvent v-if="getPreEvents" v-for="(preEvent,index) in getPreEvents" :preEvent="preEvent"
                       :key="preEvent.id" :index="index">
             </preEvent>
         </div>
@@ -10,14 +10,14 @@
         <div class="col-lg-10">
             <div class="text-center row">
                 <div class="col-lg-2">
-                    <loading :isLoading="loading"></loading>
+                    <loading :isLoading="getLoading"></loading>
                 </div>
                 <div class="col-lg-8">
-                    <day v-model="getDate" v-on:changeDate="onChangeDate"></day>
+                    <day v-model="getDate"></day>
                 </div>
             </div>
             <div class="clearfix"></div>
-            <div class="zfc-calendars" ref="zfcCalendars">
+            <div class="zfc-calendars" ref="zfcCalendars" v-on:scroll="handleCalendarScroll">
                 <table class="table-bordered table-striped table-responsive  zfc-td">
                     <thead>
                     <tr>
@@ -28,46 +28,35 @@
                             :key="calendar.id">
                             {{calendar.name}}
                         </th>
-
                     </tr>
                     </thead>
 
                     <tbody>
-
                     <tr v-if="hasCalendars" v-for="hour in getHours" v-bind:key="hour">
-
                         <td class="zfc-column-hours">{{hour}}</td>
-
                         <calendarTd v-if="hasCalendars"
                                     v-for="calendar in getCalendars"
-                                    :ref='getCalendarTdRef(calendar.id,hour)'
-                                    :tid='getCalendarTdRef(calendar.id,hour)'
-                                    :key='getCalendarTdRef(calendar.id,hour)'
+                                    :key='calendar.id + hour'
                                     :calendarId="calendar.id" :name="calendar.name" :hour="hour"
                                     :parentTop="top" :parentLeft="left"
                                     v-on:dropForNewEvent="onDropForNewEvent"
                                     v-on:dropForChangeEvent="onDropForChangeEvent">
                         </calendarTd>
-
                     </tr>
 
                     <tr>
                         <th class="zfc-column-hours">FB</th>
                         <calendarTd v-if="hasCalendars"
-                                    v-for="calendar in calendars"
-                                    :ref='calendar.id+"_fb"'
-                                    :tid='calendar.id+"_fb"'
+                                    v-for="calendar in getCalendars"
                                     :key='calendar.id+"_fb"'
                                     :calendarId="calendar.id" :name="calendar.name" :hour="'fb'"
                                     :parentTop="top" :parentLeft="left">
                         </calendarTd>
-
                     </tr>
                     </tbody>
-
                 </table>
 
-                <event v-if="events" v-for="(event,index) in events" :key="index" :index="index"
+                <event v-if="getEvents" v-for="(event,index) in getEvents" :key="index" :index="index"
                        :id="event.id" :title="event.title" :description="event.description"
                        :duration="event.duration"
                        :date="event.getDate" :calendar="event.calendar" :hour="event.hour"
@@ -75,31 +64,21 @@
                        :top="event.top" :left="event.left"
                        :start="event.start" :end="event.end"
                        v-on:editEvent="onEditEvent">
-
                 </event>
-
             </div>
         </div>
-
         <modal :title="titleModal" :showModal="showModal" @close="showModal = false">
-            <form-event :calendars="calendars" v-model="eventForm"
-                        :index="eventIndex" v-on:remove="removeEvent"
-                        v-on:eventUpdate="onEventUpdate"
-            />
+            <form-event :calendars="getCalendars" v-model="eventForm"
+                        :index="eventIndex" v-on:remove="removeEvent" />
         </modal>
-
     </div>
 </template>
 
 <script>
   import { mapGetters, mapActions } from 'vuex';
-
-  import axios from 'axios'
+  import {calculateEnd} from './../utils/helpers'
   import {Drag, Drop} from 'vue-drag-drop';
 
-  import moment from 'moment'
-  import momenttz from 'moment-timezone'
-  import 'moment/locale/es';
 
   import modal from './helpers/modal.vue'
   import loading from './helpers/loading.vue'
@@ -111,31 +90,14 @@
 
   import formEvent from './forms/form-event.vue'
 
-  const http = axios.create({
-    baseURL: '/zfmc/api/',
-    timeout: 15000,
-    headers: {
-      accept: 'application/json'
-    }
-  });
-
-
   export default {
     name: 'calendars',
     components: {day, calendarTd, event, preEvent, Drag, Drop, modal, loading, formEvent},
     data() {
       return {
-        date: moment().locale('es'),
-        mytz: 'America/Argentina/Buenos_Aires',
-        calendars: [],
-        preEvents: [],
-        events: [],
         tds: {},
-        top: 0,
-        left: 0,
         eventForm: {},
         eventIndex: '',
-        loading: false,
         showModal: false,
         titleModal: ''
       }
@@ -143,220 +105,78 @@
     created: function () {
       this.calendarList();
       this.preEventList();
-
     },
     mounted() {
       this.$nextTick(function () {
-        window.addEventListener('resize', this.onResize);
+        window.addEventListener('scroll', this.handleWindowScroll);
+        window.addEventListener('resize', this.handleCalendarPosition);
       });
-      this.getTop();
-      this.getLeft();
-    },
-    methods: {
-      ...mapActions([
-        'calendarList',
-        'preEventList'
-      ]),
-      calculateEventDuraction: function (event) {
-        if (event.start && event.end) {
-          return moment(event.end).diff(moment(event.start), 'minutes');
-        }
-        return null;
-      },
-      getCalendarTdRef: function (calendarId, hour) {
-        var hs = hour.split(":")
-        var r = calendarId + "_" + hs[0] + "_" + hs[1]
-        return r
-      },
-      getEventTid: function (event) {
-        if (event.calendar && event.hour) {
-          var sh = event.hour.split(":");
-          var h = sh[0];
-          var m = sh[1];
-          if (m != "00" && m != "30") {
-            m  = (m > 30 ? "30" : "00")
-          }
-          return event.calendar + "_" + h + "_" + m
-        }
-        return null;
-      },
-      onEditEvent: function (index) {
-        this.eventForm = this.events[index]
-        this.eventIndex = index
-        this.titleModal = 'Evento: ' + this.eventForm.title
-        this.showModal = true
-      },
-      onChangeDate: function (d) {
-        var d = moment(d)
-        if (d.isValid()) {
-          this.date = d
-          this.events = []
-          this.loadEvents()
-        }
-      },
-      loadEvents: function () {
-        this.loading = true;
-        axios.get("/zfmc/api/events?calendar=isNotNull&start=" + this.getDate + "<>" + this.getNextDate
-        ).then((response) => {
-          var events = [];
-          for (var i = 0; i < response.data.length; i++) {
-            var event = response.data[i]
-            if (event.calendar != null) {
-              //Hour
-              event.hour = moment(event.start).tz(this.mytz).format("HH:mm");
-              //Duration
-              event.duration = this.calculateEventDuraction(event);
-              //TOP-LEFT
-              event.top = this.getCalendarTdTop(event);
-              event.left = this.getCalendarTdLeft(event);
-              events.push(event);
-            }
-          }
-          this.events = events;
-          this.loading = false;
-        })
-      },
-      createEvent: function (event) {
-        this.loading = true;
-        axios.post("/zfmc/api/events", event
-        ).then((response) => {
-          event.id = response.data.id
-          this.setEventOnTicket(event.ticket, response.data.id)
-          this.events.push(event);
-          this.loading = false;
-        }).catch((error) => {
-          this.nowEvent.errors = error.response.data.errors
-          this.loading = false;
-        })
-      },
-      updateEvent: function (event) {
-        this.loading = true;
-        axios.put("/zfmc/api/events/" + event.id, event
-        ).then((response) => {
-          this.loading = false;
-        }).catch((error) => {
-          this.nowEvent.errors = error.response.data.errors
-          this.loading = false;
-        })
-      },
-      onDropForNewEvent: function (preEvent, index, top, left) {
-        var event = preEvent;
-        event.top = top + this.getScrollX() + this.getBodyScrollTop()
-        event.left = left + this.getScrollY() + this.getBodyScrollLeft()
-        event.duration = 60
-        event.date = this.date
-        event.start = this.getDate + " " + event.hour
-        event.end = this.getEndByStartDuration(event.start, event.duration)
-        this.updateEvent(event)
-        console.log(index)
-        this.preEvents.splice(index, 1)
-        this.events.push(event)
-
-      },
-      getEndByStartDuration: function (start, duration) {
-        var end = moment(start)
-        end.add(duration, "minutes")
-        return end.tz('America/Argentina/Buenos_Aires').format("YYYY-MM-DD HH:mm")
-      },
-      onDropForChangeEvent: function (calendar, eventKey, hour, top, left) {
-        this.events[eventKey].top = top + this.getScrollX() + this.getBodyScrollTop()
-        this.events[eventKey].left = left + this.getScrollY() + this.getBodyScrollLeft()
-        this.events[eventKey].hour = hour
-        this.events[eventKey].calendar = calendar
-        this.events[eventKey].start = this.getDate + " " + hour
-        this.events[eventKey].end = this.getEndByStartDuration(this.events[eventKey].start, this.events[eventKey].duration)
-        this.updateEvent(this.events[eventKey])
-      },
-      onEventUpdate: function (event) {
-        if (this.getDate != moment(event.start).format("YYYY-MM-DD")) {
-          this.events.splice(this.eventIndex, 1)
-        } else {
-          var eventid = this.getEventTid(event)
-          if (eventid != null) {
-            event.top = this.getCalendarTdTop(eventid);
-            event.left = this.getCalendarTdLeft(eventid);
-          }
-
-        }
-      },
-      getTicketById: function (id) {
-        for (var i = 0; i < this.tickets.length; i++) {
-          if (this.tickets[i].id == id) {
-            return this.tickets[i];
-          }
-        }
-        return null;
-      },
-      setEventOnTicket: function (ticketId, eventId) {
-        var ticket = this.getTicketById(ticketId)
-        if (ticket) {
-          ticket.event = eventId;
-          this.updateTicket(ticket)
-        }
-        return null;
-      },
-      updateTicket: function (ticket) {
-        this.loading = true;
-        axios.put("/zfmc/api/tickets/" + ticket.id, ticket
-        ).then((response) => {
-          this.loading = false;
-        }).catch((error) => {
-          this.nowEvent.errors = error.response.data.errors
-          this.loading = false;
-        })
-      },
-      getScrollX: function () {
-        return this.$refs.zfcCalendars.scrollTop;
-      },
-      getScrollY: function () {
-        return this.$refs.zfcCalendars.scrollLeft;
-      },
-      getBodyScrollTop() {
-        return window.pageYOffset || document.documentElement.scrollTop;
-      },
-      getBodyScrollLeft() {
-        return window.pageXOffset || document.documentElement.scrollLeft;
-      },
-      getCalendarTdTop: function (event) {
-        var refid = this.getEventTid(event)
-        if(this.$refs[refid] != undefined && this.$refs[refid][0] != undefined) {
-          return this.$refs[refid][0].getTop
-        }else{
-          refid = event.calendar+"_fb"
-          return this.$refs[refid][0].getTop
-        }
-      },
-      getCalendarTdLeft: function (event) {
-        var refid = this.getEventTid(event)
-        if(this.$refs[refid] != undefined && this.$refs[refid][0] != undefined) {
-          return this.$refs[refid][0].getLeft
-        }else{
-          refid = event.calendar+"_fb"
-          return this.$refs[refid][0].getLeft
-        }
-      },
-      onResize: function () {
-        this.getTop();
-        this.getLeft();
-      },
-      getTop: function () {
-        this.top = this.$refs.zfcCalendars.getBoundingClientRect().top;
-      },
-      getLeft: function () {
-        this.left = this.$refs.zfcCalendars.getBoundingClientRect().left;
-      },
+      this.handleCalendarPosition();
     },
     computed: {
       ...mapGetters([
+        'getLoading',
         'getCalendars',
         'getPreEvents',
+        'getEvents',
+        'getEventByKey',
         'getDate',
         'getNextDate',
         'getDay',
         'hasCalendars',
         'getHours'
       ]),
+    },
+    methods: {
+      ...mapActions([
+        'calendarList',
+        'preEventList',
+        'removePreEvent',
+        'updateEvent',
+        'pushEvent'
+      ]),
+      removeEvent: function(){
 
+      },
+      calculateEventDuraction: function (event) {
+        if (event.start && event.end) {
+          return moment(event.end).diff(moment(event.start), 'minutes');
+        }
+        return null;
+      },
+      onEditEvent: function (index) {
+        this.eventForm = this.getEventByKey(index)
+        this.eventIndex = index
+        this.titleModal = 'Evento: ' + this.eventForm.title
+        this.showModal = true
+      },
+      onDropForNewEvent: function (preEvent, index, top, left) {
+        var event = preEvent;
+        event.date = this.date
+        event.start = this.getDate + " " + event.hour
+        event.end = calculateEnd(event.start, event.duration)
+        this.pushEvent(event);
+        this.removePreEvent({index:index});
+      },
+      onDropForChangeEvent: function (calendar, eventKey, hour) {
+        var event = this.getEventByKey(eventKey);
+        event.hour = hour
+        event.calendar = calendar
+        event.start = this.getDate + " " + hour
+        event.end = this.getEndByStartDuration(event.start, event.duration)
+        this.updateEvent({index:eventKey,event:event});
+      },
+      handleCalendarPosition: function () {
+        this.top = this.$refs.zfcCalendars.getBoundingClientRect().top;
+        this.left = this.$refs.zfcCalendars.getBoundingClientRect().left;
+        this.$store.commit('SET_CALENDAR_POSITION',{top:this.top,left:this.left});
+      },
+      handleCalendarScroll: function(e){
+        this.$store.commit('SET_CALENDAR_SCROLL',{top:e.srcElement.scrollTop,left:e.srcElement.scrollLeft});
+      },
+      handleWindowScroll: function(e){
+        this.$store.commit('SET_BODY_SCROLL',{top:e.srcElement.scrollTop || window.pageYOffset,left: e.srcElement.scrollLeft || window.pageXOffset });
+      },
     }
 
   }

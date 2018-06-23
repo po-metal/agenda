@@ -126,7 +126,7 @@
 
         <div class="col-lg-12 col-xs-12">
             <button name="submitbtn" class="btn " :class="h.submitClass" v-if="!h.isSaved"
-                    :disabled="h.submitInProgress">{{h.submitValue}}
+                    :disabled="getLoading">{{h.submitValue}}
             </button>
         </div>
     </form>
@@ -134,11 +134,13 @@
 
 
 <script>
+  import {mapGetters, mapActions} from 'vuex';
+  import {HTTP} from './../../utils/http-client'
+  import {calculateEnd} from './../../utils/helpers'
   import fe from '../helpers/form-errors.vue'
   import saveStatus from '../helpers/save-status.vue'
   import alert from '../helpers/alert.vue'
 
-  import axios from 'axios'
 
   import moment from 'moment'
   import momenttz from 'moment-timezone'
@@ -147,7 +149,7 @@
 
   export default {
     name: 'form-event',
-    props: ['value', 'isSaved', 'calendars'],
+    props: ['index', 'value', 'isSaved', 'calendars'],
     components: {fe, saveStatus, alert},
     data() {
       return {
@@ -171,7 +173,16 @@
     created: function () {
       this.entity = this.value
     },
+    computed: {
+      ...mapGetters([
+        'getCoordinate',
+        'getLoading',
+      ])
+    },
     methods: {
+      ...mapActions([
+        'updateEvent'
+      ]),
       populate: function (data) {
         this.entity.id = data.id
         this.entity.title = data.title
@@ -185,7 +196,7 @@
         this.h.isSaved = false
       },
       refreshEnd: function () {
-        this.entity.end = moment(this.entity.start).add(this.entity.duration, "minutes").format("YYYY-MM-DD HH:mm")
+        this.entity.end = calculateEnd(this.entity.start,this.entity.duration)
         this.unsaved()
       },
       iSave: function () {
@@ -208,35 +219,25 @@
           this.create()
         }
       },
-      setHour: function(){
+      setHour: function () {
         this.entity.hour = moment(this.entity.start).format("HH:mm");
-      },
-      create: function () {
-        this.setHour()
-        axios.post("/zfmc/api/events", this.entity
-        ).then((response) => {
-          this.entity.id = response.data.id
-          this.h.submitInProgress = false
-          this.$emit("eventCreate", this.entity)
-        }).catch((error) => {
-          this.h.submitInProgress = false
-          this.errors = error.response.data.errors
-
-        })
       },
       update: function () {
         this.setHour()
         this.iSave()
-        axios.put("/zfmc/api/events/" + this.entity.id, this.entity
+
+        this.entity.top = this.getCoordinate(this.entity.calendar,this.entity.hour,'top');
+        this.entity.left = this.getCoordinate(this.entity.calendar,this.entity.hour,'left');
+
+        HTTP.put("events/" + this.entity.id, this.entity
         ).then((response) => {
           this.fSave()
-          this.$emit("eventUpdate", this.entity)
+          this.$store.commit('UPDATE_EVENT',{index: this.index, event: this.entity})
         }).catch((error) => {
-          this.fSave()
+          this.fSave
           this.h.alertMsg = error.response.data.message
           this.h.alertShow = true
           this.errors = error.response.data.errors
-
         })
       }
     }
