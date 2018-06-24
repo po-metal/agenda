@@ -24,6 +24,32 @@ export const getters = {
   getEvents: state => {
     return state.events;
   },
+  getEventStates: state => {
+    return state.eventStates;
+  },
+  getEventStateById: (state) => (id) => {
+    return state.eventStates.find(eventState => eventState.id === id)
+  },
+  getEventStateBgColor: (state,getters) => (stateId) => {
+    var state = getters.getEventStateById(stateId);
+    if(state != undefined && state.bgColor != undefined && state.bgColor != "") {
+      return state.bgColor;
+    }
+    return '#1c5c87';
+  },
+  getEventTypeById: (state) => (id) => {
+    return state.eventTypes.find(eventType => eventType.id === id)
+  },
+  getEventTypeIcon: (state,getters) => (typeId) => {
+    var type = getters.getEventTypeById(typeId);
+    if(type != undefined && type.icon != undefined && type.type != "") {
+      return type.icon;
+    }
+    return 'all_out';
+  },
+  getEventTypes: state => {
+    return state.eventTypes;
+  },
   getEventByKey: (state) => (key) => {
     return state.events[key];
   },

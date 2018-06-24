@@ -20,7 +20,7 @@ Vue.use(Vuex)
 
 
 const state = {
-  loading: false,
+  loading: 0,
   coordinates: {},
   calendarPosition: {top: 0, left: 0},
   bodyScroll: {top: 0, left: 0},
@@ -30,7 +30,7 @@ const state = {
   preEvents: [],
   events: [],
   eventStates: [],
-  eventType: []
+  eventTypes: []
 };
 
 
@@ -44,46 +44,51 @@ const actions = {
       dispatch('eventList');
     }
   },
-
   eventStateList({commit}) {
-    state.loading = true;
+    state.loading = state.loading + 1;
     HTTP.get('event-states').then((response) => {
       commit("SET_EVENT_STATES", response.data);
-      state.loading = false;
+      state.loading = state.loading - 1;
     })
   },
   eventTypeList({commit}) {
-    state.loading = true;
+    state.loading = state.loading + 1;
     HTTP.get('event-types').then((response) => {
       commit("SET_EVENT_TYPES", response.data);
-      state.loading = false;
+      state.loading = state.loading - 1;
     })
   },
   calendarList({state, commit, dispatch}) {
-    state.loading = true;
+    state.loading = state.loading + 1;
     HTTP.get('calendars').then((response) => {
       commit(SET_CALENDARS, response.data);
-      state.loading = false;
+      state.loading = state.loading - 1;
       dispatch('eventList');
     })
   },
   preEventList({commit}) {
-    state.loading = true;
+    state.loading = state.loading + 1;
     HTTP.get('events?calendar=isNull').then((response) => {
       commit("SET_PRE_EVENTS", response.data);
-      state.loading = false;
+      state.loading = state.loading - 1;
     })
   },
-  eventList({state, getters, dispatch}) {
-    state.loading = true;
+  eventList({state, getters, commit,dispatch}) {
+    state.loading = state.loading + 1;
     HTTP.get("events?calendar=isNotNull&start=" + getters.getDate + "<>" + getters.getNextDate
     ).then((response) => {
+      var events = [];
       for (var i = 0; i < response.data.length; i++) {
-        if (response.data[i].calendar != null) {
-          dispatch('pushEvent', response.data[i])
+        var event = response.data[i];
+        if (event.calendar != null) {
+          event.hour = moment(event.start).tz('America/Argentina/Buenos_Aires').format("HH:mm");
+          event.top = getters.getCoordinate(event.calendar, event.hour, 'top');
+          event.left = getters.getCoordinate(event.calendar, event.hour, 'left');
+          events.push(event);
         }
       }
-      state.loading = false;
+      commit("SET_EVENTS", events);
+      state.loading = state.loading - 1;
     })
   },
   pushEvent({state, commit, getters}, event) {
@@ -91,28 +96,26 @@ const actions = {
     // event.duration = calculateEventDuraction(event);
     event.top = getters.getCoordinate(event.calendar, event.hour, 'top');
     event.left = getters.getCoordinate(event.calendar, event.hour, 'left');
-    state.loading = true;
+    state.loading = state.loading + 1;
 
     HTTP.put("events/" + event.id, event
     ).then((response) => {
-      state.loading = false;
+      state.loading = state.loading - 1;
       commit('ADD_EVENT', event);
     }).catch((error) => {
-      state.loading = false;
+      state.loading = state.loading - 1;
     })
-
-
   },
   updateEvent({state, commit, getters}, {index, event}) {
     event.top = getters.getCoordinate(event.calendar, event.hour, 'top');
     event.left = getters.getCoordinate(event.calendar, event.hour, 'left');
-    state.loading = true;
+    state.loading = state.loading + 1;
     HTTP.put("events/" + event.id, event
     ).then((response) => {
-      state.loading = false;
+      state.loading = state.loading - 1;
       commit(UPDATE_EVENT, {index: index, event: event})
     }).catch((error) => {
-      state.loading = false;
+      state.loading = state.loading - 1;
     })
   },
   removePreEvent({commit}, index) {

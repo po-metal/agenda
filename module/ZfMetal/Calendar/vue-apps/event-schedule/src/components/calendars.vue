@@ -1,21 +1,18 @@
 <template>
     <div class="row">
+        <navi></navi>
+
+        <div class="clearfix"></div>
         <div class="col-lg-2">
-            <h3>Tickets</h3>
+           <h3>Pendientes</h3>
+
             <preEvent v-if="getPreEvents" v-for="(preEvent,index) in getPreEvents" :preEvent="preEvent"
                       :key="preEvent.id" :index="index">
             </preEvent>
         </div>
 
         <div class="col-lg-10">
-            <div class="text-center row">
-                <div class="col-lg-2">
-                    <loading :isLoading="getLoading"></loading>
-                </div>
-                <div class="col-lg-8">
-                    <day v-model="getDate"></day>
-                </div>
-            </div>
+            <loading :isLoading="getLoading"></loading>
             <div class="clearfix"></div>
             <div class="zfc-calendars" ref="zfcCalendars" v-on:scroll="handleCalendarScroll">
                 <table class="table-bordered table-striped table-responsive  zfc-td">
@@ -45,7 +42,7 @@
                     </tr>
 
                     <tr>
-                        <th class="zfc-column-hours">FB</th>
+                        <th  v-if="hasCalendars" class="zfc-column-hours">FB</th>
                         <calendarTd v-if="hasCalendars"
                                     v-for="calendar in getCalendars"
                                     :key='calendar.id+"_fb"'
@@ -62,12 +59,12 @@
                        :date="event.getDate" :calendar="event.calendar" :hour="event.hour"
                        :ticketId="event.ticket"
                        :top="event.top" :left="event.left"
-                       :start="event.start" :end="event.end"
+                       :start="event.start" :end="event.end" :state="event.state" :type="event.type"
                        v-on:editEvent="onEditEvent">
                 </event>
             </div>
         </div>
-        <modal :title="titleModal" :showModal="showModal" @close="showModal = false">
+        <modal :title="eventForm.title" :showModal="showModal" @close="showModal = false">
             <form-event :calendars="getCalendars" v-model="eventForm"
                         :index="eventIndex" v-on:remove="removeEvent" />
         </modal>
@@ -83,7 +80,8 @@
   import modal from './helpers/modal.vue'
   import loading from './helpers/loading.vue'
 
-  import day from './day.vue'
+  import navi from './navi.vue'
+
   import calendarTd from './calendarTd.vue'
   import event from './event.vue'
   import preEvent from "./preEvent.vue";
@@ -92,7 +90,7 @@
 
   export default {
     name: 'calendars',
-    components: {day, calendarTd, event, preEvent, Drag, Drop, modal, loading, formEvent},
+    components: {calendarTd, event, preEvent, Drag, Drop, modal, loading, formEvent,navi},
     data() {
       return {
         tds: {},

@@ -9,11 +9,30 @@
             <div class="form-group">
                 <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 control-label">
 
+                    <label class="control-label">Estado</label>
+                </div>
+                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                    <select name="state" class=" form-control" v-model="entity.state" @change="unsaved">
+                        <option  v-for="state in getEventStates"
+                                v-bind:value="state.id" :key="state.id"
+                                :selected="entity.state == state.id">
+                            {{state.name}}
+                        </option>
+                    </select>
+                    <fe :errors="errors.calendar"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="form-group">
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 control-label">
+
                     <label class="control-label">Calendario</label>
                 </div>
                 <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-                    <select name="state" class=" form-control" v-model="entity.calendar" @change="unsaved">
-                        <option v-if="calendars" v-for="calendar in calendars"
+                    <select name="calendar" class=" form-control" v-model="entity.calendar" @change="unsaved">
+                        <option v-if="hasCalendars" v-for="calendar in getCalendars"
                                 v-bind:value="calendar.id" :key="calendar.id"
                                 :selected="entity.calendar == calendar.id">
                             {{calendar.name}}
@@ -126,7 +145,7 @@
 
         <div class="col-lg-12 col-xs-12">
             <button name="submitbtn" class="btn " :class="h.submitClass" v-if="!h.isSaved"
-                    :disabled="getLoading">{{h.submitValue}}
+                    :disabled="h.submitInProgress">{{h.submitValue}}
             </button>
         </div>
     </form>
@@ -175,6 +194,10 @@
     },
     computed: {
       ...mapGetters([
+        'getEventStates',
+        'getEventTypes',
+        'getCalendars',
+        'hasCalendars',
         'getCoordinate',
         'getLoading',
       ])
@@ -234,7 +257,7 @@
           this.fSave()
           this.$store.commit('UPDATE_EVENT',{index: this.index, event: this.entity})
         }).catch((error) => {
-          this.fSave
+          this.fSave()
           this.h.alertMsg = error.response.data.message
           this.h.alertShow = true
           this.errors = error.response.data.errors
