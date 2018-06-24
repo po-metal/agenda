@@ -15,8 +15,8 @@ export default {
 <style scoped>
     .zfc-loading{
         position:absolute;
-        top:0;
-        left:0;
+        top:-4px;
+        left:25px;
         z-index: 100;
     }
 </style>

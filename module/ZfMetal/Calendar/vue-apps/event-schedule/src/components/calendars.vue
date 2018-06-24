@@ -4,11 +4,7 @@
 
         <div class="clearfix"></div>
         <div class="col-lg-2">
-           <h3>Pendientes</h3>
-
-            <preEvent v-if="getPreEvents" v-for="(preEvent,index) in getPreEvents" :preEvent="preEvent"
-                      :key="preEvent.id" :index="index">
-            </preEvent>
+         <panel></panel>
         </div>
 
         <div class="col-lg-10">
@@ -18,7 +14,7 @@
                 <table class="table-bordered table-striped table-responsive  zfc-td">
                     <thead>
                     <tr>
-                        <th class="zfc-column-hours"></th>
+                        <th v-if="hasCalendars" class="zfc-column-hours"></th>
                         <th class="zfc-column-calendar"
                             v-if="hasCalendars"
                             v-for="calendar in getCalendars"
@@ -81,7 +77,7 @@
   import loading from './helpers/loading.vue'
 
   import navi from './navi.vue'
-
+  import panel from './panel.vue'
   import calendarTd from './calendarTd.vue'
   import event from './event.vue'
   import preEvent from "./preEvent.vue";
@@ -90,7 +86,7 @@
 
   export default {
     name: 'calendars',
-    components: {calendarTd, event, preEvent, Drag, Drop, modal, loading, formEvent,navi},
+    components: {calendarTd, event, preEvent, Drag, Drop, modal, loading, formEvent,navi,panel},
     data() {
       return {
         tds: {},
@@ -159,7 +155,7 @@
         event.hour = hour
         event.calendar = calendar
         event.start = this.getDate + " " + hour
-        event.end = this.getEndByStartDuration(event.start, event.duration)
+        event.end = calculateEnd(event.start, event.duration)
         this.updateEvent({index:eventKey,event:event});
       },
       handleCalendarPosition: function () {
@@ -195,6 +191,7 @@
         min-width: 180px;
         max-width: 180px;
         overflow: hidden;
+        text-align: center;
     }
 
     table.zfc-td > tbody > tr > td, table.zfc-td > tbody > tr > th {

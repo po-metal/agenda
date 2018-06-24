@@ -17,6 +17,19 @@
 
                 <day v-model="getDate"></day>
 
+
+                <form class="navbar-form navbar-left">
+                    <div class="form-group">
+                        <button  class="btn btn-default material-icons">refresh</button>
+                    </div>
+                </form>
+
+                <div class="navbar-form navbar-left">
+                    <div class="form-group">
+                        <button  class="btn btn-default material-icons">calendar_today</button>
+                    </div>
+                </div>
+
             </div>
         </nav>
     </div>

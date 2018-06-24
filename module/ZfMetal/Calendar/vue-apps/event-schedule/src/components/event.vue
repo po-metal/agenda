@@ -1,7 +1,7 @@
 <template>
     <Drag :transfer-data="{id: $vnode.key, type: 'e'}"
           :class="getMainClass" :style="getStyle">
-        <div class="">
+        <div class="" style="padding: 3px;">
             <!--<div class="col-lg-3">-->
             <!--<a class="btn btn-xs"> <i class="material-icons zfc-edit-btn" @click="edit">edit</i></a>-->
             <!--</div>-->
