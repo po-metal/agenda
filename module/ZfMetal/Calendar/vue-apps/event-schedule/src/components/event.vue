@@ -3,11 +3,12 @@
           :class="getMainClass" :style="getStyle" >
         <div class="" style="padding: 3px; height: 100%;" @click="selectEvent">
             <!--<div class="col-lg-3">-->
-            <!--<a class="btn btn-xs"> <i class="material-icons zfc-edit-btn" @click="edit">edit</i></a>-->
+            <!--<a class="btn btn-xs"> </a>-->
             <!--</div>-->
-            <span @click="edit"> {{id}} - {{title}}</span>
+            <span @click="edit"><i class="material-icons zfc-edit-btn" @click="edit">edit</i> {{id}} - {{title}}</span>
             <i class="material-icons zfc-type-icon pull-right">{{getEventTypeIcon(type)}}</i>
-
+            <br>
+            <span>{{getDistanceFromEventSelected(lat,lng)}} Km</span>
 
         </div>
 
@@ -39,7 +40,9 @@
       'start',
       'end',
       'state',
-      'type'
+      'type',
+      'lat',
+      'lng'
     ],
     components: {Drag},
     data() {
@@ -60,10 +63,11 @@
         'getEventStates',
         'getEventStateBgColor',
         'getEventTypeIcon',
-        'getEventSelected'
+        'getIndexEventSelected',
+        'getDistanceFromEventSelected'
       ]),
       getMainClass: function () {
-        if(this.getEventSelected == this.index) {
+        if(this.getIndexEventSelected == this.index) {
           return 'zfc-event zfc-event-selected';
         }else{
           return 'zfc-event';

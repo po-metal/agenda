@@ -2,9 +2,28 @@ import moment from 'moment'
 import tz from 'moment-timezone'
 import 'moment/locale/es';
 
+import {calculateDistance} from './../utils/helpers'
+
 export const getters = {
-  getEventSelected: state => {
+  getDistanceFromEventSelected: (state) => (dlat, dlng) => {
+    if (state.eventSelected != undefined) {
+      var lat = state.events[state.eventSelected].lat;
+      var lng = state.events[state.eventSelected].lng;
+      var distance = calculateDistance(lat, lng, dlat, dlng);
+      return parseFloat(Math.round(distance * 100) / 100).toFixed(2);
+
+    }
+    return '-';
+  },
+  getIndexEventSelected: state => {
     return state.eventSelected
+  },
+  getServiceSelected: state => {
+    if (state.eventSelected) {
+      return state.events[state.eventSelected].service;
+    } else {
+      return {};
+    }
   },
   getRc: state => {
     return state.rc

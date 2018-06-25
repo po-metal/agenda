@@ -19,12 +19,11 @@
                 ></check-calendar>
             </v-tab>
 
-            <v-tab title="Z">
-                Zonas
+            <v-tab title="S">
+                <h4>Servicios</h4>
+                <service :service="getServiceSelected"></service>
             </v-tab>
         </vue-tabs>
-
-
 
     </div>
 
@@ -34,18 +33,20 @@
   import {mapGetters, mapActions} from 'vuex';
   import preEvent from "./preEvent.vue";
   import checkCalendar from "./checkCalendar.vue"
+  import service from "./service.vue"
   import {VueTabs, VTab} from 'vue-nav-tabs'
   //you can also import this in your style tag
   import 'vue-nav-tabs/themes/vue-tabs.css'
 
   export default {
     name: 'panel',
-    components: {preEvent,checkCalendar,VueTabs,VTab},
+    components: {preEvent,checkCalendar,service,VueTabs,VTab},
     computed: {
       ...mapGetters([
         'getPreEvents',
         'hasCalendars',
         'getCalendars',
+        'getServiceSelected'
       ]),
     }
   }

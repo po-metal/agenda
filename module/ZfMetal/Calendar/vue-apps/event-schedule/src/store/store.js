@@ -35,6 +35,7 @@ const state = {
   eventStates: [],
   eventTypes: [],
   eventSelected: null,
+
 };
 
 

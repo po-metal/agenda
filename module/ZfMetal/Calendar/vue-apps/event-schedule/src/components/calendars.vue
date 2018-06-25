@@ -18,7 +18,7 @@
                         <th class="zfc-column-calendar"
                             v-for="calendar in getVisibleCalendars"
                             :key="calendar.id">
-                            {{calendar.name}} {{calendar.id}}
+                            {{calendar.name}}
                         </th>
                     </tr>
                     </thead>
@@ -56,6 +56,7 @@
                        :top="getCoordinate(event.calendar,event.hour,'top')"
                        :left="getCoordinate(event.calendar,event.hour,'left')"
                        :start="event.start" :end="event.end" :state="event.state" :type="event.type"
+                       :lat="event.lat" :lng="event.lng"
                        v-on:editEvent="onEditEvent">
                 </event>
             </div>
