@@ -7,9 +7,9 @@
     import axios from "axios"
 
     export default {
-        name: 'HelloWorld',
+        name: 'hello',
         props:[],
-        componentes: {},
+        components: {},
         data() {
             return {
                 asd: {}

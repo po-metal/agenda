@@ -13,11 +13,10 @@
             <div class="zfc-calendars" ref="zfcCalendars" v-on:scroll="handleCalendarScroll">
                 <table class="table-bordered table-striped table-responsive  zfc-td">
                     <thead>
-                    <tr>
-                        <th v-if="hasCalendars" class="zfc-column-hours"></th>
+                    <tr v-if="hasCalendars">
+                        <th  class="zfc-column-hours"></th>
                         <th class="zfc-column-calendar"
-                            v-if="hasCalendars"
-                            v-for="calendar in getCalendars"
+                            v-for="calendar in getVisibleCalendars"
                             :key="calendar.id">
                             {{calendar.name}}
                         </th>
@@ -27,8 +26,8 @@
                     <tbody>
                     <tr v-if="hasCalendars" v-for="hour in getHours" v-bind:key="hour">
                         <td class="zfc-column-hours">{{hour}}</td>
-                        <calendarTd v-if="hasCalendars"
-                                    v-for="calendar in getCalendars"
+                        <calendarTd
+                                    v-for="calendar in getVisibleCalendars"
                                     :key='calendar.id + hour'
                                     :calendarId="calendar.id" :name="calendar.name" :hour="hour"
                                     :parentTop="top" :parentLeft="left"
@@ -39,8 +38,7 @@
 
                     <tr>
                         <th  v-if="hasCalendars" class="zfc-column-hours">FB</th>
-                        <calendarTd v-if="hasCalendars"
-                                    v-for="calendar in getCalendars"
+                        <calendarTd v-for="calendar in getVisibleCalendars"
                                     :key='calendar.id+"_fb"'
                                     :calendarId="calendar.id" :name="calendar.name" :hour="'fb'"
                                     :parentTop="top" :parentLeft="left">
@@ -49,7 +47,7 @@
                     </tbody>
                 </table>
 
-                <event v-if="getEvents" v-for="(event,index) in getEvents" :key="index" :index="index"
+                <event v-for="(event,index) in getEvents" v-if="isVisibleCalendar(event.calendar)" :key="index" :index="index"
                        :id="event.id" :title="event.title" :description="event.description"
                        :duration="event.duration"
                        :date="event.getDate" :calendar="event.calendar" :hour="event.hour"
@@ -112,14 +110,16 @@
     computed: {
       ...mapGetters([
         'getLoading',
+        'isVisibleCalendar',
+        'hasCalendars',
         'getCalendars',
+        'getVisibleCalendars',
         'getPreEvents',
         'getEvents',
         'getEventByKey',
         'getDate',
         'getNextDate',
         'getDay',
-        'hasCalendars',
         'getHours'
       ]),
     },

@@ -7,12 +7,13 @@ import 'moment/locale/es';
 
 import {getters} from './getters'
 import {HTTP} from './../utils/http-client'
-import {calculateEventDuraction} from './../utils/helpers'
+
+
 import {
   SET_DATE,
-  ADD_CALENDAR, SET_CALENDARS, SET_PRE_EVENTS,
-  SET_EVENTS, CLEAR_EVENTS, ADD_EVENT, UPDATE_EVENT, REMOVE_PRE_EVENTS, SET_COORDINATE,
-  SET_BODY_SCROLL, SET_CALENDAR_SCROLL, SET_CALENDAR_POSITION,
+  ADD_CALENDAR, SET_CALENDARS,HIDE_CALENDAR, SHOW_CALENDAR,
+  SET_PRE_EVENTS, SET_EVENTS, CLEAR_EVENTS, ADD_EVENT, UPDATE_EVENT, REMOVE_PRE_EVENTS,
+  SET_COORDINATE, SET_BODY_SCROLL, SET_CALENDAR_SCROLL, SET_CALENDAR_POSITION,
   SET_EVENT_STATES, SET_EVENT_TYPES
 } from './mutation-types'
 
@@ -27,6 +28,7 @@ const state = {
   calendarScroll: {top: 0, left: 0},
   date: moment().tz('America/Argentina/Buenos_Aires').locale('es'),
   calendars: [],
+  hiddenCalendars: {},
   preEvents: [],
   events: [],
   eventStates: [],
@@ -35,6 +37,12 @@ const state = {
 
 
 const actions = {
+  hideCalendar({commit},index){
+    commit('HIDE_CALENDAR', index);
+  },
+  showCalendar({commit},index){
+    commit('SHOW_CALENDAR', index);
+  },
   changeDate({state, commit, dispatch}, date) {
     console.log(date)
     var newDate = moment(date)
@@ -130,6 +138,14 @@ const mutations = {
   },
   [ADD_CALENDAR](state, calendar) {
     state.calendars.push(calendar);
+  },
+  [SHOW_CALENDAR](state, index) {
+    Vue.set(state.calendars[index], 'hidden', false)
+    //state.calendars[index].hidden = false;
+  },
+  [HIDE_CALENDAR](state, index) {
+    Vue.set(state.calendars[index], 'hidden', true)
+    //state.calendars[index].hidden = true;
   },
   [SET_EVENT_STATES](state, eventStates) {
     state.eventStates = eventStates;

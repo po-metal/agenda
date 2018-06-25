@@ -1,5 +1,7 @@
 export const ADD_CALENDAR = 'ADD_CALENDAR'
 export const SET_CALENDARS = 'SET_CALENDARS'
+export const HIDE_CALENDAR = 'HIDE_CALENDAR'
+export const SHOW_CALENDAR = 'SHOW_CALENDAR'
 export const SET_PRE_EVENTS = 'SET_PRE_EVENTS'
 export const SET_EVENTS = 'SET_EVENTS'
 export const CLEAR_EVENTS = 'CLEAR_EVENTS'

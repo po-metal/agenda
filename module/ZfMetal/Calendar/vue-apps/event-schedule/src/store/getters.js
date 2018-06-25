@@ -6,8 +6,8 @@ export const getters = {
   getCoordinates: state => {
     return state.coordinates;
   },
-  getCoordinate: (state) => (calendar,hour,type) => {
-    if(state.coordinates[calendar][hour] == undefined){
+  getCoordinate: (state) => (calendar, hour, type) => {
+    if (state.coordinates[calendar][hour] == undefined) {
       return state.coordinates[calendar]['fb'][type];
     }
     return state.coordinates[calendar][hour][type];
@@ -15,8 +15,18 @@ export const getters = {
   getLoading: state => {
     return state.loading;
   },
+  isVisibleCalendar: (state) => (id) => {
+    var calendar = state.calendars.find(calendar => calendar.id === id);
+    if(calendar.hidden == true){
+      return false
+    }
+    return true
+  },
   getCalendars: state => {
     return state.calendars;
+  },
+  getVisibleCalendars: state => {
+    return state.calendars.filter(calendar => calendar.hidden != true);
   },
   getPreEvents: state => {
     return state.preEvents;
@@ -30,9 +40,9 @@ export const getters = {
   getEventStateById: (state) => (id) => {
     return state.eventStates.find(eventState => eventState.id === id)
   },
-  getEventStateBgColor: (state,getters) => (stateId) => {
+  getEventStateBgColor: (state, getters) => (stateId) => {
     var state = getters.getEventStateById(stateId);
-    if(state != undefined && state.bgColor != undefined && state.bgColor != "") {
+    if (state != undefined && state.bgColor != undefined && state.bgColor != "") {
       return state.bgColor;
     }
     return '#1c5c87';
@@ -40,9 +50,9 @@ export const getters = {
   getEventTypeById: (state) => (id) => {
     return state.eventTypes.find(eventType => eventType.id === id)
   },
-  getEventTypeIcon: (state,getters) => (typeId) => {
+  getEventTypeIcon: (state, getters) => (typeId) => {
     var type = getters.getEventTypeById(typeId);
-    if(type != undefined && type.icon != undefined && type.type != "") {
+    if (type != undefined && type.icon != undefined && type.type != "") {
       return type.icon;
     }
     return 'all_out';
