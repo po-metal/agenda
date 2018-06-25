@@ -11,7 +11,7 @@ import {HTTP} from './../utils/http-client'
 
 import {
   SET_DATE,
-  ADD_CALENDAR, SET_CALENDARS,HIDE_CALENDAR, SHOW_CALENDAR,
+  ADD_CALENDAR, SET_CALENDARS, HIDE_CALENDAR, SHOW_CALENDAR,
   SET_PRE_EVENTS, SET_EVENTS, CLEAR_EVENTS, ADD_EVENT, UPDATE_EVENT, REMOVE_PRE_EVENTS,
   SET_COORDINATE, SET_BODY_SCROLL, SET_CALENDAR_SCROLL, SET_CALENDAR_POSITION,
   SET_EVENT_STATES, SET_EVENT_TYPES
@@ -28,7 +28,8 @@ const state = {
   calendarScroll: {top: 0, left: 0},
   date: moment().tz('America/Argentina/Buenos_Aires').locale('es'),
   calendars: [],
-  hiddenCalendars: {},
+  vcalendars: [],
+  rc: 1,
   preEvents: [],
   events: [],
   eventStates: [],
@@ -37,10 +38,10 @@ const state = {
 
 
 const actions = {
-  hideCalendar({commit},index){
+  hideCalendar({commit, dispatch, state}, index) {
     commit('HIDE_CALENDAR', index);
   },
-  showCalendar({commit},index){
+  showCalendar({commit, dispatch}, index) {
     commit('SHOW_CALENDAR', index);
   },
   changeDate({state, commit, dispatch}, date) {
@@ -81,7 +82,7 @@ const actions = {
       state.loading = state.loading - 1;
     })
   },
-  eventList({state, getters, commit,dispatch}) {
+  eventList({state, getters, commit, dispatch}) {
     state.loading = state.loading + 1;
     HTTP.get("events?calendar=isNotNull&start=" + getters.getDate + "<>" + getters.getNextDate
     ).then((response) => {
@@ -90,8 +91,6 @@ const actions = {
         var event = response.data[i];
         if (event.calendar != null) {
           event.hour = moment(event.start).tz('America/Argentina/Buenos_Aires').format("HH:mm");
-          event.top = getters.getCoordinate(event.calendar, event.hour, 'top');
-          event.left = getters.getCoordinate(event.calendar, event.hour, 'left');
           events.push(event);
         }
       }
@@ -101,9 +100,6 @@ const actions = {
   },
   pushEvent({state, commit, getters}, event) {
     event.hour = moment(event.start).tz('America/Argentina/Buenos_Aires').format("HH:mm");
-    // event.duration = calculateEventDuraction(event);
-    event.top = getters.getCoordinate(event.calendar, event.hour, 'top');
-    event.left = getters.getCoordinate(event.calendar, event.hour, 'left');
     state.loading = state.loading + 1;
 
     HTTP.put("events/" + event.id, event
@@ -115,8 +111,7 @@ const actions = {
     })
   },
   updateEvent({state, commit, getters}, {index, event}) {
-    event.top = getters.getCoordinate(event.calendar, event.hour, 'top');
-    event.left = getters.getCoordinate(event.calendar, event.hour, 'left');
+
     state.loading = state.loading + 1;
     HTTP.put("events/" + event.id, event
     ).then((response) => {
@@ -140,12 +135,12 @@ const mutations = {
     state.calendars.push(calendar);
   },
   [SHOW_CALENDAR](state, index) {
-    Vue.set(state.calendars[index], 'hidden', false)
-    //state.calendars[index].hidden = false;
+    Vue.set(state.calendars[index], 'hidden', false);
+    state.rc++;
   },
   [HIDE_CALENDAR](state, index) {
     Vue.set(state.calendars[index], 'hidden', true)
-    //state.calendars[index].hidden = true;
+    state.rc++;
   },
   [SET_EVENT_STATES](state, eventStates) {
     state.eventStates = eventStates;
@@ -181,7 +176,8 @@ const mutations = {
     if (state.coordinates[calendar][hour] == undefined) {
       state.coordinates[calendar][hour] = {};
     }
-    state.coordinates[calendar][hour][type] = value;
+    Vue.set(state.coordinates[calendar][hour], type, value);
+    //  console.log("SET_COOR", calendar, hour, type, state.coordinates[calendar][hour][type])
   },
   [SET_CALENDAR_POSITION](state, {top, left}) {
     state.calendarPosition.top = top;

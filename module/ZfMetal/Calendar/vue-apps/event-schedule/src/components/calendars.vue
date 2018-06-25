@@ -4,7 +4,7 @@
 
         <div class="clearfix"></div>
         <div class="col-lg-2">
-         <panel></panel>
+            <panel v-on:forceUpdate="onForceUpdate"></panel>
         </div>
 
         <div class="col-lg-10">
@@ -14,11 +14,11 @@
                 <table class="table-bordered table-striped table-responsive  zfc-td">
                     <thead>
                     <tr v-if="hasCalendars">
-                        <th  class="zfc-column-hours"></th>
+                        <th class="zfc-column-hours"></th>
                         <th class="zfc-column-calendar"
                             v-for="calendar in getVisibleCalendars"
                             :key="calendar.id">
-                            {{calendar.name}}
+                            {{calendar.name}} {{calendar.id}}
                         </th>
                     </tr>
                     </thead>
@@ -27,17 +27,17 @@
                     <tr v-if="hasCalendars" v-for="hour in getHours" v-bind:key="hour">
                         <td class="zfc-column-hours">{{hour}}</td>
                         <calendarTd
-                                    v-for="calendar in getVisibleCalendars"
-                                    :key='calendar.id + hour'
-                                    :calendarId="calendar.id" :name="calendar.name" :hour="hour"
-                                    :parentTop="top" :parentLeft="left"
-                                    v-on:dropForNewEvent="onDropForNewEvent"
-                                    v-on:dropForChangeEvent="onDropForChangeEvent">
+                                v-for="calendar in getVisibleCalendars"
+                                :key='calendar.id + hour'
+                                :calendarId="calendar.id" :name="calendar.name" :hour="hour"
+                                :parentTop="top" :parentLeft="left" :rc="getRc"
+                                v-on:dropForNewEvent="onDropForNewEvent"
+                                v-on:dropForChangeEvent="onDropForChangeEvent">
                         </calendarTd>
                     </tr>
 
                     <tr>
-                        <th  v-if="hasCalendars" class="zfc-column-hours">FB</th>
+                        <th v-if="hasCalendars" class="zfc-column-hours">FB</th>
                         <calendarTd v-for="calendar in getVisibleCalendars"
                                     :key='calendar.id+"_fb"'
                                     :calendarId="calendar.id" :name="calendar.name" :hour="'fb'"
@@ -47,12 +47,14 @@
                     </tbody>
                 </table>
 
-                <event v-for="(event,index) in getEvents" v-if="isVisibleCalendar(event.calendar)" :key="index" :index="index"
+                <event v-for="(event,index) in getEvents" v-if="isVisibleCalendar(event.calendar)" :key="index"
+                       :index="index"
                        :id="event.id" :title="event.title" :description="event.description"
                        :duration="event.duration"
                        :date="event.getDate" :calendar="event.calendar" :hour="event.hour"
                        :ticketId="event.ticket"
-                       :top="event.top" :left="event.left"
+                       :top="getCoordinate(event.calendar,event.hour,'top')"
+                       :left="getCoordinate(event.calendar,event.hour,'left')"
                        :start="event.start" :end="event.end" :state="event.state" :type="event.type"
                        v-on:editEvent="onEditEvent">
                 </event>
@@ -60,13 +62,13 @@
         </div>
         <modal :title="eventForm.title" :showModal="showModal" @close="showModal = false">
             <form-event :calendars="getCalendars" v-model="eventForm"
-                        :index="eventIndex" v-on:remove="removeEvent" />
+                        :index="eventIndex" v-on:remove="removeEvent"/>
         </modal>
     </div>
 </template>
 
 <script>
-  import { mapGetters, mapActions } from 'vuex';
+  import {mapGetters, mapActions} from 'vuex';
   import {calculateEnd} from './../utils/helpers'
   import {Drag, Drop} from 'vue-drag-drop';
 
@@ -84,7 +86,7 @@
 
   export default {
     name: 'calendars',
-    components: {calendarTd, event, preEvent, Drag, Drop, modal, loading, formEvent,navi,panel},
+    components: {calendarTd, event, preEvent, Drag, Drop, modal, loading, formEvent, navi, panel},
     data() {
       return {
         tds: {},
@@ -107,9 +109,17 @@
       });
       this.handleCalendarPosition();
     },
+    watch: {
+      getVisibleCalendars: function () {
+        this.$nextTick(() => {
+          this.$forceUpdate();
+        });
+      }
+    },
     computed: {
       ...mapGetters([
         'getLoading',
+        'getCoordinate',
         'isVisibleCalendar',
         'hasCalendars',
         'getCalendars',
@@ -120,7 +130,8 @@
         'getDate',
         'getNextDate',
         'getDay',
-        'getHours'
+        'getHours',
+        'getRc',
       ]),
     },
     methods: {
@@ -133,7 +144,11 @@
         'updateEvent',
         'pushEvent'
       ]),
-      removeEvent: function(){
+      onForceUpdate() {
+        console.log("forceUpdate");
+        this.$forceUpdate();
+      },
+      removeEvent: function () {
 
       },
       onEditEvent: function (index) {
@@ -148,7 +163,7 @@
         event.start = this.getDate + " " + event.hour
         event.end = calculateEnd(event.start, event.duration)
         this.pushEvent(event);
-        this.removePreEvent({index:index});
+        this.removePreEvent({index: index});
       },
       onDropForChangeEvent: function (calendar, eventKey, hour) {
         var event = this.getEventByKey(eventKey);
@@ -156,18 +171,21 @@
         event.calendar = calendar
         event.start = this.getDate + " " + hour
         event.end = calculateEnd(event.start, event.duration)
-        this.updateEvent({index:eventKey,event:event});
+        this.updateEvent({index: eventKey, event: event});
       },
       handleCalendarPosition: function () {
         this.top = this.$refs.zfcCalendars.getBoundingClientRect().top;
         this.left = this.$refs.zfcCalendars.getBoundingClientRect().left;
-        this.$store.commit('SET_CALENDAR_POSITION',{top:this.top,left:this.left});
+        this.$store.commit('SET_CALENDAR_POSITION', {top: this.top, left: this.left});
       },
-      handleCalendarScroll: function(e){
-        this.$store.commit('SET_CALENDAR_SCROLL',{top:e.srcElement.scrollTop,left:e.srcElement.scrollLeft});
+      handleCalendarScroll: function (e) {
+        this.$store.commit('SET_CALENDAR_SCROLL', {top: e.srcElement.scrollTop, left: e.srcElement.scrollLeft});
       },
-      handleWindowScroll: function(e){
-        this.$store.commit('SET_BODY_SCROLL',{top:e.srcElement.scrollTop || window.pageYOffset,left: e.srcElement.scrollLeft || window.pageXOffset });
+      handleWindowScroll: function (e) {
+        this.$store.commit('SET_BODY_SCROLL', {
+          top: e.srcElement.scrollTop || window.pageYOffset,
+          left: e.srcElement.scrollLeft || window.pageXOffset
+        });
       },
     }
 

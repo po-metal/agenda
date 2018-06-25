@@ -15,6 +15,7 @@
                         v-if="hasCalendars"
                         v-for="(calendar,index) in getCalendars" :key="index"
                         :index="index" :name="calendar.name" :id="calendar.id"
+
                 ></check-calendar>
             </v-tab>
 

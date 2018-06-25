@@ -11,7 +11,7 @@
 
   export default {
     name: 'calnedarTd',
-    props: ['calendarId', 'tid', 'name', 'hour', 'parentTop', 'parentLeft'],
+    props: ['calendarId', 'tid', 'name', 'hour', 'parentTop', 'parentLeft','rc'],
     components: {Drag, Drop},
     data() {
       return {
@@ -44,6 +44,10 @@
       }
     },
     watch: {
+      rc: function(){
+        this.calculateTop()
+        this.calculateLeft()
+      },
       parentTop: function(){
         this.calculateTop()
       },

@@ -3,6 +3,9 @@ import tz from 'moment-timezone'
 import 'moment/locale/es';
 
 export const getters = {
+  getRc: state => {
+    return state.rc
+  },
   getCoordinates: state => {
     return state.coordinates;
   },
@@ -10,6 +13,7 @@ export const getters = {
     if (state.coordinates[calendar][hour] == undefined) {
       return state.coordinates[calendar]['fb'][type];
     }
+    // console.log(calendar, hour, type, state.coordinates[calendar][hour][type]);
     return state.coordinates[calendar][hour][type];
   },
   getLoading: state => {
@@ -17,7 +21,7 @@ export const getters = {
   },
   isVisibleCalendar: (state) => (id) => {
     var calendar = state.calendars.find(calendar => calendar.id === id);
-    if(calendar.hidden == true){
+    if (calendar.hidden == true) {
       return false
     }
     return true
@@ -27,6 +31,12 @@ export const getters = {
   },
   getVisibleCalendars: state => {
     return state.calendars.filter(calendar => calendar.hidden != true);
+  },
+  hasCalendars: (state) => {
+    if (state.calendars != undefined && state.calendars.length > 0) {
+      return true;
+    }
+    return false;
   },
   getPreEvents: state => {
     return state.preEvents;
@@ -72,12 +82,6 @@ export const getters = {
   },
   getDay: state => {
     return state.date.day() + 1;
-  },
-  hasCalendars: (state) => {
-    if (state.calendars != undefined && state.calendars.length > 0) {
-      return true;
-    }
-    return false;
   },
   getStart: (state, getters) => {
     var rstart = null;

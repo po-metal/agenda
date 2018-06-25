@@ -62,14 +62,7 @@
         return 'zfc-event'
       },
       getStyle: function () {
-        return 'background-color:' + this.getEventStateBgColor(this.state) + '; top: ' + this.getTop + 'px;' + ' left: ' + this.getLeft + 'px;' + ' height:' + this.getHeight + "px;";
-      },
-
-      getTop: function () {
-        return this.top;
-      },
-      getLeft: function () {
-        return this.left;
+        return 'background-color:' + this.getEventStateBgColor(this.state) + '; top: ' + this.top + 'px;' + ' left: ' + this.left + 'px;' + ' height:' + this.getHeight + "px;";
       },
       getHeight: function () {
         var height = 25;
@@ -80,7 +73,6 @@
           height = 600
         }
         return height
-
       }
     }
   }
