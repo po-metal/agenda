@@ -3,6 +3,9 @@ import tz from 'moment-timezone'
 import 'moment/locale/es';
 
 export const getters = {
+  getEventSelected: state => {
+    return state.eventSelected
+  },
   getRc: state => {
     return state.rc
   },

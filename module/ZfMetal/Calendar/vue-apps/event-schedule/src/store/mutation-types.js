@@ -16,3 +16,4 @@ export const SET_DATE  = 'SET_DATE'
 
 export const SET_EVENT_STATES = 'SET_EVENT_STATES'
 export const SET_EVENT_TYPES = 'SET_EVENT_TYPES'
+export const SET_EVENT_SELECTED = 'SET_EVENT_SELECTED'

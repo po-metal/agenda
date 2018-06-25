@@ -1,7 +1,7 @@
 <template>
     <Drag :transfer-data="{id: $vnode.key, type: 'e'}"
-          :class="getMainClass" :style="getStyle">
-        <div class="" style="padding: 3px;">
+          :class="getMainClass" :style="getStyle" >
+        <div class="" style="padding: 3px; height: 100%;" @click="selectEvent">
             <!--<div class="col-lg-3">-->
             <!--<a class="btn btn-xs"> <i class="material-icons zfc-edit-btn" @click="edit">edit</i></a>-->
             <!--</div>-->
@@ -50,16 +50,24 @@
     methods: {
       edit: function () {
         this.$emit("editEvent", this.index);
+      },
+      selectEvent: function(){
+        this.$store.commit('SET_EVENT_SELECTED',this.index);
       }
     },
     computed: {
       ...mapGetters([
         'getEventStates',
         'getEventStateBgColor',
-        'getEventTypeIcon'
+        'getEventTypeIcon',
+        'getEventSelected'
       ]),
       getMainClass: function () {
-        return 'zfc-event'
+        if(this.getEventSelected == this.index) {
+          return 'zfc-event zfc-event-selected';
+        }else{
+          return 'zfc-event';
+        }
       },
       getStyle: function () {
         return 'background-color:' + this.getEventStateBgColor(this.state) + '; top: ' + this.top + 'px;' + ' left: ' + this.left + 'px;' + ' height:' + this.getHeight + "px;";
@@ -93,6 +101,10 @@
         min-width: 160px;
         width: 160px;
         min-height: 25px;
+    }
+
+    .zfc-event-selected {
+        border: 3px solid #01FF70;
     }
 
     .zfc-edit-btn {

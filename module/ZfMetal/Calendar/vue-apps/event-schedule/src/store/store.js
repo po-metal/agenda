@@ -14,7 +14,7 @@ import {
   ADD_CALENDAR, SET_CALENDARS, HIDE_CALENDAR, SHOW_CALENDAR,
   SET_PRE_EVENTS, SET_EVENTS, CLEAR_EVENTS, ADD_EVENT, UPDATE_EVENT, REMOVE_PRE_EVENTS,
   SET_COORDINATE, SET_BODY_SCROLL, SET_CALENDAR_SCROLL, SET_CALENDAR_POSITION,
-  SET_EVENT_STATES, SET_EVENT_TYPES
+  SET_EVENT_STATES, SET_EVENT_TYPES, SET_EVENT_SELECTED
 } from './mutation-types'
 
 Vue.use(Vuex)
@@ -33,7 +33,8 @@ const state = {
   preEvents: [],
   events: [],
   eventStates: [],
-  eventTypes: []
+  eventTypes: [],
+  eventSelected: null,
 };
 
 
@@ -153,6 +154,9 @@ const mutations = {
   },
   [SET_PRE_EVENTS](state, preEvents) {
     state.preEvents = preEvents;
+  },
+  [SET_EVENT_SELECTED](state, index) {
+    state.eventSelected = index;
   },
   [SET_EVENTS](state, events) {
     state.events = events;
